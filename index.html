@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>For Krishna 🌹</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Dancing+Script:wght@500;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --plum-dark:#1f0f1a;
+    --plum:#3a1a2e;
+    --plum-soft:#4d2438;
+    --ivory:#f7ecdd;
+    --ivory-dim:#efe2ce;
+    --ink:#4a2632;
+    --ink-soft:#6b3a45;
+    --rose:#d98a9c;
+    --rose-deep:#b9607a;
+    --gold:#c9a15c;
+    --gold-light:#e6c98a;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important;}
+  }
+  html{scroll-behavior:smooth;}
+  html,body{
+    min-height:100%;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(217,138,156,0.18), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 90% 100%, rgba(201,161,92,0.10), transparent 60%),
+      linear-gradient(160deg, var(--plum-dark), var(--plum) 55%, var(--plum-dark));
+    font-family:'Lora', serif;
+    color: var(--ivory);
+    overflow-x:hidden;
+  }
+
+  /* ---------- ambient petals ---------- */
+  .petals{position:fixed; inset:0; pointer-events:none; z-index:1; overflow:hidden;}
+  .petal{
+    position:absolute; top:-6%;
+    width:14px; height:18px;
+    background: linear-gradient(135deg, var(--rose), var(--rose-deep));
+    border-radius: 0 70% 0 70%;
+    opacity:0.55;
+    animation: drift linear infinite;
+    filter: blur(0.2px);
+  }
+  .petal.gold{ background:linear-gradient(135deg, var(--gold-light), var(--gold)); }
+  @keyframes drift{
+    0%{ transform: translateY(0) translateX(0) rotate(0deg); }
+    100%{ transform: translateY(112vh) translateX(40px) rotate(220deg); }
+  }
+
+  /* ---------- layout ---------- */
+  main{ position:relative; z-index:2; }
+  section{ position:relative; z-index:2; }
+
+  .hero{
+    min-height:100svh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center;
+    padding: 60px 24px 40px;
+  }
+  .eyebrow{
+    font-family:'Lora', serif;
+    font-size:12px;
+    letter-spacing:3.5px;
+    text-transform:uppercase;
+    color: var(--rose);
+    opacity:0.85;
+    margin-bottom:22px;
+  }
+  .eyebrow::before, .eyebrow::after{
+    content:"·";
+    color: var(--gold);
+    margin:0 10px;
+  }
+  h1.title{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-weight:600;
+    font-size: clamp(40px, 8vw, 78px);
+    line-height:1.05;
+    background: linear-gradient(100deg, var(--ivory) 20%, var(--gold-light) 50%, var(--ivory) 80%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    margin-bottom:18px;
+  }
+  .hero-sub{
+    max-width:440px;
+    color: var(--ivory-dim);
+    font-size:16.5px;
+    line-height:1.75;
+    opacity:0.9;
+    margin-bottom:52px;
+  }
+
+  /* ---------- envelope ---------- */
+  .envelope-wrap{
+    perspective: 1400px;
+    cursor:pointer;
+    outline-offset:8px;
+  }
+  .envelope{
+    position:relative;
+    width: min(320px, 78vw);
+    aspect-ratio: 3 / 2;
+  }
+  .env-back{
+    position:absolute; inset:0;
+    background: linear-gradient(155deg, var(--ivory-dim), var(--ivory));
+    border-radius:6px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(201,161,92,0.25);
+  }
+  .env-letter{
+    position:absolute;
+    left:6%; right:6%; top:-4%;
+    height:88%;
+    background: var(--ivory);
+    border-radius:3px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    transition: transform 0.9s cubic-bezier(.22,1,.36,1);
+    display:flex; align-items:flex-start; justify-content:center;
+    padding-top:18px;
+  }
+  .env-letter span{
+    font-family:'Dancing Script', cursive;
+    font-size:15px;
+    color: var(--ink-soft);
+    opacity:0;
+    transition: opacity 0.5s ease 0.4s;
+  }
+  .env-front{
+    position:absolute; inset:0;
+    border-radius:6px;
+    background: linear-gradient(155deg, var(--ivory), var(--ivory-dim));
+    clip-path: polygon(0 0, 50% 42%, 100% 0, 100% 100%, 0 100%);
+    box-shadow: inset 0 0 0 1px rgba(201,161,92,0.3);
+  }
+  .env-flap{
+    position:absolute; top:0; left:0; right:0;
+    height:58%;
+    background: linear-gradient(160deg, var(--ivory), var(--ivory-dim));
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    transform-origin: top center;
+    transition: transform 0.9s cubic-bezier(.22,1,.36,1);
+    box-shadow: inset 0 0 0 1px rgba(201,161,92,0.3);
+    z-index:3;
+  }
+  .seal{
+    position:absolute; left:50%; top:42%;
+    width:52px; height:52px;
+    transform: translate(-50%,-50%);
+    border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, var(--gold-light), var(--gold-deep, var(--gold)) 70%);
+    background: radial-gradient(circle at 35% 30%, var(--gold-light), var(--gold) 75%);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.35), inset 0 0 0 2px rgba(255,255,255,0.15);
+    display:flex; align-items:center; justify-content:center;
+    z-index:4;
+    transition: transform 0.5s ease;
+  }
+  .seal svg{ width:22px; height:22px; }
+
+  .envelope-wrap:hover .seal{ transform: translate(-50%,-50%) scale(1.06); }
+  .envelope-wrap.opened .env-flap{ transform: rotateX(178deg); }
+  .envelope-wrap.opened .env-letter{ transform: translateY(-46%); }
+  .envelope-wrap.opened .env-letter span{ opacity:1; }
+  .envelope-wrap.opened .seal{ opacity:0; transition: opacity 0.3s ease; }
+
+  .hint{
+    margin-top:26px;
+    font-size:12.5px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color: var(--rose);
+    opacity:0.8;
+    display:flex; align-items:center; gap:8px;
+    justify-content:center;
+  }
+  .hint svg{ width:14px; height:14px; animation: bob 1.8s ease-in-out infinite; }
+  @keyframes bob{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(4px);} }
+
+  /* ---------- letter section ---------- */
+  .letter-section{
+    max-width:620px;
+    margin: 0 auto;
+    padding: 20px 22px 90px;
+  }
+
+  .paper{
+    position:relative;
+    background: var(--ivory);
+    color: var(--ink);
+    border-radius: 4px;
+    padding: 46px 40px;
+    margin-bottom: 34px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+    opacity:0;
+    transform: translateY(28px);
+    transition: opacity 0.9s ease, transform 0.9s cubic-bezier(.22,1,.36,1);
+  }
+  .paper.in-view{ opacity:1; transform:translateY(0); }
+  .paper::before{
+    content:"";
+    position:absolute; inset:10px;
+    border: 1px solid rgba(201,161,92,0.35);
+    border-radius:2px;
+    pointer-events:none;
+  }
+  .paper .mark{
+    font-family:'Dancing Script', cursive;
+    font-size:26px;
+    color: var(--rose-deep);
+    display:block;
+    margin-bottom:14px;
+  }
+  .paper p{
+    font-size:16.5px;
+    line-height:1.85;
+    color: var(--ink);
+  }
+  .paper p + p{ margin-top:16px; }
+
+  .paper h2{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-weight:600;
+    font-size:26px;
+    color: var(--ink);
+    margin-bottom:20px;
+  }
+
+  .reasons{ list-style:none; }
+  .reasons li{
+    display:flex; align-items:flex-start; gap:14px;
+    padding: 13px 0;
+    border-bottom: 1px solid rgba(74,38,50,0.1);
+    font-size:16px;
+    line-height:1.6;
+  }
+  .reasons li:last-child{ border-bottom:none; }
+  .reasons li svg{ flex-shrink:0; width:16px; height:16px; margin-top:5px; }
+
+  .divider{
+    display:flex; align-items:center; gap:14px;
+    margin: 8px 0 26px;
+    color: var(--gold);
+  }
+  .divider::before, .divider::after{
+    content:""; flex:1; height:1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .divider svg{ width:16px; height:16px; }
+
+  /* ---------- forgiveness prompt ---------- */
+  .ask{ text-align:center; }
+  .ask p{ margin-bottom:26px; }
+  .btn-row{
+    display:flex; gap:18px; justify-content:center; flex-wrap:wrap;
+    position:relative; min-height:76px;
+  }
+  button{
+    font-family:'Lora', serif;
+    font-size:15px;
+    font-weight:600;
+    letter-spacing:0.3px;
+    border-radius:999px;
+    border:none;
+    cursor:pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  #yesBtn{
+    padding:15px 32px;
+    background: radial-gradient(circle at 30% 30%, var(--gold-light), var(--gold) 80%);
+    color: var(--plum-dark);
+    box-shadow: 0 10px 26px rgba(201,161,92,0.4);
+  }
+  #yesBtn:hover, #yesBtn:focus-visible{ transform: translateY(-3px) scale(1.03); }
+  #noBtn{
+    padding:15px 30px;
+    background: transparent;
+    color: var(--ink-soft);
+    border: 1px solid rgba(107,58,69,0.35);
+    position:relative;
+  }
+  button:focus-visible{ outline:2px solid var(--rose-deep); outline-offset:3px; }
+
+  #result{
+    margin-top:24px;
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:20px;
+    color: var(--rose-deep);
+    min-height:30px;
+  }
+  #result.show{ animation: pop 0.6s ease; }
+  @keyframes pop{
+    0%{ transform:scale(0.85); opacity:0; }
+    60%{ transform:scale(1.04); }
+    100%{ transform:scale(1); opacity:1; }
+  }
+
+  .confetti-piece{
+    position:fixed; top:-10px; z-index:5;
+    animation: confettiFall linear forwards;
+  }
+  @keyframes confettiFall{
+    to{ transform: translateY(110vh) rotate(360deg); opacity:0.2; }
+  }
+
+  .signature-block{
+    text-align:center;
+    padding: 10px 24px 70px;
+  }
+  .signature-block .sig{
+    font-family:'Dancing Script', cursive;
+    font-size:30px;
+    color: var(--gold-light);
+  }
+  .signature-block .foot{
+    margin-top:14px;
+    font-size:12.5px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color: var(--ivory-dim);
+    opacity:0.55;
+  }
+</style>
+</head>
+<body>
+
+<div class="petals" id="petalsContainer"></div>
+
+<main>
+  <section class="hero">
+    <p class="eyebrow">a small apology, sealed with wax</p>
+    <h1 class="title">For Krishna</h1>
+    <p class="hero-sub">I know you're upset with me — and you have every right to be. Open this when you're ready.</p>
+
+    <div class="envelope-wrap" id="envelopeWrap" role="button" tabindex="0" aria-label="Open the letter">
+      <div class="envelope">
+        <div class="env-back"></div>
+        <div class="env-letter"><span>my chamak challo,</span></div>
+        <div class="env-front"></div>
+        <div class="env-flap"></div>
+        <div class="seal">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 20s-7.5-4.6-9.7-9.1C.6 7.6 2.4 4.5 5.6 4.1c1.9-.2 3.6.8 4.4 2.3.9-1.5 2.6-2.5 4.5-2.3 3.2.4 5 3.5 3.3 6.8C19.5 15.4 12 20 12 20z" fill="#3a1a2e"/></svg>
+        </div>
+      </div>
+    </div>
+    <p class="hint">
+      <span>tap to open</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+    </p>
+  </section>
+
+  <section class="letter-section" id="letterSection">
+    <div class="paper">
+      <span class="mark">Hey, my Chamak challo 🌸</span>
+      <p>I know I get angry over small things I shouldn't. I know I make you upset more often than you deserve. That's on me, not you — and I'm genuinely trying to be better about it.</p>
+      <p>And even when I'm being stubborn or short-tempered, even when I don't say it out loud, I miss you. Every single time. I just don't always know how to show it in the moment — but it's always true underneath.</p>
+    </div>
+
+    <div class="paper">
+      <h2>A few reasons I adore you</h2>
+      <ul class="reasons">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="#b9607a" stroke-width="1.6"><path d="M12 21s-7-4.35-9.5-9C.7 8.3 2.3 5 5.8 4.6c2-.2 3.7.9 4.5 2.4.8-1.5 2.5-2.6 4.5-2.4 3.5.4 5.1 3.7 3.3 7.4C19 16.65 12 21 12 21z"/></svg> Your eyes — honestly, they're my favorite thing in the whole world</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="#b9607a" stroke-width="1.6"><path d="M12 21s-7-4.35-9.5-9C.7 8.3 2.3 5 5.8 4.6c2-.2 3.7.9 4.5 2.4.8-1.5 2.5-2.6 4.5-2.4 3.5.4 5.1 3.7 3.3 7.4C19 16.65 12 21 12 21z"/></svg> The way you laugh at things even when you're trying to stay mad at me</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="#b9607a" stroke-width="1.6"><path d="M12 21s-7-4.35-9.5-9C.7 8.3 2.3 5 5.8 4.6c2-.2 3.7.9 4.5 2.4.8-1.5 2.5-2.6 4.5-2.4 3.5.4 5.1 3.7 3.3 7.4C19 16.65 12 21 12 21z"/></svg> How much you care about me</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="#b9607a" stroke-width="1.6"><path d="M12 21s-7-4.35-9.5-9C.7 8.3 2.3 5 5.8 4.6c2-.2 3.7.9 4.5 2.4.8-1.5 2.5-2.6 4.5-2.4 3.5.4 5.1 3.7 3.3 7.4C19 16.65 12 21 12 21z"/></svg> Your patience with me, even when I clearly test it with my temper</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="#b9607a" stroke-width="1.6"><path d="M12 21s-7-4.35-9.5-9C.7 8.3 2.3 5 5.8 4.6c2-.2 3.7.9 4.5 2.4.8-1.5 2.5-2.6 4.5-2.4 3.5.4 5.1 3.7 3.3 7.4C19 16.65 12 21 12 21z"/></svg> That you always make ordinary days feel a lot more special</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="#b9607a" stroke-width="1.6"><path d="M12 21s-7-4.35-9.5-9C.7 8.3 2.3 5 5.8 4.6c2-.2 3.7.9 4.5 2.4.8-1.5 2.5-2.6 4.5-2.4 3.5.4 5.1 3.7 3.3 7.4C19 16.65 12 21 12 21z"/></svg> You, just as you are — angry face, sad face and all</li>
+      </ul>
+    </div>
+
+    <div class="paper ask">
+      <div class="divider"><svg viewBox="0 0 24 24" fill="none" stroke="#c9a15c" stroke-width="1.6"><path d="M12 21s-7-4.35-9.5-9C.7 8.3 2.3 5 5.8 4.6c2-.2 3.7.9 4.5 2.4.8-1.5 2.5-2.6 4.5-2.4 3.5.4 5.1 3.7 3.3 7.4C19 16.65 12 21 12 21z"/></svg></div>
+      <p>So... will you forgive me? Even just a little?</p>
+      <div class="btn-row">
+        <button id="yesBtn">Yes, I forgive you</button>
+        <button id="noBtn">No</button>
+      </div>
+      <div id="result"></div>
+    </div>
+  </section>
+
+  <div class="signature-block">
+    <p class="sig">With all my heart, Arman</p>
+    <p class="foot">made with clumsy hands and a lot of love, for Krishna</p>
+  </div>
+</main>
+
+<script>
+  // ---------- petals ----------
+  const petalsContainer = document.getElementById('petalsContainer');
+  function spawnPetal(){
+    const el = document.createElement('div');
+    el.className = 'petal' + (Math.random() > 0.6 ? ' gold' : '');
+    el.style.left = Math.random()*100 + 'vw';
+    const size = 10 + Math.random()*10;
+    el.style.width = size + 'px';
+    el.style.height = (size*1.3) + 'px';
+    const duration = 10 + Math.random()*10;
+    el.style.animationDuration = duration + 's';
+    el.style.animationDelay = (Math.random()*2) + 's';
+    petalsContainer.appendChild(el);
+    setTimeout(()=> el.remove(), (duration+2)*1000);
+  }
+  const petalCount = window.innerWidth < 600 ? 10 : 18;
+  for(let i=0;i<petalCount;i++) setTimeout(spawnPetal, i*350);
+  setInterval(spawnPetal, 1400);
+
+  // ---------- envelope open ----------
+  const envelopeWrap = document.getElementById('envelopeWrap');
+  const letterSection = document.getElementById('letterSection');
+  function openEnvelope(){
+    if(envelopeWrap.classList.contains('opened')) return;
+    envelopeWrap.classList.add('opened');
+    setTimeout(() => {
+      letterSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 650);
+  }
+  envelopeWrap.addEventListener('click', openEnvelope);
+  envelopeWrap.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openEnvelope(); }
+  });
+
+  // ---------- reveal on scroll ----------
+  const papers = document.querySelectorAll('.paper');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){ entry.target.classList.add('in-view'); }
+    });
+  }, { threshold: 0.15 });
+  papers.forEach(p => io.observe(p));
+
+  // ---------- confetti ----------
+  function burstConfetti(){
+    const colors = ['#d98a9c','#c9a15c','#e6c98a','#f7ecdd','#b9607a'];
+    for(let i=0;i<60;i++){
+      const piece = document.createElement('div');
+      piece.className = 'confetti-piece';
+      piece.style.left = Math.random()*100 + 'vw';
+      piece.style.width = '9px';
+      piece.style.height = '13px';
+      piece.style.background = colors[Math.floor(Math.random()*colors.length)];
+      piece.style.animationDuration = (2.5 + Math.random()*2) + 's';
+      piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      document.body.appendChild(piece);
+      setTimeout(()=> piece.remove(), 5000);
+    }
+  }
+
+  // ---------- yes / no logic ----------
+  const yesBtn = document.getElementById('yesBtn');
+  const noBtn = document.getElementById('noBtn');
+  const result = document.getElementById('result');
+  const btnRow = document.querySelector('.btn-row');
+
+  const noMessages = [
+    "Are you sure?",
+    "Pretty please?",
+    "I'll bring snacks...",
+    "Okay but I'm still going to love you",
+    "Last chance to make me happy!",
+    "You know you want to click yes"
+  ];
+  let noClicks = 0;
+
+  function dodge(){
+    const rowRect = btnRow.getBoundingClientRect();
+    const btnRect = noBtn.getBoundingClientRect();
+    const maxX = rowRect.width - btnRect.width - 10;
+    const randX = Math.random() * Math.max(maxX, 0);
+    noBtn.style.position = 'absolute';
+    noBtn.style.left = randX + 'px';
+    noBtn.style.top = (Math.random()*20) + 'px';
+  }
+  noBtn.addEventListener('mouseenter', dodge);
+
+  noBtn.addEventListener('click', () => {
+    noClicks++;
+    result.textContent = noMessages[Math.min(noClicks-1, noMessages.length-1)];
+    result.classList.remove('show');
+    void result.offsetWidth;
+    result.classList.add('show');
+    dodge();
+  });
+
+  yesBtn.addEventListener('click', () => {
+    result.textContent = "Yay! Thank you, Krishna. I promise to work on my temper. I miss you even when I don't say it — I love you.";
+    result.classList.remove('show');
+    void result.offsetWidth;
+    result.classList.add('show');
+    burstConfetti();
+    noBtn.style.display = 'none';
+  });
+</script>
+
+</body>
+</html>
