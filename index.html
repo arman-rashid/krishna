@@ -254,48 +254,113 @@
   }
   .divider svg{ width:16px; height:16px; }
 
-  /* ---------- forgiveness prompt ---------- */
-  .ask{ text-align:center; }
-  .ask p{ margin-bottom:26px; }
-  .btn-row{
-    display:flex; gap:18px; justify-content:center; flex-wrap:wrap;
-    position:relative; min-height:76px;
+  /* ---------- flip cards ---------- */
+  .flip-grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:16px;
+    margin-top:6px;
   }
-  button{
-    font-family:'Lora', serif;
-    font-size:15px;
-    font-weight:600;
-    letter-spacing:0.3px;
-    border-radius:999px;
-    border:none;
+  .flip-card{
+    height:130px;
+    perspective:1000px;
     cursor:pointer;
-    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    outline-offset:4px;
   }
-  #yesBtn{
-    padding:15px 32px;
-    background: radial-gradient(circle at 30% 30%, var(--gold-light), var(--gold) 80%);
-    color: var(--plum-dark);
-    box-shadow: 0 10px 26px rgba(201,161,92,0.4);
-  }
-  #yesBtn:hover, #yesBtn:focus-visible{ transform: translateY(-3px) scale(1.03); }
-  #noBtn{
-    padding:15px 30px;
-    background: transparent;
-    color: var(--ink-soft);
-    border: 1px solid rgba(107,58,69,0.35);
+  .flip-card-inner{
     position:relative;
+    width:100%; height:100%;
+    transition: transform 0.7s cubic-bezier(.22,1,.36,1);
+    transform-style: preserve-3d;
   }
-  button:focus-visible{ outline:2px solid var(--rose-deep); outline-offset:3px; }
-
-  #result{
-    margin-top:24px;
+  .flip-card.flipped .flip-card-inner{ transform: rotateY(180deg); }
+  .flip-face{
+    position:absolute; inset:0;
+    -webkit-backface-visibility:hidden; backface-visibility:hidden;
+    border-radius:8px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center;
+    padding:14px;
+    gap:6px;
+  }
+  .flip-front{
+    background: linear-gradient(160deg, rgba(217,138,156,0.12), rgba(201,161,92,0.10));
+    border: 1px solid rgba(201,161,92,0.3);
+    color: var(--ink-soft);
+    font-size:14px;
+    letter-spacing:0.4px;
+    text-transform:uppercase;
+  }
+  .flip-icon{ font-size:26px; }
+  .flip-back{
+    background: linear-gradient(160deg, var(--rose-deep), var(--rose));
+    color: var(--ivory);
+    transform: rotateY(180deg);
     font-family:'Cormorant Garamond', serif;
     font-style:italic;
-    font-size:20px;
-    color: var(--rose-deep);
-    min-height:30px;
+    font-size:15.5px;
+    line-height:1.4;
   }
-  #result.show{ animation: pop 0.6s ease; }
+  .flip-hint{
+    margin-top:16px;
+    text-align:center;
+    font-size:12px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color: var(--rose-deep);
+    opacity:0.6;
+  }
+
+  /* ---------- heart meter ---------- */
+  .meter-card{ text-align:center; }
+  .meter-label{
+    font-size:12.5px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color: var(--rose-deep);
+    opacity:0.75;
+    margin-bottom:22px;
+  }
+  .heart-meter{
+    position:relative;
+    width:130px; height:130px;
+    margin:0 auto 16px;
+    cursor:pointer;
+    outline-offset:6px;
+  }
+  .heart-outline{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    transition: transform 0.2s ease;
+  }
+  .heart-meter:hover .heart-outline, .heart-meter:focus-visible .heart-outline{ transform: scale(1.04); }
+  .heart-fill{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    background: linear-gradient(180deg, var(--gold-light), var(--rose-deep));
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 21s-7-4.35-9.5-9C.7 8.3 2.3 5 5.8 4.6c2-.2 3.7.9 4.5 2.4.8-1.5 2.5-2.6 4.5-2.4 3.5.4 5.1 3.7 3.3 7.4C19 16.65 12 21 12 21z'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 21s-7-4.35-9.5-9C.7 8.3 2.3 5 5.8 4.6c2-.2 3.7.9 4.5 2.4.8-1.5 2.5-2.6 4.5-2.4 3.5.4 5.1 3.7 3.3 7.4C19 16.65 12 21 12 21z'/%3E%3C/svg%3E");
+    -webkit-mask-size: contain; mask-size: contain;
+    -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+    -webkit-mask-position: center; mask-position: center;
+    clip-path: inset(100% 0 0 0);
+    transition: clip-path 0.55s cubic-bezier(.22,1,.36,1);
+  }
+  .meter-percent{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:19px;
+    color: var(--gold-light);
+    margin-bottom:6px;
+  }
+  .meter-message{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:19px;
+    color: var(--rose-deep);
+    min-height:28px;
+  }
+  .meter-message.show{ animation: pop 0.6s ease; }
   @keyframes pop{
     0%{ transform:scale(0.85); opacity:0; }
     60%{ transform:scale(1.04); }
@@ -378,9 +443,9 @@
 
 <main>
   <section class="hero">
-    <p class="eyebrow">a small apology, sealed with wax</p>
+    <p class="eyebrow">a little something, sealed with wax</p>
     <h1 class="title">For Krishna</h1>
-    <p class="hero-sub">I know you're upset with me — and you have every right to be. Open this when you're ready.</p>
+    <p class="hero-sub">Just a little something I made for you. Open it whenever you're ready 💛</p>
 
     <div class="envelope-wrap" id="envelopeWrap" role="button" tabindex="0" aria-label="Open the letter">
       <div class="envelope">
@@ -402,19 +467,19 @@
   <section class="letter-section" id="letterSection">
     <div class="paper">
       <span class="mark">Hey, my Chamak challo 🌸</span>
-      <p>I know I get angry over small things I shouldn't. I know I make you upset more often than you deserve. That's on me, not you — and I'm genuinely trying to be better about it.</p>
-      <p>And even when I'm being stubborn or short-tempered, even when I don't say it out loud, I miss you. Every single time. I just don't always know how to show it in the moment — but it's always true underneath.</p>
+      <p>I just wanted to take a moment to tell you how much you mean to me. Every day with you feels a little brighter, a little softer, a little more like home.</p>
+      <p>Even on the ordinary days — the busy ones, the tired ones, the completely unremarkable ones — you're still the best part of it. I don't say it enough, but it's always true.</p>
     </div>
 
     <div class="paper">
       <h2>A few reasons I adore you</h2>
       <ul class="reasons">
         <li><svg viewBox="0 0 24 24" fill="none" stroke="#b9607a" stroke-width="1.6"><path d="M12 21s-7-4.35-9.5-9C.7 8.3 2.3 5 5.8 4.6c2-.2 3.7.9 4.5 2.4.8-1.5 2.5-2.6 4.5-2.4 3.5.4 5.1 3.7 3.3 7.4C19 16.65 12 21 12 21z"/></svg> Your eyes — honestly, they're my favorite thing in the whole world</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="#b9607a" stroke-width="1.6"><path d="M12 21s-7-4.35-9.5-9C.7 8.3 2.3 5 5.8 4.6c2-.2 3.7.9 4.5 2.4.8-1.5 2.5-2.6 4.5-2.4 3.5.4 5.1 3.7 3.3 7.4C19 16.65 12 21 12 21z"/></svg> The way you laugh at things even when you're trying to stay mad at me</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="#b9607a" stroke-width="1.6"><path d="M12 21s-7-4.35-9.5-9C.7 8.3 2.3 5 5.8 4.6c2-.2 3.7.9 4.5 2.4.8-1.5 2.5-2.6 4.5-2.4 3.5.4 5.1 3.7 3.3 7.4C19 16.65 12 21 12 21z"/></svg> How much you care about me</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="#b9607a" stroke-width="1.6"><path d="M12 21s-7-4.35-9.5-9C.7 8.3 2.3 5 5.8 4.6c2-.2 3.7.9 4.5 2.4.8-1.5 2.5-2.6 4.5-2.4 3.5.4 5.1 3.7 3.3 7.4C19 16.65 12 21 12 21z"/></svg> Your patience with me, even when I clearly test it with my temper</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="#b9607a" stroke-width="1.6"><path d="M12 21s-7-4.35-9.5-9C.7 8.3 2.3 5 5.8 4.6c2-.2 3.7.9 4.5 2.4.8-1.5 2.5-2.6 4.5-2.4 3.5.4 5.1 3.7 3.3 7.4C19 16.65 12 21 12 21z"/></svg> The way you laugh at absolutely everything, including your own jokes</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="#b9607a" stroke-width="1.6"><path d="M12 21s-7-4.35-9.5-9C.7 8.3 2.3 5 5.8 4.6c2-.2 3.7.9 4.5 2.4.8-1.5 2.5-2.6 4.5-2.4 3.5.4 5.1 3.7 3.3 7.4C19 16.65 12 21 12 21z"/></svg> How much you care about the people around you</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="#b9607a" stroke-width="1.6"><path d="M12 21s-7-4.35-9.5-9C.7 8.3 2.3 5 5.8 4.6c2-.2 3.7.9 4.5 2.4.8-1.5 2.5-2.6 4.5-2.4 3.5.4 5.1 3.7 3.3 7.4C19 16.65 12 21 12 21z"/></svg> Your patience, always steadier than mine</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="#b9607a" stroke-width="1.6"><path d="M12 21s-7-4.35-9.5-9C.7 8.3 2.3 5 5.8 4.6c2-.2 3.7.9 4.5 2.4.8-1.5 2.5-2.6 4.5-2.4 3.5.4 5.1 3.7 3.3 7.4C19 16.65 12 21 12 21z"/></svg> That you always make ordinary days feel a lot more special</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="#b9607a" stroke-width="1.6"><path d="M12 21s-7-4.35-9.5-9C.7 8.3 2.3 5 5.8 4.6c2-.2 3.7.9 4.5 2.4.8-1.5 2.5-2.6 4.5-2.4 3.5.4 5.1 3.7 3.3 7.4C19 16.65 12 21 12 21z"/></svg> You, just as you are — angry face, sad face and all</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="#b9607a" stroke-width="1.6"><path d="M12 21s-7-4.35-9.5-9C.7 8.3 2.3 5 5.8 4.6c2-.2 3.7.9 4.5 2.4.8-1.5 2.5-2.6 4.5-2.4 3.5.4 5.1 3.7 3.3 7.4C19 16.65 12 21 12 21z"/></svg> Just... you. Exactly as you are</li>
       </ul>
     </div>
 
@@ -430,20 +495,55 @@
       </p>
     </section>
 
-    <div class="paper ask">
+    <div class="paper">
       <div class="divider"><svg viewBox="0 0 24 24" fill="none" stroke="#c9a15c" stroke-width="1.6"><path d="M12 21s-7-4.35-9.5-9C.7 8.3 2.3 5 5.8 4.6c2-.2 3.7.9 4.5 2.4.8-1.5 2.5-2.6 4.5-2.4 3.5.4 5.1 3.7 3.3 7.4C19 16.65 12 21 12 21z"/></svg></div>
-      <p>So... will you forgive me? Even just a little?</p>
-      <div class="btn-row">
-        <button id="yesBtn">Yes, I forgive you</button>
-        <button id="noBtn">No</button>
+      <h2>A few little things</h2>
+      <div class="flip-grid">
+        <div class="flip-card" tabindex="0" role="button" aria-label="Flip card">
+          <div class="flip-card-inner">
+            <div class="flip-face flip-front"><span class="flip-icon">☕</span><span>mornings</span></div>
+            <div class="flip-face flip-back">are better when I picture you still half-asleep, hair everywhere, complaining about the alarm.</div>
+          </div>
+        </div>
+        <div class="flip-card" tabindex="0" role="button" aria-label="Flip card">
+          <div class="flip-card-inner">
+            <div class="flip-face flip-front"><span class="flip-icon">📱</span><span>your texts</span></div>
+            <div class="flip-face flip-back">I open the second they come in. Every single time. No exceptions.</div>
+          </div>
+        </div>
+        <div class="flip-card" tabindex="0" role="button" aria-label="Flip card">
+          <div class="flip-card-inner">
+            <div class="flip-face flip-front"><span class="flip-icon">🎶</span><span>random songs</span></div>
+            <div class="flip-face flip-back">start reminding me of you out of nowhere, and I never mind.</div>
+          </div>
+        </div>
+        <div class="flip-card" tabindex="0" role="button" aria-label="Flip card">
+          <div class="flip-card-inner">
+            <div class="flip-face flip-front"><span class="flip-icon">🌙</span><span>late nights</span></div>
+            <div class="flip-face flip-back">talking to you never once feel long enough, no matter how late it gets.</div>
+          </div>
+        </div>
       </div>
-      <div id="result"></div>
+      <p class="flip-hint">tap a card</p>
+    </div>
+
+    <div class="paper meter-card">
+      <div class="divider"><svg viewBox="0 0 24 24" fill="none" stroke="#c9a15c" stroke-width="1.6"><path d="M12 21s-7-4.35-9.5-9C.7 8.3 2.3 5 5.8 4.6c2-.2 3.7.9 4.5 2.4.8-1.5 2.5-2.6 4.5-2.4 3.5.4 5.1 3.7 3.3 7.4C19 16.65 12 21 12 21z"/></svg></div>
+      <p class="meter-label">tap the heart, a little at a time</p>
+      <div class="heart-meter" id="heartMeter" role="button" tabindex="0" aria-label="Tap to fill the heart">
+        <svg class="heart-outline" viewBox="0 0 24 24" fill="none" stroke="#b9607a" stroke-width="1">
+          <path d="M12 21s-7-4.35-9.5-9C.7 8.3 2.3 5 5.8 4.6c2-.2 3.7.9 4.5 2.4.8-1.5 2.5-2.6 4.5-2.4 3.5.4 5.1 3.7 3.3 7.4C19 16.65 12 21 12 21z"/>
+        </svg>
+        <div class="heart-fill" id="heartFill"></div>
+      </div>
+      <p class="meter-percent" id="meterPercent">0%</p>
+      <p class="meter-message" id="meterMessage"></p>
     </div>
   </section>
 
   <div class="signature-block">
     <p class="sig">With all my heart, Arman</p>
-    <p class="foot">made with clumsy hands and a lot of love, for Krishna</p>
+    <p class="foot">made with love, just for you 💛</p>
   </div>
 </main>
 
@@ -508,49 +608,44 @@
     }
   }
 
-  // ---------- yes / no logic ----------
-  const yesBtn = document.getElementById('yesBtn');
-  const noBtn = document.getElementById('noBtn');
-  const result = document.getElementById('result');
-  const btnRow = document.querySelector('.btn-row');
-
-  const noMessages = [
-    "Are you sure?",
-    "Pretty please?",
-    "I'll bring snacks...",
-    "Okay but I'm still going to love you",
-    "Last chance to make me happy!",
-    "You know you want to click yes"
-  ];
-  let noClicks = 0;
-
-  function dodge(){
-    const rowRect = btnRow.getBoundingClientRect();
-    const btnRect = noBtn.getBoundingClientRect();
-    const maxX = rowRect.width - btnRect.width - 10;
-    const randX = Math.random() * Math.max(maxX, 0);
-    noBtn.style.position = 'absolute';
-    noBtn.style.left = randX + 'px';
-    noBtn.style.top = (Math.random()*20) + 'px';
-  }
-  noBtn.addEventListener('mouseenter', dodge);
-
-  noBtn.addEventListener('click', () => {
-    noClicks++;
-    result.textContent = noMessages[Math.min(noClicks-1, noMessages.length-1)];
-    result.classList.remove('show');
-    void result.offsetWidth;
-    result.classList.add('show');
-    dodge();
+  // ---------- flip cards ----------
+  const flipCards = document.querySelectorAll('.flip-card');
+  flipCards.forEach(card => {
+    function toggle(){ card.classList.toggle('flipped'); }
+    card.addEventListener('click', toggle);
+    card.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggle(); }
+    });
   });
 
-  yesBtn.addEventListener('click', () => {
-    result.textContent = "Yay! Thank you, Krishna. I promise to work on my temper. I miss you even when I don't say it — I love you.";
-    result.classList.remove('show');
-    void result.offsetWidth;
-    result.classList.add('show');
-    burstConfetti();
-    noBtn.style.display = 'none';
+  // ---------- heart meter ----------
+  const heartMeter = document.getElementById('heartMeter');
+  const heartFill = document.getElementById('heartFill');
+  const meterPercent = document.getElementById('meterPercent');
+  const meterMessage = document.getElementById('meterMessage');
+  const meterMessages = ["filling up...", "a little more...", "keep going...", "almost there..."];
+  let meterValue = 0;
+  let meterDone = false;
+
+  function tapHeart(){
+    if(meterDone) return;
+    meterValue = Math.min(100, meterValue + 20);
+    heartFill.style.clipPath = `inset(${100 - meterValue}% 0 0 0)`;
+    meterPercent.textContent = meterValue + '%';
+    if(meterValue < 100){
+      meterMessage.textContent = meterMessages[Math.floor(meterValue / 20) - 1] || '';
+    } else {
+      meterDone = true;
+      meterMessage.textContent = "full — just like my heart, whenever I think of you 💛";
+      meterMessage.classList.remove('show');
+      void meterMessage.offsetWidth;
+      meterMessage.classList.add('show');
+      burstConfetti();
+    }
+  }
+  heartMeter.addEventListener('click', tapHeart);
+  heartMeter.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); tapHeart(); }
   });
 </script>
 
