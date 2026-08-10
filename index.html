@@ -475,8 +475,7 @@
             z-index: 40;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 13px 20px;
+            padding: 13px 22px;
             border-radius: 50px;
             border: 1px solid rgba(201,161,92,0.5);
             background: linear-gradient(160deg, rgba(217,138,156,0.28), rgba(58,26,46,0.55));
@@ -492,7 +491,6 @@
         }
         @keyframes fabBreathe { 0%,100% { transform: scale(1); box-shadow: 0 8px 26px rgba(0,0,0,0.4), 0 0 0 rgba(217,138,156,0); } 50% { transform: scale(1.045); box-shadow: 0 8px 30px rgba(0,0,0,0.45), 0 0 22px rgba(217,138,156,0.35); } }
         .comfort-fab:hover { border-color: var(--gold-light); }
-        .comfort-fab .fab-icon { font-size: 18px; }
 
         .comfort-overlay {
             position: fixed;
@@ -539,20 +537,17 @@
         .comfort-title { font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 600; font-size: 27px; color: var(--gold-light); margin-bottom: 4px; position: relative; z-index: 4; }
         .comfort-lede { font-size: 14px; color: var(--ivory-dim); opacity: 0.85; margin-bottom: 6px; position: relative; z-index: 4; }
 
-        .breath-circle {
+        .breath-heart {
             width: 140px; height: 140px;
             margin: 22px auto 10px;
-            border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            background: radial-gradient(circle at 35% 30%, rgba(230,201,138,0.4), rgba(217,138,156,0.22) 70%);
-            border: 1px solid rgba(201,161,92,0.55);
-            box-shadow: 0 0 40px rgba(217,138,156,0.25), inset 0 0 24px rgba(255,255,255,0.12);
-            animation: breathePulse 8s ease-in-out infinite;
             position: relative;
+            animation: breathePulse 8s ease-in-out infinite;
             z-index: 4;
         }
-        @keyframes breathePulse { 0%,100% { transform: scale(0.8); } 50% { transform: scale(1.08); } }
-        .breath-text { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 15px; color: var(--plum-dark); font-weight: 600; text-shadow: 0 1px 0 rgba(255,255,255,0.3); }
+        .breath-heart-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; filter: drop-shadow(0 0 22px rgba(217,138,156,0.4)); }
+        @keyframes breathePulse { 0%,100% { transform: scale(0.78); } 50% { transform: scale(1.08); } }
+        .breath-text { position: relative; z-index: 1; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 15px; color: var(--ivory); font-weight: 600; text-shadow: 0 1px 4px rgba(0,0,0,0.5); }
 
         .comfort-msg-wrap { min-height: 84px; display: flex; align-items: center; justify-content: center; margin: 14px 0 10px; position: relative; z-index: 4; cursor: pointer; }
         .comfort-msg { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 18.5px; line-height: 1.55; color: var(--ivory); opacity: 0; transform: translateY(8px); transition: opacity 0.5s ease, transform 0.5s ease; }
@@ -580,10 +575,26 @@
         .comfort-hug-cta:hover { background: linear-gradient(160deg, rgba(217,138,156,0.4), rgba(201,161,92,0.2)); box-shadow: 0 0 30px rgba(217,138,156,0.3); transform: translateY(-2px); }
         .comfort-footer { margin-top: 16px; font-size: 13px; color: var(--ivory-dim); opacity: 0.75; position: relative; z-index: 4; }
 
+        .comfort-picks { position: relative; z-index: 4; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 4px 0 20px; }
+        .comfort-pick { display: inline-flex; align-items: center; gap: 6px; padding: 9px 14px; border-radius: 30px; border: 1px solid rgba(201,161,92,0.35); background: rgba(31,15,26,0.35); backdrop-filter: blur(6px); color: var(--ivory-dim); font-family: 'Lora', serif; font-size: 12.5px; cursor: pointer; transition: 0.25s ease; }
+        .comfort-pick:hover, .comfort-pick.active { background: linear-gradient(160deg, rgba(217,138,156,0.3), rgba(201,161,92,0.15)); border-color: var(--gold-light); color: var(--ivory); transform: translateY(-1px); }
+
+        .comfort-response { position: relative; z-index: 4; min-height: 22px; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 15.5px; color: var(--rose); opacity: 0; transform: translateY(6px); transition: opacity 0.45s ease, transform 0.45s ease; margin-bottom: 4px; }
+        .comfort-response.visible { opacity: 1; transform: translateY(0); }
+
+        .comfort-note-wrap { position: relative; z-index: 4; margin-top: 18px; }
+        .comfort-note-toggle { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--ivory-dim); opacity: 0.6; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+        .comfort-note-box { max-height: 0; overflow: hidden; transition: max-height 0.5s ease, opacity 0.4s ease; opacity: 0; }
+        .comfort-note-box.open { max-height: 240px; opacity: 1; margin-top: 12px; }
+        .comfort-note-box textarea { width: 100%; min-height: 70px; resize: vertical; padding: 10px 12px; border-radius: 12px; border: 1px solid rgba(201,161,92,0.35); background: rgba(31,15,26,0.5); color: var(--ivory); font-family: 'Lora', serif; font-size: 13.5px; outline: none; }
+        .comfort-note-box button { margin-top: 8px; padding: 8px 18px; border-radius: 30px; border: 1px solid rgba(201,161,92,0.4); background: rgba(201,161,92,0.15); color: var(--gold-light); font-family: 'Lora', serif; font-size: 12.5px; cursor: pointer; }
+        .comfort-note-sent { font-size: 12.5px; color: var(--rose); margin-top: 8px; opacity: 0; transition: opacity 0.4s ease; }
+        .comfort-note-sent.visible { opacity: 1; }
+
         @media (max-width: 500px) {
-            .comfort-fab { padding: 11px 16px; font-size: 13px; bottom: 16px; right: 14px; }
+            .comfort-fab { padding: 11px 17px; font-size: 13px; bottom: 16px; right: 14px; }
             .comfort-card { padding: 34px 20px 26px; }
-            .breath-circle { width: 118px; height: 118px; }
+            .breath-heart { width: 116px; height: 116px; }
             .comfort-msg { font-size: 17px; }
         }
 
@@ -613,9 +624,7 @@
     <div class="hug-animation-layer" id="hugAnimationLayer"></div>
 
     <!-- ─── COMFORT CORNER ─── -->
-    <button class="comfort-fab" id="comfortFab" aria-haspopup="dialog" aria-label="Having a hard day?">
-        <span class="fab-icon">🫂</span> rough day?
-    </button>
+    <button class="comfort-fab" id="comfortFab" aria-haspopup="dialog" aria-label="Having a hard day?">rough day?</button>
     <div class="comfort-overlay" id="comfortOverlay" role="dialog" aria-modal="true" aria-label="A little comfort">
         <div class="comfort-card liquid-glass">
             <button class="comfort-close" id="comfortClose" aria-label="Close">✕</button>
@@ -623,7 +632,18 @@
             <h2 class="comfort-title">hey, chamak challo</h2>
             <p class="comfort-lede">let's just breathe for a second</p>
 
-            <div class="breath-circle" id="breathCircle"><span class="breath-text" id="breathText">breathe in</span></div>
+            <div class="breath-heart" id="breathCircle">
+                <svg class="breath-heart-svg" viewBox="0 0 32 29" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="comfortHeartGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#e6c98a"/>
+                            <stop offset="100%" stop-color="#d98a9c"/>
+                        </linearGradient>
+                    </defs>
+                    <path d="M16 29 C16 29 0 18.5 0 8.8 C0 2 5 0 8.5 0 C12 0 15 2.5 16 6 C17 2.5 20 0 23.5 0 C27 0 32 2 32 8.8 C32 18.5 16 29 16 29 Z" fill="url(#comfortHeartGrad)"/>
+                </svg>
+                <span class="breath-text" id="breathText">breathe in</span>
+            </div>
 
             <div class="comfort-msg-wrap" id="comfortMsgWrap">
                 <p class="comfort-msg visible" id="comfortMsg"></p>
@@ -631,7 +651,25 @@
             <p class="comfort-tap-hint">tap for another</p>
             <div class="comfort-dots" id="comfortDots"></div>
 
+            <p class="comfort-lede" style="margin-bottom:10px;">what would help right now?</p>
+            <div class="comfort-picks" id="comfortPicks">
+                <button class="comfort-pick" data-pick="talk">🗣️ talk it out</button>
+                <button class="comfort-pick" data-pick="distract">🎉 distract me</button>
+                <button class="comfort-pick" data-pick="space">🌙 need space</button>
+            </div>
+            <p class="comfort-response" id="comfortResponse"></p>
+
             <button class="comfort-hug-cta" id="comfortHugCta">🤗 send me a hug</button>
+
+            <div class="comfort-note-wrap">
+                <span class="comfort-note-toggle" id="comfortNoteToggle">or just get it off your chest →</span>
+                <div class="comfort-note-box" id="comfortNoteBox">
+                    <textarea id="comfortNoteText" placeholder="type whatever you need to..."></textarea>
+                    <div><button id="comfortNoteBtn">let it go</button></div>
+                    <p class="comfort-note-sent" id="comfortNoteSent">it's out now. this stays just between you and this page 💛</p>
+                </div>
+            </div>
+
             <p class="comfort-footer">whatever today is, I'm still right here 💛</p>
         </div>
     </div>
@@ -1084,6 +1122,14 @@
             const msgWrap = document.getElementById('comfortMsgWrap');
             const breathText = document.getElementById('breathText');
             const hugCta = document.getElementById('comfortHugCta');
+            const picks = document.getElementById('comfortPicks');
+            const responseEl = document.getElementById('comfortResponse');
+            const breathCircle = document.getElementById('breathCircle');
+            const noteToggle = document.getElementById('comfortNoteToggle');
+            const noteBox = document.getElementById('comfortNoteBox');
+            const noteText = document.getElementById('comfortNoteText');
+            const noteBtn = document.getElementById('comfortNoteBtn');
+            const noteSent = document.getElementById('comfortNoteSent');
 
             const comfortMessages = [
                 "Whatever's making today hard doesn't get the final word. I'm still right here.",
@@ -1130,6 +1176,10 @@
                 overlay.classList.add('open');
                 showMessage(0);
                 startBreathing();
+                Array.from(picks.children).forEach(b => b.classList.remove('active'));
+                responseEl.classList.remove('visible');
+                responseEl.textContent = '';
+                noteBox.classList.remove('open');
             }
             function closeComfort() {
                 overlay.classList.remove('open');
@@ -1146,6 +1196,52 @@
             hugCta.addEventListener('click', () => {
                 closeComfort();
                 setTimeout(() => { if (window.hugBtn) window.hugBtn.click(); else document.getElementById('hugBtn').click(); }, 350);
+            });
+
+            // quick "what would help" picks
+            const pickResponses = {
+                talk: "Come find me — I'm putting the phone down and just listening. No fixing, no advice, promise.",
+                distract: "Okay, distraction incoming...",
+                space: "Take all the time you need. I'm not going anywhere, zero pressure to talk."
+            };
+            picks.addEventListener('click', (e) => {
+                const btn = e.target.closest('.comfort-pick');
+                if (!btn) return;
+                Array.from(picks.children).forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const pick = btn.dataset.pick;
+                responseEl.classList.remove('visible');
+                setTimeout(() => {
+                    responseEl.textContent = pickResponses[pick];
+                    responseEl.classList.add('visible');
+                }, 150);
+                if (pick === 'distract' && typeof burstConfetti === 'function') {
+                    setTimeout(burstConfetti, 300);
+                }
+                if (pick === 'space') {
+                    setTimeout(closeComfort, 3200);
+                }
+            });
+
+            // tap the breathing circle for a little rising heart
+            breathCircle.addEventListener('click', () => {
+                if (typeof spawnRisingHeart === 'function') {
+                    for (let i = 0; i < 3; i++) setTimeout(spawnRisingHeart, i * 120);
+                }
+            });
+
+            // private note — never sent anywhere, just a place to let it out
+            noteToggle.addEventListener('click', () => {
+                noteBox.classList.toggle('open');
+                if (noteBox.classList.contains('open')) noteText.focus();
+            });
+            noteBtn.addEventListener('click', () => {
+                if (!noteText.value.trim()) return;
+                noteSent.classList.add('visible');
+                setTimeout(() => {
+                    noteText.value = '';
+                    noteSent.classList.remove('visible');
+                }, 2600);
             });
         })();
 
