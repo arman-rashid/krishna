@@ -110,9 +110,9 @@
             width: 100%;
             height: 100%;
             border-radius: 16px;
-            background: rgba(16, 16, 20, 0.65);
-            backdrop-filter: blur(24px) saturate(1.5);
-            -webkit-backdrop-filter: blur(24px) saturate(1.5);
+            background: rgba(16, 16, 20, 0.60);
+            backdrop-filter: blur(18px) saturate(1.4);
+            -webkit-backdrop-filter: blur(18px) saturate(1.4);
             border: 1px solid rgba(255, 255, 255, 0.06);
             box-shadow:
                 0 24px 60px -16px rgba(0, 0, 0, 0.8),
@@ -126,7 +126,7 @@
             overflow: hidden;
         }
 
-        /* ---- Background Blur ---- */
+        /* ---- Background Blur - IMPROVED VISIBILITY ---- */
         .bg-blur-wrap {
             position: absolute;
             inset: 0;
@@ -137,29 +137,32 @@
         }
         .bg-blur-wrap .blur-img {
             position: absolute;
-            width: 90%;
-            height: 180%;
+            width: 100%;
+            height: 100%;
             object-fit: cover;
-            filter: blur(40px) brightness(0.40) saturate(0.5);
-            opacity: 0.65;
+            filter: blur(18px) brightness(0.65) saturate(0.8);
+            opacity: 0.85;
             pointer-events: none;
+            transition: opacity 0.4s ease;
         }
         .bg-blur-wrap .blur-img.left {
-            left: -25%;
-            top: -25%;
+            left: 0;
+            top: 0;
             object-position: 30% 50%;
+            clip-path: polygon(0 0, 60% 0, 50% 100%, 0 100%);
         }
         .bg-blur-wrap .blur-img.right {
-            right: -25%;
-            bottom: -25%;
+            right: 0;
+            bottom: 0;
             object-position: 70% 50%;
+            clip-path: polygon(40% 0, 100% 0, 100% 100%, 50% 100%);
         }
         .bg-blur-wrap .grad-fallback {
             position: absolute;
             inset: 0;
             background:
-                radial-gradient(ellipse at 25% 30%, rgba(60, 50, 80, 0.4), transparent 70%),
-                radial-gradient(ellipse at 75% 70%, rgba(80, 60, 50, 0.4), transparent 70%),
+                radial-gradient(ellipse at 25% 30%, rgba(60, 50, 80, 0.5), transparent 70%),
+                radial-gradient(ellipse at 75% 70%, rgba(80, 60, 50, 0.5), transparent 70%),
                 #0a0a0f;
             pointer-events: none;
         }
@@ -372,11 +375,13 @@
             white-space: pre-wrap;
             word-break: break-word;
             transition: background 0.2s ease;
+            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
         }
         .value.small {
             font-size: 9px;
             font-weight: 400;
-            color: rgba(255, 255, 255, 0.75);
+            color: rgba(255, 255, 255, 0.8);
+            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
         }
         .value[contenteditable]:hover {
             background: rgba(255, 255, 255, 0.04);
@@ -407,6 +412,7 @@
             padding: 2px 12px;
             border-radius: 12px;
             border: 1px solid rgba(212, 175, 55, 0.10);
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
         }
 
         .seal {
@@ -446,12 +452,13 @@
             font-family: 'Cormorant Garamond', serif;
             font-style: italic;
             font-size: 14px;
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.85);
             outline: none;
             border-bottom: 1px solid rgba(255, 255, 255, 0.10);
             padding: 0 2px 2px;
             min-width: 60px;
             transition: border-color 0.2s ease;
+            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
         }
         .sig:hover {
             border-color: rgba(212, 175, 55, 0.25);
@@ -549,6 +556,7 @@
             font-weight: 400;
             color: rgba(255, 255, 255, 0.75);
             padding: 1px 2px;
+            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
         }
 
         .fine-print {
@@ -890,7 +898,7 @@
     </div>
     <!-- /card-scene -->
 
-    <div class="hint">Tap a photo box to upload (they blur into the background). Edit any text. Click "Flip card" to see the back. Save each side as PNG.</div>
+    <div class="hint">Tap a photo box to upload — the image appears in the frame and as a soft blurred background. Edit any text. Click "Flip card" to see the back. Save each side as PNG.</div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">
     </script>
