@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Permit of Residence — Credit Card</title>
+    <title>Permit of Residence — Heart</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Cormorant+Garamond:ital,wght@1,500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Space+Mono&family=Cormorant+Garamond:ital,wght@1,500&display=swap');
 
         * {
             box-sizing: border-box;
@@ -15,290 +15,333 @@
 
         body {
             min-height: 100vh;
-            background: #0a0a0a;
-            background-image:
-                radial-gradient(ellipse at 20% 20%, rgba(255, 255, 255, 0.03) 0%, transparent 60%),
-                radial-gradient(ellipse at 80% 80%, rgba(255, 215, 150, 0.02) 0%, transparent 60%),
-                linear-gradient(180deg, #0a0a0a 0%, #141414 100%);
-            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at 20% 10%, #2a2a3a 0%, #0b0b0f 90%);
+            font-family: 'Barlow Condensed', sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px 12px 30px;
+            padding: 24px 16px 50px;
             color: #fff;
         }
 
+        /* ---- toolbar ---- */
         .toolbar {
             width: 100%;
-            max-width: 500px;
+            max-width: 480px;
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            margin-bottom: 18px;
-            justify-content: center;
+            margin-bottom: 16px;
         }
         .toolbar button {
             flex: 1;
             min-width: 80px;
-            border: 1px solid rgba(255, 255, 255, 0.10);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             background: rgba(255, 255, 255, 0.04);
-            color: rgba(255, 255, 255, 0.7);
-            padding: 10px 6px;
+            color: #ccc;
+            padding: 10px 8px;
             border-radius: 8px;
-            font-family: 'Inter', sans-serif;
-            font-size: 10px;
-            font-weight: 500;
-            letter-spacing: 0.04em;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 12px;
+            letter-spacing: 0.08em;
             text-transform: uppercase;
             cursor: pointer;
-            transition: all 0.2s ease;
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
+            transition: all 0.25s ease;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
         }
         .toolbar button:hover {
             background: rgba(255, 255, 255, 0.10);
-            border-color: rgba(255, 255, 255, 0.30);
+            border-color: rgba(255, 255, 255, 0.35);
             color: #fff;
         }
         .toolbar button.primary {
-            border-color: rgba(212, 175, 55, 0.35);
-            background: rgba(212, 175, 55, 0.12);
-            color: #f0e0b0;
+            border-color: rgba(198, 161, 91, 0.5);
+            background: rgba(198, 161, 91, 0.12);
+            color: #e8d9a8;
         }
         .toolbar button.primary:hover {
-            background: rgba(212, 175, 55, 0.22);
-            border-color: rgba(212, 175, 55, 0.6);
+            background: rgba(198, 161, 91, 0.22);
+            border-color: #c6a15b;
         }
 
+        /* ---- card scene (flip) ---- */
         .card-scene {
             width: 100%;
-            max-width: 500px;
-            aspect-ratio: 1.586 / 1;
-            perspective: 1400px;
+            max-width: 480px;
+            perspective: 2000px;
             position: relative;
-            border-radius: 16px;
-            min-height: 240px;
         }
-
         .card-inner {
             position: relative;
             width: 100%;
             height: 100%;
             transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
             transform-style: preserve-3d;
-            border-radius: 16px;
         }
-
         .card-scene.flipped .card-inner {
             transform: rotateY(180deg);
         }
-
         .face-front,
         .face-back {
             position: absolute;
             inset: 0;
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
-            border-radius: 16px;
         }
-
         .face-back {
             transform: rotateY(180deg);
         }
 
+        /* ---- CARD — Black Glass ---- */
         .card {
             width: 100%;
-            height: 100%;
-            border-radius: 16px;
-            background: rgba(16, 16, 20, 0.60);
-            backdrop-filter: blur(18px) saturate(1.4);
-            -webkit-backdrop-filter: blur(18px) saturate(1.4);
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 18px;
+            padding: 18px 18px 14px 22px;
+            background: rgba(18, 18, 24, 0.78);
+            backdrop-filter: blur(28px) saturate(1.2);
+            -webkit-backdrop-filter: blur(28px) saturate(1.2);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             box-shadow:
-                0 24px 60px -16px rgba(0, 0, 0, 0.8),
-                0 0 0 1px rgba(255, 255, 255, 0.03) inset,
-                0 0 50px rgba(212, 175, 55, 0.02);
-            padding: 14px 18px 12px 20px;
+                0 20px 60px -20px rgba(0, 0, 0, 0.8),
+                0 0 0 1px rgba(255, 255, 255, 0.04) inset,
+                0 1px 0 rgba(255, 255, 255, 0.06) inset;
+            color: #f0f0f5;
             display: flex;
             flex-direction: column;
-            color: #fff;
             position: relative;
-            overflow: hidden;
+            overflow: visible;
+            min-height: 420px;
         }
-
-        /* ---- Background Blur - improved: smaller, non-overlapping, more transparent ---- */
-        .bg-blur-wrap {
-            position: absolute;
-            inset: 0;
-            z-index: 0;
-            overflow: hidden;
-            border-radius: 16px;
-            pointer-events: none;
-        }
-        .bg-blur-wrap .blur-img {
-            position: absolute;
-            width: 45%;
-            height: 100%;
-            object-fit: cover;
-            filter: blur(18px) brightness(0.7) saturate(0.8);
-            opacity: 0.35;
-            pointer-events: none;
-            transition: opacity 0.4s ease;
-        }
-        .bg-blur-wrap .blur-img.left {
-            left: 0;
-            top: 0;
-            object-position: 30% 50%;
-        }
-        .bg-blur-wrap .blur-img.right {
-            right: 0;
-            top: 0;
-            object-position: 70% 50%;
-        }
-        .bg-blur-wrap .grad-fallback {
-            position: absolute;
-            inset: 0;
-            background:
-                radial-gradient(ellipse at 25% 30%, rgba(60, 50, 80, 0.5), transparent 70%),
-                radial-gradient(ellipse at 75% 70%, rgba(80, 60, 50, 0.5), transparent 70%),
-                #0a0a0f;
-            pointer-events: none;
-        }
-
-        .glass-shine {
-            position: absolute;
-            inset: 0;
-            z-index: 1;
-            pointer-events: none;
-            border-radius: 16px;
-            background:
-                linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 40%),
-                linear-gradient(225deg, rgba(255, 255, 255, 0.01) 0%, transparent 50%);
-        }
-        .glass-shine::after {
+        .card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+            inset: 0;
+            border-radius: 18px;
+            background: linear-gradient(135deg,
+                    rgba(255, 255, 255, 0.07) 0%,
+                    transparent 40%,
+                    transparent 70%,
+                    rgba(255, 255, 255, 0.02) 100%);
+            pointer-events: none;
+            z-index: 1;
         }
-
-        .edge-glow {
+        .card::after {
+            content: '';
             position: absolute;
             inset: -1px;
-            z-index: 1;
+            border-radius: 19px;
+            background: linear-gradient(135deg,
+                    rgba(255, 255, 255, 0.10) 0%,
+                    transparent 40%,
+                    transparent 70%,
+                    rgba(255, 255, 255, 0.04) 100%);
             pointer-events: none;
-            border-radius: 16px;
-            border: 1px solid transparent;
-            background: linear-gradient(135deg, rgba(212, 175, 55, 0.08), transparent 50%, rgba(212, 175, 55, 0.04)) border-box;
-            -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            z-index: 0;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor;
             mask-composite: exclude;
+            padding: 1px;
         }
 
+        /* ---- flagbar ---- */
         .flagbar {
             position: absolute;
             left: 0;
             top: 0;
             bottom: 0;
-            width: 5px;
-            z-index: 3;
-            border-radius: 16px 0 0 16px;
+            width: 6px;
+            z-index: 4;
+            border-radius: 18px 0 0 18px;
             background: linear-gradient(180deg,
-                    rgba(212, 175, 55, 0.7) 0%,
-                    rgba(212, 175, 55, 0.7) 33%,
-                    rgba(180, 130, 80, 0.5) 33%,
-                    rgba(180, 130, 80, 0.5) 66%,
-                    rgba(255, 255, 255, 0.10) 66%,
-                    rgba(255, 255, 255, 0.10) 100%);
+                    #c6a15b 0%, #c6a15b 33%,
+                    #7c2b34 33%, #7c2b34 66%,
+                    #151d2b 66%, #151d2b 100%);
+            opacity: 0.9;
         }
 
+        /* ---- background photos (style from deepseek) ---- */
+        .bg-photo {
+            position: absolute;
+            z-index: 0;
+            object-fit: cover;
+            filter: grayscale(70%) contrast(1.05) brightness(0.5);
+            opacity: 0.18;
+            pointer-events: none;
+            border-radius: 0;
+        }
+        .bg-photo-1 {
+            top: 0;
+            left: 0;
+            width: 55%;
+            height: 100%;
+            -webkit-mask-image: linear-gradient(100deg, black 40%, transparent 92%);
+            mask-image: linear-gradient(100deg, black 40%, transparent 92%);
+        }
+        .bg-photo-2 {
+            top: 0;
+            right: 0;
+            width: 55%;
+            height: 100%;
+            -webkit-mask-image: linear-gradient(280deg, black 40%, transparent 92%);
+            mask-image: linear-gradient(280deg, black 40%, transparent 92%);
+        }
+
+        /* ---- watermark ---- */
+        .watermark-clip {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+            border-radius: 18px;
+        }
+        .watermark {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0.04;
+            display: flex;
+            flex-wrap: wrap;
+            align-content: space-around;
+            justify-content: space-around;
+            transform: rotate(-18deg) scale(1.5);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: #fff;
+            white-space: nowrap;
+        }
+        .watermark span {
+            padding: 8px 20px;
+        }
+
+        /* ---- microtext ---- */
         .microtext-border {
             position: absolute;
             top: 5px;
-            left: 24px;
-            right: 8px;
+            left: 18px;
+            right: 5px;
             z-index: 1;
-            font-family: 'Inter', monospace;
-            font-size: 4.5px;
-            letter-spacing: 0.15em;
-            color: rgba(255, 255, 255, 0.12);
+            font-family: 'Space Mono', monospace;
+            font-size: 4px;
+            letter-spacing: 0.12em;
+            color: rgba(255, 255, 255, 0.25);
             white-space: nowrap;
             overflow: hidden;
             text-transform: uppercase;
             pointer-events: none;
         }
 
+        /* ---- chip ---- */
+        .chip {
+            display: none;
+        }
+
+        /* ---- foil ---- */
+        .foil {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: 58px;
+            width: 30px;
+            z-index: 1;
+            background: linear-gradient(120deg,
+                    rgba(255, 255, 255, 0.04) 0%,
+                    rgba(255, 255, 255, 0.10) 20%,
+                    rgba(255, 255, 255, 0.02) 40%,
+                    rgba(255, 255, 255, 0.08) 60%,
+                    rgba(255, 255, 255, 0.03) 80%,
+                    rgba(255, 255, 255, 0.06) 100%);
+            background-size: 220% 220%;
+            mix-blend-mode: overlay;
+            opacity: 0.4;
+            animation: foilshift 8s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes foilshift {
+            0%,
+            100% {
+                background-position: 0% 0%;
+            }
+            50% {
+                background-position: 100% 100%;
+            }
+        }
+
+        /* ---- top band ---- */
         .top-band {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-            padding-bottom: 6px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 5px;
             margin-bottom: 8px;
             position: relative;
-            z-index: 3;
+            z-index: 2;
+            padding-left: 4px;
         }
         .authority {
-            font-size: 8px;
-            letter-spacing: 0.15em;
+            font-size: 9px;
+            letter-spacing: 0.2em;
             text-transform: uppercase;
-            color: rgba(212, 175, 55, 0.6);
-            font-weight: 500;
+            color: #c6a15b;
+            font-weight: 600;
+            opacity: 0.85;
         }
         .doc-title {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 700;
-            letter-spacing: 0.03em;
+            letter-spacing: 0.04em;
             text-transform: uppercase;
             color: #fff;
             margin-top: 1px;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
         }
         .doc-code {
             text-align: right;
-            font-family: 'Inter', monospace;
-            font-size: 8px;
-            color: rgba(255, 255, 255, 0.35);
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            color: rgba(255, 255, 255, 0.55);
             line-height: 1.5;
-            letter-spacing: 0.02em;
+            max-width: 120px;
         }
         .doc-code span {
-            color: rgba(212, 175, 55, 0.7);
-            font-weight: 600;
+            color: #c6a15b;
+            font-weight: 700;
         }
 
+        /* ---- body row ---- */
         .body-row {
             display: flex;
-            gap: 16px;
+            gap: 12px;
             position: relative;
-            z-index: 3;
-            flex: 1;
-            min-height: 0;
+            z-index: 2;
+            padding: 4px 2px;
+            flex-shrink: 0;
         }
 
-        /* ---- MAIN PHOTOS - LARGER ---- */
         .photos {
             display: flex;
-            gap: 10px;
+            gap: 6px;
             flex-shrink: 0;
         }
         .photo-box {
-            width: 86px;
-            height: 102px;
-            border-radius: 10px;
+            width: 66px;
+            height: 76px;
             background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 6px;
             position: relative;
             overflow: hidden;
             cursor: pointer;
             flex-shrink: 0;
-            transition: border-color 0.25s ease;
+            transition: border-color 0.2s;
         }
         .photo-box:hover {
-            border-color: rgba(212, 175, 55, 0.25);
+            border-color: rgba(255, 255, 255, 0.2);
         }
         .photo-box img {
             width: 100%;
@@ -310,12 +353,12 @@
             bottom: 0;
             left: 0;
             right: 0;
-            font-size: 7px;
+            font-size: 6.5px;
             text-align: center;
-            letter-spacing: 0.05em;
-            background: rgba(0, 0, 0, 0.7);
-            color: rgba(255, 255, 255, 0.85);
-            padding: 3px 0;
+            letter-spacing: 0.06em;
+            background: rgba(0, 0, 0, 0.6);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 2px 0;
             font-weight: 500;
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
@@ -326,15 +369,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 8.5px;
+            font-size: 7px;
             text-align: center;
             color: rgba(255, 255, 255, 0.3);
-            padding: 8px;
+            padding: 4px;
             line-height: 1.3;
             font-weight: 400;
             letter-spacing: 0.04em;
         }
-        .photo-box input[type="file"] {
+        .photo-box input[type=file] {
             display: none;
         }
 
@@ -347,7 +390,7 @@
         }
         .field-row {
             display: flex;
-            gap: 8px;
+            gap: 10px;
         }
         .field {
             flex: 1;
@@ -355,172 +398,194 @@
         }
         .label {
             font-size: 7px;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.12em;
             text-transform: uppercase;
-            color: rgba(212, 175, 55, 0.55);
+            color: rgba(198, 161, 91, 0.7);
             font-weight: 600;
-            line-height: 1.2;
         }
         .value {
-            font-size: 12px;
-            font-weight: 500;
+            font-size: 13.5px;
+            font-weight: 600;
             letter-spacing: 0.01em;
             color: #fff;
             outline: none;
-            line-height: 1.25;
-            padding: 0 2px;
-            border-radius: 2px;
+            line-height: 1.3;
+            padding: 1px 2px;
+            border-radius: 3px;
             white-space: pre-wrap;
             word-break: break-word;
-            transition: background 0.2s ease;
-            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+            transition: background 0.15s;
         }
         .value.small {
-            font-size: 9px;
+            font-size: 11.5px;
             font-weight: 400;
-            color: rgba(255, 255, 255, 0.8);
-            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+            color: rgba(255, 255, 255, 0.85);
         }
         .value[contenteditable]:hover {
-            background: rgba(255, 255, 255, 0.04);
+            background: rgba(255, 255, 255, 0.05);
         }
         .value[contenteditable]:focus {
-            background: rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.07);
         }
 
         .divider2 {
             height: 1px;
-            background: rgba(255, 255, 255, 0.05);
-            margin: 3px 0;
+            background: rgba(255, 255, 255, 0.06);
+            margin: 2px 0;
         }
 
         .status-strip {
             display: flex;
             align-items: center;
             gap: 6px;
-            margin-top: 2px;
+            margin-top: 1px;
         }
         .status-pill {
-            font-size: 7.5px;
-            font-weight: 600;
-            letter-spacing: 0.06em;
+            font-size: 8.5px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
             text-transform: uppercase;
-            background: rgba(212, 175, 55, 0.15);
-            color: #f0e0b0;
-            padding: 2px 12px;
+            background: rgba(14, 76, 71, 0.6);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            color: #fff;
+            padding: 2px 10px;
             border-radius: 12px;
-            border: 1px solid rgba(212, 175, 55, 0.10);
-            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.06);
         }
 
+        /* ---- seal ---- */
         .seal {
             position: absolute;
-            right: 12px;
-            bottom: 40px;
-            width: 44px;
-            height: 44px;
-            z-index: 2;
-            opacity: 0.40;
+            right: 14px;
+            bottom: 32px;
+            width: 54px;
+            height: 54px;
+            z-index: 3;
+            opacity: 0.5;
             transform: rotate(-6deg);
             pointer-events: none;
+            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
         }
-        .seal circle {
-            stroke: rgba(212, 175, 55, 0.4);
+        .seal circle,
+        .seal path,
+        .seal text {
+            stroke: rgba(255, 255, 255, 0.4);
+            fill: rgba(255, 255, 255, 0.05);
         }
         .seal path {
-            fill: rgba(212, 175, 55, 0.2);
+            fill: rgba(198, 161, 91, 0.15);
         }
         .seal text {
-            fill: rgba(212, 175, 55, 0.35);
-            font-family: 'Inter', sans-serif;
-            font-size: 5.5px;
+            fill: rgba(255, 255, 255, 0.25);
         }
 
+        /* ---- signature ---- */
         .signature-line {
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            margin-top: auto;
-            padding-top: 6px;
+            margin-top: 2px;
+            padding-top: 4px;
             position: relative;
-            z-index: 3;
-            gap: 12px;
+            z-index: 2;
+            flex-shrink: 0;
         }
         .sig {
             font-family: 'Cormorant Garamond', serif;
             font-style: italic;
-            font-size: 14px;
+            font-size: 16px;
             color: rgba(255, 255, 255, 0.85);
             outline: none;
             border-bottom: 1px solid rgba(255, 255, 255, 0.10);
-            padding: 0 2px 2px;
-            min-width: 60px;
-            transition: border-color 0.2s ease;
-            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+            padding: 0 2px 1px;
+            min-width: 80px;
+            transition: border-color 0.2s;
         }
-        .sig:hover {
-            border-color: rgba(212, 175, 55, 0.25);
+        .sig[contenteditable]:hover {
+            border-bottom-color: rgba(255, 255, 255, 0.25);
         }
         .sig-label {
-            font-size: 6px;
-            letter-spacing: 0.08em;
+            font-size: 6.5px;
+            letter-spacing: 0.1em;
             text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.25);
+            color: rgba(255, 255, 255, 0.3);
             margin-top: 1px;
-            font-weight: 500;
         }
 
-        .mrz-wrap {
+        /* ---- MRZ + barcode ---- */
+        .bottom-bar {
             display: flex;
             align-items: flex-end;
-            gap: 6px;
+            gap: 10px;
             position: relative;
-            z-index: 3;
+            z-index: 2;
             margin-top: 6px;
+            flex-shrink: 0;
+            padding-top: 4px;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
         }
         .mrz {
-            font-family: 'Inter', monospace;
-            font-size: 7px;
-            letter-spacing: 0.04em;
-            color: rgba(255, 255, 255, 0.20);
-            background: rgba(0, 0, 0, 0.25);
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 0.06em;
+            color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.03);
             padding: 4px 8px;
             border-radius: 4px;
-            line-height: 1.6;
+            line-height: 1.5;
+            flex: 1;
+            min-width: 0;
             white-space: pre;
             overflow-x: auto;
-            flex: 1;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            font-weight: 400;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            font-size: 8.5px;
         }
-        .mrz-wrap svg {
+        .mrz::-webkit-scrollbar {
+            height: 2px;
+        }
+        .mrz::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .mrz::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 2px;
+        }
+        .barcode-wrap {
             flex-shrink: 0;
-            opacity: 0.25;
-            height: 26px;
-            width: 38px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 4px;
+            padding: 2px 4px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            display: flex;
+            align-items: center;
         }
-        .mrz-wrap svg rect {
-            fill: rgba(255, 255, 255, 0.4);
+        .barcode-wrap svg {
+            display: block;
+            width: 50px;
+            height: 28px;
+        }
+        .barcode-wrap svg rect {
+            fill: rgba(255, 255, 255, 0.35);
         }
 
-        /* ---- Back Side ---- */
+        /* ---- back side ---- */
         .back-title {
             font-size: 16px;
             font-weight: 700;
-            letter-spacing: 0.02em;
+            letter-spacing: 0.04em;
             text-transform: uppercase;
             color: #fff;
             margin-top: 1px;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
         }
         .contact-cols {
             display: flex;
-            gap: 18px;
+            gap: 14px;
             position: relative;
-            z-index: 3;
-            padding: 4px 0;
-            flex: 1;
-            min-height: 0;
+            z-index: 2;
+            padding: 6px 2px;
+            flex-shrink: 0;
         }
         .contact-col {
             flex: 1;
@@ -530,218 +595,189 @@
             gap: 5px;
         }
         .contact-col .holder-label {
-            font-size: 7.5px;
-            font-weight: 600;
-            letter-spacing: 0.08em;
+            font-size: 8.5px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
             text-transform: uppercase;
-            color: rgba(212, 175, 55, 0.5);
-            background: rgba(212, 175, 55, 0.06);
-            padding: 2px 10px;
-            border-radius: 4px;
+            color: #c6a15b;
+            background: rgba(198, 161, 91, 0.10);
+            padding: 2px 8px;
+            border-radius: 10px;
             display: inline-block;
             margin-bottom: 2px;
-            border: 1px solid rgba(212, 175, 55, 0.04);
+            border: 1px solid rgba(198, 161, 91, 0.06);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
         }
         .contact-field .label {
-            font-size: 6.5px;
-            letter-spacing: 0.08em;
+            font-size: 7px;
+            letter-spacing: 0.12em;
             text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.25);
-            font-weight: 500;
+            color: rgba(198, 161, 91, 0.5);
+            font-weight: 600;
         }
         .contact-field .value {
-            font-size: 10px;
-            font-weight: 400;
-            color: rgba(255, 255, 255, 0.75);
-            padding: 1px 2px;
-            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+            font-size: 11px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.8);
         }
-
         .fine-print {
             position: relative;
-            z-index: 3;
+            z-index: 2;
             font-size: 7.5px;
             line-height: 1.6;
-            color: rgba(255, 255, 255, 0.25);
+            color: rgba(255, 255, 255, 0.35);
             padding: 0 2px;
             border-top: 1px solid rgba(255, 255, 255, 0.04);
-            padding-top: 6px;
-            margin-top: 4px;
+            padding-top: 5px;
+            margin-top: 2px;
             font-weight: 400;
             letter-spacing: 0.02em;
-            flex-shrink: 0;
         }
         .fine-print[contenteditable]:hover {
             background: rgba(255, 255, 255, 0.02);
-        }
-        .fine-print[contenteditable]:focus {
-            background: rgba(255, 255, 255, 0.04);
+            border-radius: 3px;
         }
 
+        /* ---- hint ---- */
         .hint {
-            max-width: 500px;
+            max-width: 480px;
             text-align: center;
-            font-size: 10px;
-            color: rgba(255, 255, 255, 0.20);
-            margin-top: 20px;
+            font-size: 11.5px;
+            color: rgba(255, 255, 255, 0.25);
+            margin-top: 18px;
             line-height: 1.7;
-            font-weight: 400;
+            font-weight: 300;
             letter-spacing: 0.02em;
         }
 
-        @media (max-width: 480px) {
+        /* ---- responsive ---- */
+        @media (max-width: 420px) {
             .card {
-                padding: 10px 12px 10px 14px;
+                padding: 14px 12px 12px 16px;
             }
             .photo-box {
-                width: 68px;
-                height: 82px;
+                width: 54px;
+                height: 66px;
             }
             .doc-title {
-                font-size: 13px;
+                font-size: 15px;
             }
             .value {
-                font-size: 10px;
+                font-size: 12px;
             }
             .value.small {
-                font-size: 8px;
+                font-size: 10.5px;
             }
             .mrz {
-                font-size: 5.5px;
-                padding: 3px 5px;
+                font-size: 7.5px;
+            }
+            .barcode-wrap svg {
+                width: 40px;
+                height: 24px;
             }
             .seal {
-                width: 34px;
-                height: 34px;
-                right: 8px;
-                bottom: 34px;
+                width: 44px;
+                height: 44px;
+                right: 10px;
+                bottom: 28px;
             }
-            .sig {
-                font-size: 11px;
-                min-width: 40px;
-            }
-            .contact-field .value {
-                font-size: 8.5px;
-            }
-            .fine-print {
-                font-size: 6.5px;
-            }
-            .toolbar button {
-                font-size: 8px;
-                padding: 6px 4px;
-                min-width: 60px;
-            }
-        }
-        @media (max-width: 400px) {
-            .card {
-                padding: 6px 8px 6px 10px;
-            }
-            .photo-box {
-                width: 52px;
-                height: 64px;
-            }
-            .doc-title {
-                font-size: 10px;
-            }
-            .authority {
-                font-size: 5.5px;
-            }
-            .value {
-                font-size: 8px;
-            }
-            .label {
-                font-size: 5px;
-            }
-            .mrz {
-                font-size: 4.5px;
-            }
-            .seal {
-                display: none;
-            }
-            .sig {
-                font-size: 9px;
-            }
-            .contact-field .value {
-                font-size: 7px;
-            }
-            .fine-print {
-                font-size: 5.5px;
+            .top-band {
+                padding-bottom: 4px;
+                margin-bottom: 6px;
             }
             .body-row {
                 gap: 8px;
             }
-            .photos {
-                gap: 6px;
+            .contact-cols {
+                gap: 10px;
+                flex-wrap: wrap;
+            }
+            .contact-col {
+                min-width: 120px;
             }
         }
-        @media (max-width: 340px) {
+
+        @media (max-width: 360px) {
             .photo-box {
-                width: 40px;
-                height: 50px;
+                width: 46px;
+                height: 58px;
+            }
+            .fields .value {
+                font-size: 10.5px;
             }
             .doc-title {
-                font-size: 8px;
+                font-size: 13px;
             }
-            .value {
-                font-size: 7px;
+            .authority {
+                font-size: 7.5px;
             }
-            .status-pill {
-                font-size: 5px;
-                padding: 1px 6px;
+            .sig {
+                font-size: 13px;
+                min-width: 60px;
             }
         }
     </style>
 </head>
 <body>
 
+    <!-- toolbar -->
     <div class="toolbar">
-        <button onclick="document.getElementById('f1').click()">Photo 1</button>
-        <button onclick="document.getElementById('f2').click()">Photo 2</button>
-        <button class="primary" onclick="flipCard()">Flip card</button>
+        <button onclick="document.getElementById('f1').click()">📷 Photo 1</button>
+        <button onclick="document.getElementById('f2').click()">📷 Photo 2</button>
+        <button class="primary" onclick="flipCard()">↔ Flip card</button>
     </div>
     <div class="toolbar">
-        <button onclick="downloadFace('front')">Save front</button>
-        <button onclick="downloadFace('back')">Save back</button>
+        <button onclick="downloadFace('front')">⬇ Save front</button>
+        <button onclick="downloadFace('back')">⬇ Save back</button>
     </div>
 
+    <!-- card scene -->
     <div class="card-scene" id="scene">
         <div class="card-inner" id="cardInner">
 
             <!-- ====== FRONT ====== -->
             <div class="card face-front" id="card">
 
-                <div class="bg-blur-wrap">
-                    <div class="grad-fallback"></div>
-                    <img class="blur-img left" id="bgphoto1" alt="" />
-                    <img class="blur-img right" id="bgphoto2" alt="" />
+                <div class="flagbar"></div>
+
+                <img class="bg-photo bg-photo-1" id="bgphoto1" alt="" />
+                <img class="bg-photo bg-photo-2" id="bgphoto2" alt="" />
+
+                <div class="watermark-clip">
+                    <div class="watermark">
+                        <span>❤ TOGETHER</span><span>❤ TOGETHER</span><span>❤ TOGETHER</span>
+                        <span>❤ TOGETHER</span><span>❤ TOGETHER</span><span>❤ TOGETHER</span>
+                        <span>❤ TOGETHER</span><span>❤ TOGETHER</span><span>❤ TOGETHER</span>
+                    </div>
                 </div>
 
-                <div class="glass-shine"></div>
-                <div class="edge-glow"></div>
-                <div class="flagbar"></div>
+                <div class="foil"></div>
 
                 <div class="microtext-border" id="microtext"></div>
 
-                <div class="top-band" style="padding-left:4px;">
+                <!-- top band -->
+                <div class="top-band">
                     <div>
                         <div class="authority">Office of the Heart · Two-Person Union</div>
                         <div class="doc-title">Permit of Residence</div>
                     </div>
-                    <div class="doc-code" style="max-width:100px;">
+                    <div class="doc-code">
                         TYPE&nbsp;<span contenteditable="true" spellcheck="false">LP</span> / CAT&nbsp;<span contenteditable="true" spellcheck="false">02</span><br />
                         NO. <span contenteditable="true" spellcheck="false">0000-2026-LOVE</span>
                     </div>
                 </div>
 
-                <div class="body-row" style="padding:2px 0;">
+                <!-- body -->
+                <div class="body-row">
                     <div class="photos">
                         <label class="photo-box" id="box1">
-                            <span class="ph-empty">tap<br />photo 1</span>
+                            <span class="ph-empty">tap for<br />photo 1</span>
                             <span class="ph-label">HOLDER 1</span>
                             <input type="file" id="f1" accept="image/*" />
                         </label>
                         <label class="photo-box" id="box2">
-                            <span class="ph-empty">tap<br />photo 2</span>
+                            <span class="ph-empty">tap for<br />photo 2</span>
                             <span class="ph-label">HOLDER 2</span>
                             <input type="file" id="f2" accept="image/*" />
                         </label>
@@ -750,13 +786,13 @@
                     <div class="fields">
                         <div class="field-row">
                             <div class="field">
-                                <div class="label">Surname / Given — Holder 1</div>
+                                <div class="label">Surname / Given Names — Holder 1</div>
                                 <div class="value" contenteditable="true" spellcheck="false">Name One</div>
                             </div>
                         </div>
                         <div class="field-row">
                             <div class="field">
-                                <div class="label">Surname / Given — Holder 2</div>
+                                <div class="label">Surname / Given Names — Holder 2</div>
                                 <div class="value" contenteditable="true" spellcheck="false">Name Two</div>
                             </div>
                         </div>
@@ -790,14 +826,16 @@
                     </div>
                 </div>
 
+                <!-- seal -->
                 <svg class="seal" viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="46" fill="none" stroke-width="1.5"/>
-                    <circle cx="50" cy="50" r="38" fill="none" stroke-width="0.8" stroke-dasharray="2 3"/>
-                    <path d="M50 66s-19-11.6-19-24.4C31 35 35.7 30 41.8 30c3.4 0 6.5 1.7 8.2 4.4C51.7 31.7 54.8 30 58.2 30 64.3 30 69 35 69 41.6 69 54.4 50 66 50 66z" opacity="0.6"/>
-                    <text x="50" y="16" font-size="6" text-anchor="middle" letter-spacing="0.8">OFFICE OF THE HEART</text>
-                    <text x="50" y="88" font-size="6" text-anchor="middle" letter-spacing="0.8">VALID EVERYWHERE</text>
+                    <circle cx="50" cy="50" r="46" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+                    <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.8" stroke-dasharray="2 3"/>
+                    <path d="M50 66s-19-11.6-19-24.4C31 35 35.7 30 41.8 30c3.4 0 6.5 1.7 8.2 4.4C51.7 31.7 54.8 30 58.2 30 64.3 30 69 35 69 41.6 69 54.4 50 66 50 66z" fill="rgba(198,161,91,0.15)" opacity="0.8"/>
+                    <text x="50" y="18" font-size="7" fill="rgba(255,255,255,0.25)" text-anchor="middle" font-family="Barlow Condensed, sans-serif" letter-spacing="1">OFFICE OF THE HEART</text>
+                    <text x="50" y="88" font-size="7" fill="rgba(255,255,255,0.25)" text-anchor="middle" font-family="Barlow Condensed, sans-serif" letter-spacing="1">VALID EVERYWHERE</text>
                 </svg>
 
+                <!-- signatures -->
                 <div class="signature-line">
                     <div>
                         <div class="sig" contenteditable="true" spellcheck="false">signature</div>
@@ -809,11 +847,13 @@
                     </div>
                 </div>
 
-                <div class="mrz-wrap">
-                    <div class="mrz" id="mrz">P&lt;LOVEXHOLDER1&lt;&lt;HOLDER2&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt; 0000000000LOVE2610088&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;06</div>
-                    <svg viewBox="0 0 46 28">
-                        <g id="barcode"></g>
-                    </svg>
+                <!-- bottom: MRZ + barcode -->
+                <div class="bottom-bar">
+                    <div class="mrz" id="mrz">P&lt;LOVEXHOLDER1&lt;&lt;HOLDER2&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
+                        0000000000LOVE2610088&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;06</div>
+                    <div class="barcode-wrap">
+                        <svg viewBox="0 0 50 30" id="barcode"></svg>
+                    </div>
                 </div>
 
             </div>
@@ -822,29 +862,34 @@
             <!-- ====== BACK ====== -->
             <div class="card face-back" id="cardBack">
 
-                <div class="bg-blur-wrap">
-                    <div class="grad-fallback"></div>
-                    <img class="blur-img left" id="bgphoto1b" alt="" />
-                    <img class="blur-img right" id="bgphoto2b" alt="" />
-                </div>
-
-                <div class="glass-shine"></div>
-                <div class="edge-glow"></div>
                 <div class="flagbar"></div>
+
+                <img class="bg-photo bg-photo-1" id="bgphoto1b" alt="" />
+                <img class="bg-photo bg-photo-2" id="bgphoto2b" alt="" />
+
+                <div class="watermark-clip">
+                    <div class="watermark">
+                        <span>❤ TOGETHER</span><span>❤ TOGETHER</span><span>❤ TOGETHER</span>
+                        <span>❤ TOGETHER</span><span>❤ TOGETHER</span><span>❤ TOGETHER</span>
+                        <span>❤ TOGETHER</span><span>❤ TOGETHER</span><span>❤ TOGETHER</span>
+                    </div>
+                </div>
 
                 <div class="microtext-border" id="microtextBack"></div>
 
-                <div class="top-band" style="padding-left:4px;">
+                <!-- top band -->
+                <div class="top-band">
                     <div>
                         <div class="authority">Office of the Heart · Two-Person Union</div>
                         <div class="back-title">Contact Details</div>
                     </div>
-                    <div class="doc-code" style="max-width:100px;">
+                    <div class="doc-code">
                         SIDE&nbsp;<span>B</span><br />
                         NO. <span contenteditable="true" spellcheck="false">0000-2026-LOVE</span>
                     </div>
                 </div>
 
+                <!-- contact columns -->
                 <div class="contact-cols">
                     <div class="contact-col">
                         <span class="holder-label">Holder 1</span>
@@ -878,30 +923,32 @@
                     </div>
                 </div>
 
-                <svg class="seal" viewBox="0 0 100 100" style="bottom:34px;">
-                    <circle cx="50" cy="50" r="46" fill="none" stroke-width="1.5"/>
-                    <circle cx="50" cy="50" r="38" fill="none" stroke-width="0.8" stroke-dasharray="2 3"/>
-                    <path d="M50 66s-19-11.6-19-24.4C31 35 35.7 30 41.8 30c3.4 0 6.5 1.7 8.2 4.4C51.7 31.7 54.8 30 58.2 30 64.3 30 69 35 69 41.6 69 54.4 50 66 50 66z" opacity="0.6"/>
-                    <text x="50" y="16" font-size="6" text-anchor="middle" letter-spacing="0.8">OFFICE OF THE HEART</text>
-                    <text x="50" y="88" font-size="6" text-anchor="middle" letter-spacing="0.8">VALID EVERYWHERE</text>
+                <!-- seal back -->
+                <svg class="seal" viewBox="0 0 100 100" style="bottom:26px;">
+                    <circle cx="50" cy="50" r="46" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+                    <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(255,255,255,0.10)" stroke-width="0.8" stroke-dasharray="2 3"/>
+                    <path d="M50 66s-19-11.6-19-24.4C31 35 35.7 30 41.8 30c3.4 0 6.5 1.7 8.2 4.4C51.7 31.7 54.8 30 58.2 30 64.3 30 69 35 69 41.6 69 54.4 50 66 50 66z" fill="rgba(14,76,71,0.15)" opacity="0.7"/>
+                    <text x="50" y="18" font-size="7" fill="rgba(255,255,255,0.18)" text-anchor="middle" font-family="Barlow Condensed, sans-serif" letter-spacing="1">OFFICE OF THE HEART</text>
+                    <text x="50" y="88" font-size="7" fill="rgba(255,255,255,0.18)" text-anchor="middle" font-family="Barlow Condensed, sans-serif" letter-spacing="1">VALID EVERYWHERE</text>
                 </svg>
 
-                <div class="fine-print" contenteditable="true" spellcheck="false">This permit certifies mutual affection, full residence in one another's life, and unlimited hugs &amp; shared blankets. Renewable automatically.</div>
+                <!-- fine print -->
+                <div class="fine-print" contenteditable="true" spellcheck="false">This permit certifies that the above-named holders are bound by mutual affection, granted full residence in one another's life, and are entitled to unlimited hugs, inside jokes, and shared blankets. Renewable automatically, no application required.</div>
 
             </div>
             <!-- /back -->
 
         </div>
-        <!-- /card-inner -->
     </div>
-    <!-- /card-scene -->
 
-    <div class="hint">Tap a photo box to upload — the image appears in the frame and as a soft blurred background. Edit any text. Click "Flip card" to see the back. Save each side as PNG.</div>
+    <div class="hint">
+        Tap a photo box to upload · tap any field to edit · flip to see back · save front/back as PNG
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">
     </script>
     <script>
-        // ---- wire photo uploads ----
+        // ---- photo upload ----
         function wireFrame(boxId, fileId, bgIds) {
             const box = document.getElementById(boxId);
             const input = document.getElementById(fileId);
@@ -918,10 +965,8 @@
                         box.insertBefore(img, box.querySelector('.ph-label'));
                     }
                     img.src = ev.target.result;
-                    bgIds.forEach(id => {
-                        const el = document.getElementById(id);
-                        if (el) el.src = ev.target.result;
-                    });
+                    bgIds.forEach(id => { document.getElementById(id).src = ev.target.result; });
+                    img.onload = updateCardHeight;
                 };
                 reader.readAsDataURL(file);
             });
@@ -930,14 +975,30 @@
         wireFrame('box2', 'f2', ['bgphoto2', 'bgphoto2b']);
 
         // ---- microtext ----
-        const micro = ('OFFICE OF THE HEART ✦ PERMIT OF RESIDENCE ✦ VALID EVERYWHERE ✦ ').repeat(8);
-        document.getElementById('microtext').textContent = micro;
-        document.getElementById('microtextBack').textContent = micro;
+        const microtextContent = ('OFFICE OF THE HEART ✦ PERMIT OF RESIDENCE ✦ VALID EVERYWHERE ✦ ').repeat(6);
+        document.getElementById('microtext').textContent = microtextContent;
+        document.getElementById('microtextBack').textContent = microtextContent;
 
         // ---- flip ----
         function flipCard() {
             document.getElementById('scene').classList.toggle('flipped');
         }
+
+        // ---- auto-height ----
+        function updateCardHeight() {
+            const scene = document.getElementById('scene');
+            const front = document.getElementById('card');
+            const back = document.getElementById('cardBack');
+            const h = Math.max(front.scrollHeight, back.scrollHeight, 300) + 8;
+            scene.style.height = h + 'px';
+        }
+        window.addEventListener('load', () => { updateCardHeight();
+            setTimeout(updateCardHeight, 400); });
+        if (document.fonts && document.fonts.ready) { document.fonts.ready.then(updateCardHeight); }
+        document.querySelectorAll('[contenteditable]').forEach(el => {
+            el.addEventListener('input', updateCardHeight);
+        });
+        window.addEventListener('resize', updateCardHeight);
 
         // ---- barcode ----
         function drawBarcode(seedStr) {
@@ -946,7 +1007,7 @@
             let seed = 0;
             for (let i = 0; i < seedStr.length; i++) seed = (seed * 31 + seedStr.charCodeAt(i)) % 9973;
             let x = 0;
-            for (let i = 0; i < 20; i++) {
+            for (let i = 0; i < 22; i++) {
                 seed = (seed * 1103515245 + 12345) % 2147483648;
                 const w = (seed % 3) + 1;
                 if (i % 2 === 0) {
@@ -954,41 +1015,42 @@
                     bar.setAttribute('x', x);
                     bar.setAttribute('y', 0);
                     bar.setAttribute('width', w);
-                    bar.setAttribute('height', 22);
+                    bar.setAttribute('height', 28);
                     svg.appendChild(bar);
                 }
                 x += w;
-                if (x > 44) break;
+                if (x > 48) break;
             }
         }
 
         function updateMRZ() {
-            const vals = document.querySelectorAll('.fields .value');
-            const name1 = vals[0] ? vals[0].innerText.trim() : 'HOLDER1';
-            const name2 = vals[1] ? vals[1].innerText.trim() : 'HOLDER2';
+            const name1 = document.querySelectorAll('.fields .value')[0].innerText.trim();
+            const name2 = document.querySelectorAll('.fields .value')[1].innerText.trim();
             const n1 = (name1 || 'HOLDER1').toUpperCase().replace(/[^A-Z ]/g, '').trim().replace(/\s+/g, '<');
             const n2 = (name2 || 'HOLDER2').toUpperCase().replace(/[^A-Z ]/g, '').trim().replace(/\s+/g, '<');
             let line1 = ('P<LOVE' + n1 + '<<' + n2).padEnd(30, '<').slice(0, 30);
             let line2 = '0000000000LOVE2610088'.padEnd(28, '<').slice(0, 28) + '06';
             document.getElementById('mrz').textContent = line1 + '\n' + line2;
             drawBarcode(n1 + n2);
+            updateCardHeight();
         }
 
         document.querySelectorAll('.fields .value').forEach(el => {
             el.addEventListener('input', updateMRZ);
         });
         updateMRZ();
+        updateCardHeight();
 
         // ---- download ----
         function downloadFace(which) {
             const scene = document.getElementById('scene');
-            const isFlipped = scene.classList.contains('flipped');
             const wantFlipped = which === 'back';
+            const isFlipped = scene.classList.contains('flipped');
             const targetId = which === 'back' ? 'cardBack' : 'card';
 
             const capture = () => {
                 const el = document.getElementById(targetId);
-                html2canvas(el, { scale: 3, backgroundColor: '#0a0a0a', useCORS: true }).then(canvas => {
+                html2canvas(el, { scale: 3, backgroundColor: null, useCORS: true }).then(canvas => {
                     const link = document.createElement('a');
                     link.download = which === 'back' ? 'love-permit-back.png' : 'love-permit-front.png';
                     link.href = canvas.toDataURL('image/png');
@@ -1003,10 +1065,7 @@
                 capture();
             }
         }
-
-        // ---- expose ----
-        window.flipCard = flipCard;
-        window.downloadFace = downloadFace;
     </script>
+
 </body>
 </html>
