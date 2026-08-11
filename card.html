@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Permit of Residence — Credit Card Size</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Space+Mono&family=Cormorant+Garamond:ital,wght@1,500&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            background: radial-gradient(circle at 20% 10%, #2a2a3a 0%, #0b0b0f 90%);
+            font-family: 'Barlow Condensed', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 12px 12px;
+            color: #fff;
+            gap: 8px;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ---- toolbar ---- */
+        .toolbar {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            flex-shrink: 0;
+        }
+        .toolbar button {
+            flex: 1;
+            min-width: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.03);
+            color: #ccc;
+            padding: 7px 5px;
+            border-radius: 5px;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 10px;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+        .toolbar button:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.25);
+            color: #fff;
+        }
+        .toolbar button.primary {
+            border-color: rgba(198, 161, 91, 0.4);
+            background: rgba(198, 161, 91, 0.10);
+            color: #e8d9a8;
+        }
+        .toolbar button.primary:hover {
+            background: rgba(198, 161, 91, 0.20);
+            border-color: #c6a15b;
+        }
+
+        /* ---- card scene (flip) ---- */
+        .card-scene {
+            /* ISO/IEC 7810 ID-1 credit-card dimensions: 85.60 × 53.98 mm */
+            /* ~356px at standard screen DPI ≈ real credit-card width */
+            width: min(356px, 88vw);
+            aspect-ratio: 85.60 / 53.98;
+            flex: 0 0 auto;
+            perspective: 1800px;
+            position: relative;
+            margin: auto 0;
+        }
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .card-scene.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+        .face-front,
+        .face-back {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            transform-origin: center center;
+        }
+        .face-back {
+            transform: rotateY(180deg);
+        }
+
+        /* ---- CARD — Black Glass ---- */
+        .card {
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            padding: 12px 16px 10px;
+            background: rgba(18, 18, 24, 0.84);
+            backdrop-filter: blur(28px) saturate(1.2);
+            -webkit-backdrop-filter: blur(28px) saturate(1.2);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow:
+                0 16px 32px -10px rgba(0, 0, 0, 0.8),
+                0 0 0 1px rgba(255, 255, 255, 0.04) inset,
+                0 1px 0 rgba(255, 255, 255, 0.05) inset;
+            color: #f0f0f5;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 12px;
+            background: linear-gradient(135deg,
+                    rgba(255, 255, 255, 0.06) 0%,
+                    transparent 40%,
+                    transparent 70%,
+                    rgba(255, 255, 255, 0.02) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+        .card::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 13px;
+            background: linear-gradient(135deg,
+                    rgba(255, 255, 255, 0.08) 0%,
+                    transparent 40%,
+                    transparent 70%,
+                    rgba(255, 255, 255, 0.03) 100%);
+            pointer-events: none;
+            z-index: 0;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            padding: 1px;
+        }
+
+        /* ---- flagbar ---- */
+        .flagbar {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            z-index: 4;
+            border-radius: 12px 0 0 12px;
+            background: linear-gradient(180deg,
+                    #c6a15b 0%, #c6a15b 33%,
+                    #7c2b34 33%, #7c2b34 66%,
+                    #151d2b 66%, #151d2b 100%);
+            opacity: 0.85;
+        }
+
+        /* ---- background photos ---- */
+        .bg-photo {
+            position: absolute;
+            z-index: 0;
+            object-fit: cover;
+            filter: grayscale(70%) contrast(1.05) brightness(0.5);
+            opacity: 0.09;
+            pointer-events: none;
+        }
+        .bg-photo-1 {
+            top: 0;
+            left: 0;
+            width: 55%;
+            height: 100%;
+            -webkit-mask-image: linear-gradient(100deg, black 40%, transparent 92%);
+            mask-image: linear-gradient(100deg, black 40%, transparent 92%);
+        }
+        .bg-photo-2 {
+            top: 0;
+            right: 0;
+            width: 55%;
+            height: 100%;
+            -webkit-mask-image: linear-gradient(280deg, black 40%, transparent 92%);
+            mask-image: linear-gradient(280deg, black 40%, transparent 92%);
+        }
+
+        /* ---- INDIA MAP CONTAINER ---- */
+        .india-map-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 62%;
+            height: 88%;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.65;
+        }
+
+        /* Faint Base Map of India */
+        .india-base {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            fill: rgba(255, 255, 255, 0.02);
+            stroke: rgba(255, 255, 255, 0.18);
+            stroke-width: 1.2;
+            vector-effect: non-scaling-stroke;
+        }
+
+        /* Jammu & Kashmir + Assam background outlines (Blue Tint) */
+        .state-map {
+            position: absolute;
+            fill: rgba(30, 120, 245, 0.18);
+            stroke: rgba(50, 150, 255, 0.95);
+            stroke-width: 1.8;
+            vector-effect: non-scaling-stroke;
+            filter:
+                drop-shadow(0 0 6px rgba(30, 130, 255, 0.5))
+                drop-shadow(0 0 18px rgba(30, 130, 255, 0.25));
+            opacity: 0.92;
+        }
+
+        /* Positioned relative to the central India map container */
+        .jk-outline {
+            width: 32%;
+            height: 38%;
+            left: 21%;
+            top: 0%;
+        }
+
+        .assam-outline {
+            width: 25%;
+            height: 22%;
+            right: 8%;
+            top: 40%;
+        }
+
+        .state-map .inner {
+            stroke: rgba(65, 160, 255, 0.45);
+            stroke-width: 0.6;
+        }
+
+        .state-map-label {
+            position: absolute;
+            z-index: 0;
+            pointer-events: none;
+            color: rgba(75, 170, 255, 0.75);
+            font-family: 'Space Mono', monospace;
+            font-size: 6px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            font-weight: 700;
+            text-shadow: 0 0 8px rgba(40, 140, 255, 0.5);
+        }
+
+        .jk-label {
+            left: 9%;
+            top: 7%;
+        }
+
+        .assam-label {
+            right: -3%;
+            top: 63%;
+        }
+
+        /* ---- watermark ---- */
+        .watermark-clip {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+            border-radius: 12px;
+        }
+        .watermark {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0.03;
+            display: flex;
+            flex-wrap: wrap;
+            align-content: space-around;
+            justify-content: space-around;
+            transform: rotate(-18deg) scale(1.4);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: #fff;
+            white-space: nowrap;
+        }
+        .watermark span {
+            padding: 5px 12px;
+        }
+
+        /* ---- microtext ---- */
+        .microtext-border {
+            position: absolute;
+            top: 3px;
+            left: 10px;
+            right: 3px;
+            z-index: 1;
+            font-family: 'Space Mono', monospace;
+            font-size: 3.5px;
+            letter-spacing: 0.12em;
+            color: rgba(255, 255, 255, 0.10);
+            white-space: nowrap;
+            overflow: hidden;
+            text-transform: uppercase;
+            pointer-events: none;
+        }
+
+        /* ---- foil shimmer ---- */
+        .foil {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: 36px;
+            width: 18px;
+            z-index: 1;
+            background: linear-gradient(120deg,
+                    rgba(255, 255, 255, 0.03) 0%,
+                    rgba(255, 255, 255, 0.08) 20%,
+                    rgba(255, 255, 255, 0.02) 40%,
+                    rgba(255, 255, 255, 0.06) 60%,
+                    rgba(255, 255, 255, 0.02) 80%,
+                    rgba(255, 255, 255, 0.05) 100%);
+            background-size: 220% 220%;
+            mix-blend-mode: overlay;
+            opacity: 0.18;
+            animation: foilshift 8s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes foilshift {
+            0%,
+            100% {
+                background-position: 0% 0%;
+            }
+            50% {
+                background-position: 100% 100%;
+            }
+        }
+
+        /* ---- top band ---- */
+        .top-band {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 3px;
+            margin-bottom: 5px;
+            position: relative;
+            z-index: 2;
+            padding-left: 1px;
+            flex-shrink: 0;
+        }
+        .authority {
+            font-size: clamp(0.4rem, 1.3vh, 0.7rem);
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: #c6a15b;
+            font-weight: 600;
+            opacity: 0.85;
+        }
+        .doc-title {
+            font-size: clamp(0.95rem, 2.8vh, 1.8rem);
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            color: #fff;
+            margin-top: 0px;
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            line-height: 1.1;
+        }
+        .doc-code {
+            text-align: right;
+            font-family: 'Space Mono', monospace;
+            font-size: clamp(0.4rem, 1.0vh, 0.75rem);
+            color: rgba(255, 255, 255, 0.4);
+            line-height: 1.4;
+            max-width: 90px;
+        }
+        .doc-code span {
+            color: #c6a15b;
+            font-weight: 700;
+        }
+
+        /* ---- body row ---- */
+        .body-row {
+            display: flex;
+            gap: 10px;
+            position: relative;
+            z-index: 2;
+            padding: 1px 0;
+            flex: 1 1 auto;
+            align-items: center;
+            min-height: 0;
+        }
+
+        .photos {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+            height: 100%;
+            align-items: center;
+        }
+        .photo-box {
+            width: clamp(52px, 15vh, 100px);
+            height: clamp(58px, 18vh, 120px);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: border-color 0.2s;
+        }
+        .photo-box:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        .photo-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .photo-box .ph-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            font-size: clamp(0.4rem, 0.9vh, 0.7rem);
+            text-align: center;
+            letter-spacing: 0.05em;
+            background: rgba(0, 0, 0, 0.6);
+            color: rgba(255, 255, 255, 0.75);
+            padding: 2px 0;
+            font-weight: 600;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+        .photo-box .ph-empty {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(0.4rem, 0.9vh, 0.7rem);
+            text-align: center;
+            color: rgba(255, 255, 255, 0.25);
+            padding: 4px;
+            line-height: 1.3;
+            font-weight: 400;
+            letter-spacing: 0.03em;
+        }
+        .photo-box input[type=file] {
+            display: none;
+        }
+
+        .fields {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(1px, 0.5vh, 5px);
+            min-width: 0;
+            justify-content: center;
+        }
+        .field-row {
+            display: flex;
+            gap: 7px;
+        }
+        .field {
+            flex: 1;
+            min-width: 0;
+        }
+        .label {
+            font-size: clamp(0.35rem, 0.8vh, 0.65rem);
+            letter-spacing: 0.10em;
+            text-transform: uppercase;
+            color: rgba(198, 161, 91, 0.55);
+            font-weight: 600;
+        }
+        .value {
+            font-size: clamp(0.7rem, 1.6vh, 1.25rem);
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            color: #fff;
+            outline: none;
+            line-height: 1.2;
+            padding: 0 1px;
+            border-radius: 3px;
+            white-space: pre-wrap;
+            word-break: break-word;
+            transition: background 0.15s;
+        }
+        .value.small {
+            font-size: clamp(0.55rem, 1.3vh, 0.95rem);
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.78);
+        }
+        .value[contenteditable]:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+        .value[contenteditable]:focus {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .divider2 {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.04);
+            margin: 0px 0;
+        }
+
+        .status-strip {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 0px;
+        }
+        .status-pill {
+            font-size: clamp(0.4rem, 1.0vh, 0.7rem);
+            font-weight: 700;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            background: rgba(14, 76, 71, 0.5);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            color: #fff;
+            padding: 1px 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        /* ---- seal ---- */
+        .seal {
+            position: absolute;
+            right: clamp(6px, 1.5vh, 14px);
+            bottom: clamp(10px, 2.5vh, 22px);
+            width: clamp(30px, 6vh, 55px);
+            height: clamp(30px, 6vh, 55px);
+            z-index: 3;
+            opacity: 0.38;
+            transform: rotate(-6deg);
+            pointer-events: none;
+            filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.3));
+        }
+        .seal circle,
+        .seal path,
+        .seal text {
+            stroke: rgba(255, 255, 255, 0.22);
+            fill: rgba(255, 255, 255, 0.02);
+        }
+        .seal path {
+            fill: rgba(198, 161, 91, 0.10);
+        }
+        .seal text {
+            fill: rgba(255, 255, 255, 0.18);
+            font-size: 5px;
+        }
+
+        /* ---- signature ---- */
+        .signature-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: auto;
+            padding-top: 4px;
+            position: relative;
+            z-index: 2;
+            flex-shrink: 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+        }
+        .sig {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: clamp(0.7rem, 1.6vh, 1.2rem);
+            color: rgba(255, 255, 255, 0.75);
+            outline: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 0 3px 1px;
+            min-width: 40px;
+            transition: border-color 0.2s;
+        }
+        .sig[contenteditable]:hover {
+            border-bottom-color: rgba(255, 255, 255, 0.18);
+        }
+        .sig-label {
+            font-size: clamp(0.3rem, 0.8vh, 0.6rem);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.22);
+            margin-top: 1px;
+        }
+
+        /* ---- bottom bar: MRZ + barcode ---- */
+        .bottom-bar {
+            display: flex;
+            align-items: flex-end;
+            gap: 6px;
+            position: relative;
+            z-index: 2;
+            margin-top: 4px;
+            flex-shrink: 0;
+            padding-top: 3px;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+        }
+        .mrz {
+            font-family: 'Space Mono', monospace;
+            font-size: clamp(0.38rem, 0.9vh, 0.65rem);
+            letter-spacing: 0.05em;
+            color: rgba(255, 255, 255, 0.35);
+            background: rgba(255, 255, 255, 0.02);
+            padding: 2px 6px;
+            border-radius: 3px;
+            line-height: 1.35;
+            flex: 1;
+            min-width: 0;
+            white-space: pre;
+            overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+        }
+        .mrz::-webkit-scrollbar {
+            height: 1px;
+        }
+        .mrz::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .mrz::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.10);
+            border-radius: 1px;
+        }
+        .barcode-wrap {
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 3px;
+            padding: 1px 4px;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+        .barcode-wrap svg {
+            display: block;
+            width: clamp(30px, 6vh, 55px);
+            height: clamp(16px, 3vh, 28px);
+        }
+        .barcode-wrap svg rect {
+            fill: rgba(255, 255, 255, 0.48);
+        }
+
+        /* ---- back side ---- */
+        .back-title {
+            font-size: clamp(0.9rem, 2.5vh, 1.6rem);
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            color: #fff;
+            margin-top: 0px;
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+        .contact-cols {
+            display: flex;
+            gap: 12px;
+            position: relative;
+            z-index: 2;
+            padding: 4px 0;
+            flex: 1 1 auto;
+            align-items: flex-start;
+            min-height: 0;
+        }
+        .contact-col {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(2px, 0.6vh, 7px);
+        }
+        .contact-col .holder-label {
+            font-size: clamp(0.4rem, 1.0vh, 0.7rem);
+            font-weight: 700;
+            letter-spacing: 0.10em;
+            text-transform: uppercase;
+            color: #c6a15b;
+            background: rgba(198, 161, 91, 0.07);
+            padding: 1px 8px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-bottom: 0px;
+            border: 1px solid rgba(198, 161, 91, 0.03);
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+        }
+        .contact-field .label {
+            font-size: clamp(0.32rem, 0.8vh, 0.6rem);
+            letter-spacing: 0.10em;
+            text-transform: uppercase;
+            color: rgba(198, 161, 91, 0.38);
+            font-weight: 600;
+        }
+        .contact-field .value {
+            font-size: clamp(0.6rem, 1.4vh, 1.1rem);
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.72);
+        }
+        .fine-print {
+            position: relative;
+            z-index: 2;
+            font-size: clamp(0.38rem, 0.9vh, 0.65rem);
+            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.28);
+            padding: 0 1px;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            padding-top: 4px;
+            margin-top: 1px;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            flex-shrink: 0;
+        }
+        .fine-print[contenteditable]:hover {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 3px;
+        }
+
+        /* ---- hint ---- */
+        .hint {
+            max-width: 500px;
+            text-align: center;
+            font-size: clamp(0.5rem, 1.1vh, 0.75rem);
+            color: rgba(255, 255, 255, 0.18);
+            line-height: 1.4;
+            font-weight: 300;
+            letter-spacing: 0.02em;
+            flex-shrink: 0;
+            padding: 2px 0 0;
+        }
+
+        /* ---- responsive ---- */
+        @media (max-width: 500px) {
+            .card-scene {
+                width: min(340px, 90vw);
+            }
+            .card {
+                padding: 10px 10px 8px;
+                border-radius: 10px;
+            }
+            .flagbar {
+                width: 3px;
+                border-radius: 10px 0 0 10px;
+            }
+            .body-row {
+                flex-direction: row;
+                align-items: center;
+                gap: 6px;
+            }
+            .fields {
+                min-width: 0;
+            }
+            .photos {
+                flex-direction: row;
+                justify-content: center;
+                height: auto;
+                gap: 6px;
+            }
+            .photo-box {
+                width: clamp(44px, 22vw, 75px);
+                height: clamp(50px, 26vw, 90px);
+            }
+            .contact-cols {
+                flex-direction: column;
+                gap: 6px;
+                align-items: stretch;
+            }
+            .signature-line {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 3px;
+            }
+            .sig {
+                min-width: auto;
+            }
+            .bottom-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .barcode-wrap {
+                align-self: flex-end;
+            }
+            .seal {
+                width: 28px;
+                height: 28px;
+                bottom: 8px;
+                right: 6px;
+            }
+            .microtext-border {
+                font-size: 2.8px;
+                top: 2px;
+                left: 7px;
+                right: 2px;
+            }
+            .state-map-label {
+                font-size: 5px;
+            }
+        }
+        @media (max-width: 360px) {
+            .card-scene {
+                width: 94vw;
+                max-width: 340px;
+            }
+            .card {
+                padding: 6px 6px 5px;
+            }
+            .photo-box {
+                width: 38px;
+                height: 44px;
+            }
+            .doc-title {
+                font-size: 0.7rem;
+            }
+            .back-title {
+                font-size: 0.7rem;
+            }
+            .value {
+                font-size: 0.55rem;
+            }
+            .authority {
+                font-size: 0.35rem;
+            }
+            .state-map-label {
+                font-size: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- toolbar -->
+    <div class="toolbar">
+        <button onclick="document.getElementById('f1').click()">📷 Photo 1</button>
+        <button onclick="document.getElementById('f2').click()">📷 Photo 2</button>
+        <button class="primary" onclick="flipCard()">↔ Flip</button>
+    </div>
+    <div class="toolbar">
+        <button onclick="downloadFace('front')">⬇ Save front</button>
+        <button onclick="downloadFace('back')">⬇ Save back</button>
+    </div>
+
+    <!-- card scene -->
+    <div class="card-scene" id="scene">
+        <div class="card-inner" id="cardInner">
+
+            <!-- ====== FRONT ====== -->
+            <div class="card face-front" id="card">
+
+                <div class="flagbar"></div>
+
+                <!-- INDIA MAP BACKGROUND CONTAINER -->
+                <div class="india-map-container">
+
+                    <!-- Base Stylized Map of India -->
+                    <svg class="india-base" viewBox="0 0 400 500" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                        <!-- Stylized Outer Boundaries representing India -->
+                        <path d="M 140,20 L 160,10 L 190,30 L 180,60 L 210,80 L 240,110 L 290,120 L 310,95 L 340,95 L 380,120 L 390,150 L 380,180 L 330,170 L 310,210 L 270,220 L 240,270 L 210,340 L 180,430 L 140,490 L 110,430 L 70,330 L 80,260 L 30,220 L 10,180 L 50,160 L 70,180 L 100,140 L 120,90 L 130,50 Z" />
+                    </svg>
+
+                    <!-- Jammu & Kashmir overlay — Blue Tint -->
+                    <svg class="state-map jk-outline" viewBox="0 0 220 300" aria-hidden="true">
+                        <path d="M91 8 L113 18 L132 16 L145 29 L164 34 L177 52 L170 70
+                                 L184 86 L178 105 L190 121 L177 137 L183 154 L166 168
+                                 L158 187 L142 194 L135 214 L119 221 L109 242 L91 250
+                                 L79 269 L60 274 L51 291 L37 278 L42 258 L29 244
+                                 L36 224 L26 207 L39 190 L35 172 L48 157 L44 139
+                                 L56 124 L51 106 L64 91 L60 72 L73 57 L69 38 Z" />
+                        <path class="inner" d="M75 58 L95 70 L89 91 L105 105 L96 125 L111 142
+                                 L99 160 L112 180 L96 198 L104 218" />
+                        <path class="inner" d="M132 27 L124 49 L143 65 L137 86 L153 103
+                                 L143 122 L157 140 L147 160 L158 180" />
+                    </svg>
+                    <div class="state-map-label jk-label">J&amp;K</div>
+
+                    <!-- Assam overlay — Blue Tint -->
+                    <svg class="state-map assam-outline" viewBox="0 0 260 180" aria-hidden="true">
+                        <path d="M18 74 L34 57 L55 55 L72 42 L95 45 L114 31 L139 36
+                                 L156 27 L181 35 L198 31 L221 43 L242 42 L249 58
+                                 L238 72 L244 86 L229 94 L220 111 L201 115 L185 130
+                                 L164 127 L147 140 L124 133 L106 143 L84 132 L64 137
+                                 L48 123 L31 120 L34 105 L20 95 L27 84 Z" />
+                        <path class="inner" d="M49 66 L72 78 L96 68 L116 82 L139 71
+                                 L159 86 L183 74 L205 87 L226 78" />
+                        <path class="inner" d="M91 46 L102 62 L99 83 L111 102 L103 125" />
+                    </svg>
+                    <div class="state-map-label assam-label">ASSAM</div>
+
+                </div>
+                <!-- END INDIA MAP CONTAINER -->
+
+                <img class="bg-photo bg-photo-1" id="bgphoto1" alt="" />
+                <img class="bg-photo bg-photo-2" id="bgphoto2" alt="" />
+
+                <div class="watermark-clip">
+                    <div class="watermark">
+                        <span>❤ TOGETHER</span><span>❤ TOGETHER</span><span>❤ TOGETHER</span>
+                        <span>❤ TOGETHER</span><span>❤ TOGETHER</span><span>❤ TOGETHER</span>
+                        <span>❤ TOGETHER</span><span>❤ TOGETHER</span><span>❤ TOGETHER</span>
+                    </div>
+                </div>
+
+                <div class="foil"></div>
+
+                <div class="microtext-border" id="microtext"></div>
+
+                <!-- top band -->
+                <div class="top-band">
+                    <div>
+                        <div class="authority">Office of the Heart · Two-Person Union</div>
+                        <div class="doc-title">Permit of Residence</div>
+                    </div>
+                    <div class="doc-code">
+                        TYPE&nbsp;<span contenteditable="true" spellcheck="false">LP</span> / CAT&nbsp;<span contenteditable="true" spellcheck="false">02</span><br />
+                        NO. <span contenteditable="true" spellcheck="false">0000-2026-LOVE</span>
+                    </div>
+                </div>
+
+                <!-- body -->
+                <div class="body-row">
+                    <div class="photos">
+                        <label class="photo-box" id="box1">
+                            <span class="ph-empty">tap for<br />photo 1</span>
+                            <span class="ph-label">HOLDER 1</span>
+                            <input type="file" id="f1" accept="image/*" />
+                        </label>
+                        <label class="photo-box" id="box2">
+                            <span class="ph-empty">tap for<br />photo 2</span>
+                            <span class="ph-label">HOLDER 2</span>
+                            <input type="file" id="f2" accept="image/*" />
+                        </label>
+                    </div>
+
+                    <div class="fields">
+                        <div class="field-row">
+                            <div class="field">
+                                <div class="label">Surname / Given Names — Holder 1</div>
+                                <div class="value" contenteditable="true" spellcheck="false">Name One</div>
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field">
+                                <div class="label">Surname / Given Names — Holder 2</div>
+                                <div class="value" contenteditable="true" spellcheck="false">Name Two</div>
+                            </div>
+                        </div>
+
+                        <div class="divider2"></div>
+
+                        <div class="field-row">
+                            <div class="field">
+                                <div class="label">Date of Issue</div>
+                                <div class="value small" contenteditable="true" spellcheck="false">10.08.2026</div>
+                            </div>
+                            <div class="field">
+                                <div class="label">Valid Until</div>
+                                <div class="value small" contenteditable="true" spellcheck="false">∞ Indefinite</div>
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field">
+                                <div class="label">Place of Issue</div>
+                                <div class="value small" contenteditable="true" spellcheck="false">Karlsruhe, DE</div>
+                            </div>
+                            <div class="field">
+                                <div class="label">Class</div>
+                                <div class="value small" contenteditable="true" spellcheck="false">Soulmate</div>
+                            </div>
+                        </div>
+
+                        <div class="status-strip">
+                            <div class="status-pill" contenteditable="true" spellcheck="false">Status: Together</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- seal -->
+                <svg class="seal" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="46" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1.5" />
+                    <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="0.8" stroke-dasharray="2 3" />
+                    <path d="M50 66s-19-11.6-19-24.4C31 35 35.7 30 41.8 30c3.4 0 6.5 1.7 8.2 4.4C51.7 31.7 54.8 30 58.2 30 64.3 30 69 35 69 41.6 69 54.4 50 66 50 66z" fill="rgba(198,161,91,0.10)" opacity="0.8" />
+                    <text x="50" y="18" font-size="5.5" fill="rgba(255,255,255,0.18)" text-anchor="middle" font-family="Barlow Condensed, sans-serif" letter-spacing="1">OFFICE OF THE HEART</text>
+                    <text x="50" y="88" font-size="5.5" fill="rgba(255,255,255,0.18)" text-anchor="middle" font-family="Barlow Condensed, sans-serif" letter-spacing="1">VALID EVERYWHERE</text>
+                </svg>
+
+                <!-- signatures -->
+                <div class="signature-line">
+                    <div>
+                        <div class="sig" contenteditable="true" spellcheck="false">signature</div>
+                        <div class="sig-label">Holder 1 Signature</div>
+                    </div>
+                    <div>
+                        <div class="sig" contenteditable="true" spellcheck="false">signature</div>
+                        <div class="sig-label">Holder 2 Signature</div>
+                    </div>
+                </div>
+
+                <!-- bottom: MRZ + barcode -->
+                <div class="bottom-bar">
+                    <div class="mrz" id="mrz">P&lt;LOVEXHOLDER1&lt;&lt;HOLDER2&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
+                        0000000000LOVE2610088&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;06</div>
+                    <div class="barcode-wrap">
+                        <svg viewBox="0 0 50 30" id="barcode"></svg>
+                    </div>
+                </div>
+
+            </div>
+            <!-- /front -->
+
+            <!-- ====== BACK ====== -->
+            <div class="card face-back" id="cardBack">
+
+                <div class="flagbar"></div>
+
+                <!-- INDIA MAP BACKGROUND CONTAINER (BACK) -->
+                <div class="india-map-container">
+
+                    <svg class="india-base" viewBox="0 0 400 500" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                        <path d="M 140,20 L 160,10 L 190,30 L 180,60 L 210,80 L 240,110 L 290,120 L 310,95 L 340,95 L 380,120 L 390,150 L 380,180 L 330,170 L 310,210 L 270,220 L 240,270 L 210,340 L 180,430 L 140,490 L 110,430 L 70,330 L 80,260 L 30,220 L 10,180 L 50,160 L 70,180 L 100,140 L 120,90 L 130,50 Z" />
+                    </svg>
+
+                    <svg class="state-map jk-outline" viewBox="0 0 220 300" aria-hidden="true">
+                        <path d="M91 8 L113 18 L132 16 L145 29 L164 34 L177 52 L170 70
+                                 L184 86 L178 105 L190 121 L177 137 L183 154 L166 168
+                                 L158 187 L142 194 L135 214 L119 221 L109 242 L91 250
+                                 L79 269 L60 274 L51 291 L37 278 L42 258 L29 244
+                                 L36 224 L26 207 L39 190 L35 172 L48 157 L44 139
+                                 L56 124 L51 106 L64 91 L60 72 L73 57 L69 38 Z" />
+                        <path class="inner" d="M75 58 L95 70 L89 91 L105 105 L96 125 L111 142
+                                 L99 160 L112 180 L96 198 L104 218" />
+                        <path class="inner" d="M132 27 L124 49 L143 65 L137 86 L153 103
+                                 L143 122 L157 140 L147 160 L158 180" />
+                    </svg>
+                    <div class="state-map-label jk-label">J&amp;K</div>
+
+                    <svg class="state-map assam-outline" viewBox="0 0 260 180" aria-hidden="true">
+                        <path d="M18 74 L34 57 L55 55 L72 42 L95 45 L114 31 L139 36
+                                 L156 27 L181 35 L198 31 L221 43 L242 42 L249 58
+                                 L238 72 L244 86 L229 94 L220 111 L201 115 L185 130
+                                 L164 127 L147 140 L124 133 L106 143 L84 132 L64 137
+                                 L48 123 L31 120 L34 105 L20 95 L27 84 Z" />
+                        <path class="inner" d="M49 66 L72 78 L96 68 L116 82 L139 71
+                                 L159 86 L183 74 L205 87 L226 78" />
+                        <path class="inner" d="M91 46 L102 62 L99 83 L111 102 L103 125" />
+                    </svg>
+                    <div class="state-map-label assam-label">ASSAM</div>
+
+                </div>
+                <!-- END INDIA MAP CONTAINER -->
+
+                <img class="bg-photo bg-photo-1" id="bgphoto1b" alt="" />
+                <img class="bg-photo bg-photo-2" id="bgphoto2b" alt="" />
+
+                <div class="watermark-clip">
+                    <div class="watermark">
+                        <span>❤ TOGETHER</span><span>❤ TOGETHER</span><span>❤ TOGETHER</span>
+                        <span>❤ TOGETHER</span><span>❤ TOGETHER</span><span>❤ TOGETHER</span>
+                        <span>❤ TOGETHER</span><span>❤ TOGETHER</span><span>❤ TOGETHER</span>
+                    </div>
+                </div>
+
+                <div class="microtext-border" id="microtextBack"></div>
+
+                <!-- top band -->
+                <div class="top-band">
+                    <div>
+                        <div class="authority">Office of the Heart · Two-Person Union</div>
+                        <div class="back-title">Contact Details</div>
+                    </div>
+                    <div class="doc-code">
+                        SIDE&nbsp;<span>B</span><br />
+                        NO. <span contenteditable="true" spellcheck="false">0000-2026-LOVE</span>
+                    </div>
+                </div>
+
+                <!-- contact columns -->
+                <div class="contact-cols">
+                    <div class="contact-col">
+                        <span class="holder-label">Holder 1</span>
+                        <div class="contact-field">
+                            <div class="label">Address</div>
+                            <div class="value" contenteditable="true" spellcheck="false">Street, City, Country</div>
+                        </div>
+                        <div class="contact-field">
+                            <div class="label">Phone</div>
+                            <div class="value" contenteditable="true" spellcheck="false">+00 000 000 000</div>
+                        </div>
+                        <div class="contact-field">
+                            <div class="label">Email</div>
+                            <div class="value" contenteditable="true" spellcheck="false">name.one@email.com</div>
+                        </div>
+                    </div>
+                    <div class="contact-col">
+                        <span class="holder-label">Holder 2</span>
+                        <div class="contact-field">
+                            <div class="label">Address</div>
+                            <div class="value" contenteditable="true" spellcheck="false">Street, City, Country</div>
+                        </div>
+                        <div class="contact-field">
+                            <div class="label">Phone</div>
+                            <div class="value" contenteditable="true" spellcheck="false">+00 000 000 000</div>
+                        </div>
+                        <div class="contact-field">
+                            <div class="label">Email</div>
+                            <div class="value" contenteditable="true" spellcheck="false">name.two@email.com</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- seal back -->
+                <svg class="seal" viewBox="0 0 100 100" style="bottom:clamp(8px, 2vh, 18px);">
+                    <circle cx="50" cy="50" r="46" fill="none" stroke="rgba(255,255,255,0.16)" stroke-width="1.5" />
+                    <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="0.8" stroke-dasharray="2 3" />
+                    <path d="M50 66s-19-11.6-19-24.4C31 35 35.7 30 41.8 30c3.4 0 6.5 1.7 8.2 4.4C51.7 31.7 54.8 30 58.2 30 64.3 30 69 35 69 41.6 69 54.4 50 66 50 66z" fill="rgba(14,76,71,0.08)" opacity="0.7" />
+                    <text x="50" y="18" font-size="5.5" fill="rgba(255,255,255,0.14)" text-anchor="middle" font-family="Barlow Condensed, sans-serif" letter-spacing="1">OFFICE OF THE HEART</text>
+                    <text x="50" y="88" font-size="5.5" fill="rgba(255,255,255,0.14)" text-anchor="middle" font-family="Barlow Condensed, sans-serif" letter-spacing="1">VALID EVERYWHERE</text>
+                </svg>
+
+                <!-- fine print -->
+                <div class="fine-print" contenteditable="true" spellcheck="false">This permit certifies that the above-named holders are bound by mutual affection, granted full residence in one another's life, and are entitled to unlimited hugs, inside jokes, and shared blankets. Renewable automatically, no application required.</div>
+
+            </div>
+            <!-- /back -->
+
+        </div>
+    </div>
+
+    <div class="hint">
+        Tap photo boxes to upload · edit any text · flip to back · save as PNG
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">
+    </script>
+    <script>
+        // ---- fixed ID-1 credit-card geometry ----
+        // The card-scene uses ISO/IEC 7810 ID-1 ratio (85.60:53.98).
+        // Width is ~356px at standard DPI ≈ actual credit-card width.
+        // Both faces occupy the exact same rectangle, so flipping never
+        // moves the back face or changes the card dimensions.
+
+        // ---- photo upload ----
+        function wireFrame(boxId, fileId, bgIds) {
+            const box = document.getElementById(boxId);
+            const input = document.getElementById(fileId);
+            input.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const empty = box.querySelector('.ph-empty');
+                    if (empty) empty.remove();
+                    let img = box.querySelector('img');
+                    if (!img) {
+                        img = document.createElement('img');
+                        box.insertBefore(img, box.querySelector('.ph-label'));
+                    }
+                    img.src = ev.target.result;
+                    bgIds.forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) el.src = ev.target.result;
+                    });
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+        wireFrame('box1', 'f1', ['bgphoto1', 'bgphoto1b']);
+        wireFrame('box2', 'f2', ['bgphoto2', 'bgphoto2b']);
+
+        // ---- microtext ----
+        const microtextContent = ('OFFICE OF THE HEART ✦ PERMIT OF RESIDENCE ✦ VALID EVERYWHERE ✦ ').repeat(5);
+        document.getElementById('microtext').textContent = microtextContent;
+        document.getElementById('microtextBack').textContent = microtextContent;
+
+        // ---- flip ----
+        function flipCard() {
+            const scene = document.getElementById('scene');
+            const rect = scene.getBoundingClientRect();
+
+            // Preserve the exact screen position and dimensions during flip.
+            scene.style.width = rect.width + 'px';
+            scene.style.height = rect.height + 'px';
+            scene.classList.toggle('flipped');
+
+            // Return control to the CSS aspect ratio after the transition.
+            clearTimeout(window.__flipResizeTimer);
+            window.__flipResizeTimer = setTimeout(() => {
+                scene.style.width = '';
+                scene.style.height = '';
+            }, 750);
+        }
+
+        // ---- barcode ----
+        function drawBarcode(seedStr) {
+            const svg = document.getElementById('barcode');
+            svg.innerHTML = '';
+            let seed = 0;
+            for (let i = 0; i < seedStr.length; i++) seed = (seed * 31 + seedStr.charCodeAt(i)) % 9973;
+            let x = 0;
+            for (let i = 0; i < 24; i++) {
+                seed = (seed * 1103515245 + 12345) % 2147483648;
+                const w = (seed % 3) + 1;
+                if (i % 2 === 0) {
+                    const bar = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                    bar.setAttribute('x', x);
+                    bar.setAttribute('y', 0);
+                    bar.setAttribute('width', w);
+                    bar.setAttribute('height', 28);
+                    svg.appendChild(bar);
+                }
+                x += w;
+                if (x > 48) break;
+            }
+        }
+
+        function updateMRZ() {
+            const nameEls = document.querySelectorAll('.fields .value');
+            const name1 = nameEls[0] ? nameEls[0].innerText.trim() : '';
+            const name2 = nameEls[1] ? nameEls[1].innerText.trim() : '';
+            const n1 = (name1 || 'HOLDER1').toUpperCase().replace(/[^A-Z ]/g, '').trim().replace(/\s+/g, '<');
+            const n2 = (name2 || 'HOLDER2').toUpperCase().replace(/[^A-Z ]/g, '').trim().replace(/\s+/g, '<');
+            let line1 = ('P<LOVE' + n1 + '<<' + n2).padEnd(30, '<').slice(0, 30);
+            let line2 = '0000000000LOVE2610088'.padEnd(28, '<').slice(0, 28) + '06';
+            const fullMRZ = line1 + line2;
+            document.getElementById('mrz').textContent = line1 + '\n' + line2;
+            drawBarcode(fullMRZ);
+        }
+
+        document.querySelectorAll('.fields .value').forEach(el => {
+            el.addEventListener('input', updateMRZ);
+        });
+        updateMRZ();
+
+        // ---- download ----
+        function downloadFace(which) {
+            const scene = document.getElementById('scene');
+            const wantFlipped = which === 'back';
+            const isFlipped = scene.classList.contains('flipped');
+            const targetId = which === 'back' ? 'cardBack' : 'card';
+
+            const capture = () => {
+                const el = document.getElementById(targetId);
+                const foil = el.querySelector('.foil');
+                const previousAnimation = foil ? foil.style.animation : '';
+                if (foil) foil.style.animation = 'none';
+
+                const render = () => html2canvas(el, {
+                    scale: Math.min(3, window.devicePixelRatio * 2 || 2),
+                    backgroundColor: null,
+                    useCORS: true,
+                    allowTaint: false,
+                    logging: false
+                }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = which === 'back' ? 'love-permit-back.png' : 'love-permit-front.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                }).finally(() => {
+                    if (foil) foil.style.animation = previousAnimation;
+                });
+
+                if (document.fonts && document.fonts.ready) {
+                    document.fonts.ready.then(render);
+                } else {
+                    render();
+                }
+            };
+
+            if (isFlipped !== wantFlipped) {
+                scene.classList.toggle('flipped');
+                setTimeout(capture, 700);
+            } else {
+                capture();
+            }
+        }
+    </script>
+
+</body>
+</html>
