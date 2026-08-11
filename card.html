@@ -126,7 +126,7 @@
             overflow: hidden;
         }
 
-        /* ---- Background Blur - IMPROVED VISIBILITY ---- */
+        /* ---- Background Blur - improved: smaller, non-overlapping, more transparent ---- */
         .bg-blur-wrap {
             position: absolute;
             inset: 0;
@@ -137,11 +137,11 @@
         }
         .bg-blur-wrap .blur-img {
             position: absolute;
-            width: 100%;
+            width: 45%;
             height: 100%;
             object-fit: cover;
-            filter: blur(18px) brightness(0.65) saturate(0.8);
-            opacity: 0.85;
+            filter: blur(18px) brightness(0.7) saturate(0.8);
+            opacity: 0.35;
             pointer-events: none;
             transition: opacity 0.4s ease;
         }
@@ -149,13 +149,11 @@
             left: 0;
             top: 0;
             object-position: 30% 50%;
-            clip-path: polygon(0 0, 60% 0, 50% 100%, 0 100%);
         }
         .bg-blur-wrap .blur-img.right {
             right: 0;
-            bottom: 0;
+            top: 0;
             object-position: 70% 50%;
-            clip-path: polygon(40% 0, 100% 0, 100% 100%, 50% 100%);
         }
         .bg-blur-wrap .grad-fallback {
             position: absolute;
