@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ever &amp; After</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Jost:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --cream:#faf3ea;
+    --paper:#fffbf4;
+    --blush:#f3d6cd;
+    --blush2:#f8c9b9;
+    --terracotta:#bd7e53;
+    --terracotta-deep:#9c5f3c;
+    --taupe:#8c7358;
+    --ink:#2b2620;
+    --charcoal:#584c40;
+    --charcoal-soft:#7a6c5c;
+    --gold-line:#b9895d;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Jost',sans-serif;
+    color:var(--charcoal);
+    background:
+      radial-gradient(ellipse 60% 45% at 8% 8%, rgba(248,201,185,.55), transparent 60%),
+      radial-gradient(ellipse 55% 40% at 95% 92%, rgba(243,214,205,.6), transparent 60%),
+      linear-gradient(160deg, var(--blush) 0%, var(--cream) 45%, var(--blush2) 100%);
+    padding: clamp(10px,3vw,32px);
+  }
+  h1,h2,h3{font-family:'Fraunces',serif; font-weight:400; color:var(--terracotta-deep); letter-spacing:-0.01em;}
+  .sheet{
+    background:var(--paper);
+    border-radius:28px;
+    overflow:hidden;
+    max-width:1180px;
+    margin:0 auto;
+    box-shadow:0 30px 80px rgba(120,70,50,.12);
+  }
+  .wrap{padding: clamp(24px,4vw,64px);}
+  a{color:inherit; text-decoration:none;}
+
+  /* ---------------- NAV ---------------- */
+  nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 28px clamp(24px,4vw,64px) 6px;
+  }
+  .logo{
+    font-family:'Fraunces',serif; font-style:italic; font-weight:400;
+    font-size:15px; line-height:1.15; color:var(--terracotta-deep);
+    text-align:center; border:1px solid rgba(185,138,93,.4);
+    border-radius:50%; width:58px; height:58px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .nav-links{display:flex; gap:34px; font-size:12.5px; letter-spacing:2.5px; font-weight:500; color:var(--ink); text-transform:uppercase;}
+  .nav-links a{opacity:.75; transition:opacity .2s;}
+  .nav-links a:hover{opacity:1;}
+  .nav-social{font-size:12px; letter-spacing:2px; font-weight:500; color:var(--ink); opacity:.7;}
+
+  /* ---------------- HERO ---------------- */
+  .hero{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    padding: 20px clamp(24px,4vw,64px) 70px;
+    align-items:start;
+    position:relative;
+  }
+  .hero-text{padding-top:36px; position:relative;}
+  .hero-text h1{font-size:clamp(38px,4.6vw,58px); line-height:1.08; margin-bottom:22px;}
+  .hero-text p{max-width:400px; font-size:15px; line-height:1.8; color:var(--charcoal-soft); margin-bottom:30px;}
+  .bracket{
+    position:absolute; width:150px; height:64px;
+    border-top:1px solid var(--ink); border-right:1px solid var(--ink);
+    top:18px; left:280px; opacity:.75;
+  }
+  .btn{
+    display:inline-flex; align-items:center; gap:10px;
+    background:var(--ink); color:var(--paper);
+    padding:15px 26px; border-radius:30px;
+    font-size:12.5px; letter-spacing:1.5px; text-transform:uppercase; font-weight:500;
+    transition:transform .2s ease, background .2s ease;
+  }
+  .btn:hover{transform:translateY(-2px); background:var(--terracotta-deep);}
+  .hero-image{
+    margin-top:52px;
+    border-radius:18px; overflow:hidden;
+    box-shadow:0 24px 50px rgba(120,70,50,.18);
+  }
+  .hero-image svg{display:block; width:100%; height:auto;}
+
+  /* ---------------- SECTION 2: VISION ---------------- */
+  .vision{padding: 40px clamp(24px,4vw,64px) 40px; position:relative;}
+  .vision-heading{position:relative; max-width:760px; padding-right:clamp(90px,16vw,180px);}
+  .vision-heading h2{
+    font-size:clamp(30px,4.6vw,52px); line-height:1.22; text-align:left;
+  }
+  .circle-photo{
+    position:absolute; right:0; bottom:-34px;
+    width:clamp(120px,17vw,190px); aspect-ratio:1/1;
+    border-radius:50%; overflow:hidden;
+    box-shadow:0 18px 40px rgba(120,70,50,.18);
+    border:6px solid var(--paper);
+  }
+  .circle-photo svg{display:block; width:100%; height:100%;}
+  .bracket-alt{
+    position:absolute; width:130px; height:56px;
+    border-bottom:1px solid var(--ink); border-left:1px solid var(--ink);
+    bottom:-8px; left:0; opacity:.75;
+  }
+
+  .about-grid{
+    display:grid; grid-template-columns: 0.85fr 1.15fr; gap:48px;
+    padding: 60px clamp(24px,4vw,64px) 80px;
+    align-items:start; position:relative;
+  }
+  .blob{
+    position:absolute; width:230px; height:230px; border-radius:50%;
+    background:radial-gradient(circle, var(--blush2), transparent 70%);
+    left:-40px; top:120px; z-index:0; opacity:.9;
+  }
+  .who{position:relative; z-index:1;}
+  .eyebrow{
+    display:flex; align-items:center; gap:14px;
+    font-size:12px; letter-spacing:3px; font-weight:600; color:var(--ink);
+    text-transform:uppercase; margin-bottom:20px;
+  }
+  .eyebrow::after{content:""; flex:1; max-width:60px; height:1px; background:var(--ink); opacity:.5;}
+  .who p{font-size:15.5px; line-height:1.85; color:var(--charcoal-soft); max-width:340px;}
+  .arch-photo{
+    border-radius: 200px 200px 20px 20px; overflow:hidden;
+    box-shadow:0 30px 60px rgba(120,70,50,.2);
+  }
+  .arch-photo svg{display:block; width:100%; height:auto;}
+
+  /* ---------------- CONTENT BLOCKS ---------------- */
+  .blocks-section{
+    padding: 10px clamp(24px,4vw,64px) 70px;
+  }
+  .blocks-grid{
+    background:linear-gradient(160deg, var(--cream), var(--paper));
+    border-radius:24px;
+    display:grid; grid-template-columns: 0.75fr 1.25fr; gap:40px;
+    padding:clamp(24px,4vw,48px);
+  }
+  .avatar-photo{
+    border-radius:26px; overflow:hidden; align-self:start;
+    box-shadow:0 20px 40px rgba(120,70,50,.16);
+  }
+  .avatar-photo svg{display:block; width:100%; height:auto;}
+  .blocks-list{display:flex; flex-direction:column; gap:34px;}
+  .block h3{font-size:22px; margin-bottom:10px; font-weight:500;}
+  .block p{font-size:14.5px; line-height:1.8; color:var(--charcoal-soft); max-width:520px;}
+
+  /* ---------------- MILESTONES ---------------- */
+  .milestones{padding: 0 clamp(24px,4vw,64px) 60px;}
+  .milestones .label{
+    font-size:11.5px; letter-spacing:2.5px; font-weight:600; color:var(--charcoal-soft);
+    text-transform:uppercase; margin-bottom:22px;
+  }
+  .milestone-row{
+    display:flex; flex-wrap:wrap; gap:clamp(20px,5vw,56px);
+    align-items:center; padding-bottom:8px; border-top:1px solid rgba(140,115,88,.2); padding-top:28px;
+  }
+  .milestone{display:flex; align-items:center; gap:10px; font-family:'Fraunces',serif; color:var(--taupe); font-size:15px;}
+  .milestone b{font-weight:600; color:var(--terracotta-deep); font-size:17px;}
+
+  /* ---------------- FOOTER ---------------- */
+  footer{
+    background:var(--ink); color:var(--cream);
+    padding: 60px clamp(24px,4vw,64px) 44px;
+    text-align:center;
+  }
+  footer h2{color:var(--blush2); font-size:clamp(26px,4vw,38px); margin-bottom:14px;}
+  footer p{opacity:.65; font-size:14px; max-width:420px; margin:0 auto 26px;}
+  footer .nav-links{justify-content:center; color:var(--cream); opacity:.7;}
+
+  @media (max-width:820px){
+    nav{flex-wrap:wrap; gap:14px; padding:22px 20px 4px;}
+    .nav-links{order:3; width:100%; justify-content:center;}
+    .hero{grid-template-columns:1fr; padding:16px 20px 50px;}
+    .hero-text{padding-top:10px;}
+    .bracket{display:none;}
+    .hero-image{margin-top:20px;}
+    .vision-heading{max-width:none; padding-right:0;}
+    .circle-photo{position:static; margin:22px 0 0; display:block; border:none;}
+    .bracket-alt{display:none;}
+    .about-grid{grid-template-columns:1fr; padding:40px 20px 50px;}
+    .blob{display:none;}
+    .blocks-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <!-- ================= NAV ================= -->
+  <nav>
+    <div class="logo">Ever<br>After</div>
+    <div class="nav-links">
+      <a href="#story">Our Story</a>
+      <a href="#moments">Moments</a>
+    </div>
+    <div class="nav-social">IG &nbsp;•&nbsp; FB</div>
+  </nav>
+
+  <!-- ================= HERO ================= -->
+  <section class="hero" id="story">
+    <div class="hero-text">
+      <span class="bracket"></span>
+      <h1>Two Hearts,<br>Written as One</h1>
+      <p>From a chance hello to every quiet Tuesday since — this is the story of two people who found their favorite person, told one small chapter at a time.</p>
+      <a class="btn" href="#moments">Read Our Story &nbsp;→</a>
+    </div>
+    <div class="hero-image">
+      <svg viewBox="0 0 600 420" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#f7dfce"/>
+            <stop offset="60%" stop-color="#f3c9b8"/>
+            <stop offset="100%" stop-color="#e8ac93"/>
+          </linearGradient>
+          <linearGradient id="hill1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#c98e63"/>
+            <stop offset="100%" stop-color="#b97748"/>
+          </linearGradient>
+        </defs>
+        <rect width="600" height="420" fill="url(#skyGrad)"/>
+        <circle cx="470" cy="110" r="46" fill="#fbe6c9" opacity="0.9"/>
+        <path d="M0 270 Q150 220 320 260 T600 240 V420 H0 Z" fill="#d9a374" opacity="0.55"/>
+        <path d="M0 320 Q180 280 340 315 T600 300 V420 H0 Z" fill="url(#hill1)" opacity="0.8"/>
+        <path d="M0 360 Q220 330 380 355 T600 345 V420 H0 Z" fill="#9c5f3c"/>
+        <!-- couple walking away -->
+        <g transform="translate(268,300)">
+          <ellipse cx="26" cy="96" rx="34" ry="7" fill="rgba(0,0,0,.12)"/>
+          <g transform="translate(0,0)">
+            <path d="M8 30 Q4 5 22 5 Q40 5 36 30 L38 78 Q22 86 6 78 Z" fill="#5c4433"/>
+            <circle cx="22" cy="8" r="12" fill="#4a352a"/>
+            <rect x="12" y="78" width="7" height="24" rx="3" fill="#3d2c22"/>
+            <rect x="25" y="78" width="7" height="24" rx="3" fill="#3d2c22"/>
+          </g>
+          <g transform="translate(34,-4)">
+            <path d="M6 26 Q2 2 20 2 Q38 2 34 26 L36 80 Q20 90 4 80 Z" fill="#8c5a45"/>
+            <circle cx="20" cy="6" r="11" fill="#33261e"/>
+            <rect x="10" y="80" width="7" height="24" rx="3" fill="#2b2018"/>
+            <rect x="23" y="80" width="7" height="24" rx="3" fill="#2b2018"/>
+          </g>
+        </g>
+        <path d="M120 380 Q300 388 480 380" stroke="#7a4e30" stroke-width="1.5" opacity=".4" fill="none"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ================= VISION HEADING ================= -->
+  <section class="vision">
+    <div class="vision-heading">
+      <span class="bracket-alt"></span>
+      <h2>Crafting little moments into a whole life together</h2>
+      <span class="circle-photo">
+        <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="circGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#f6d9cd"/>
+              <stop offset="100%" stop-color="#e7ab8c"/>
+            </linearGradient>
+          </defs>
+          <rect width="300" height="300" fill="url(#circGrad)"/>
+          <g transform="translate(60,50)">
+            <path d="M20 60 Q10 10 60 10 Q100 8 96 60 L100 150 Q60 168 22 150 Z" fill="#a5623c"/>
+            <path d="M78 55 Q68 6 118 8 Q160 8 154 58 L158 148 Q118 166 80 148 Z" fill="#5c4433" opacity="0.95"/>
+            <circle cx="58" cy="34" r="26" fill="#e7ab8c"/>
+            <circle cx="120" cy="30" r="24" fill="#c98e63"/>
+            <path d="M34 20 Q40 -4 66 0 Q90 4 84 26 Q70 12 34 20Z" fill="#3d2c22"/>
+            <path d="M98 18 Q104 -2 128 4 Q148 10 142 28 Q126 12 98 18Z" fill="#241a14"/>
+          </g>
+        </svg>
+      </span>
+    </div>
+  </section>
+
+  <!-- ================= ABOUT / WHO WE ARE ================= -->
+  <section class="about-grid">
+    <span class="blob"></span>
+    <div class="who">
+      <div class="eyebrow">Who We Are</div>
+      <p>We're two people who somehow ended up on the same page, most of the time on purpose. This little corner of the internet holds the parts of our story worth keeping — the first hello, the long-distance calls, and everything since.</p>
+    </div>
+    <div class="arch-photo">
+      <svg viewBox="0 0 460 620" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="archGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#f6ded0"/>
+            <stop offset="100%" stop-color="#dba184"/>
+          </linearGradient>
+        </defs>
+        <rect width="460" height="620" fill="url(#archGrad)"/>
+        <path d="M0 500 Q230 460 460 500 V620 H0 Z" fill="#c17f53" opacity=".5"/>
+        <g transform="translate(120,190)">
+          <ellipse cx="110" cy="380" rx="120" ry="18" fill="rgba(0,0,0,.08)"/>
+          <!-- her -->
+          <path d="M20 130 Q4 40 90 36 Q160 34 150 130 L162 360 Q90 392 24 360 Z" fill="#fbf3e8"/>
+          <circle cx="86" cy="58" r="40" fill="#e7ab8c"/>
+          <path d="M46 46 Q40 -6 96 -4 Q148 -2 140 50 Q118 20 86 26 Q56 30 46 46Z" fill="#3d2c22"/>
+          <!-- bouquet -->
+          <g transform="translate(46,240)">
+            <circle cx="0" cy="10" r="12" fill="#e7b98c"/>
+            <circle cx="18" cy="0" r="13" fill="#c98e63"/>
+            <circle cx="30" cy="16" r="11" fill="#f0d3b8"/>
+            <circle cx="10" cy="24" r="10" fill="#bd7e53"/>
+            <rect x="14" y="20" width="6" height="46" fill="#7a8f5c"/>
+          </g>
+          <!-- him -->
+          <g transform="translate(126,-6)">
+            <path d="M14 118 Q0 30 76 28 Q140 26 132 118 L142 356 Q76 386 18 356 Z" fill="#5c6c8c"/>
+            <circle cx="74" cy="48" r="38" fill="#c98e63"/>
+            <path d="M38 36 Q34 -10 84 -8 Q130 -6 124 40 Q104 14 74 20 Q46 24 38 36Z" fill="#241a14"/>
+          </g>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ================= CONTENT BLOCKS ================= -->
+  <section class="blocks-section" id="moments">
+    <div class="blocks-grid">
+      <div class="avatar-photo">
+        <svg viewBox="0 0 320 400" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="avGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#f3d6cd"/>
+              <stop offset="100%" stop-color="#c98e63"/>
+            </linearGradient>
+          </defs>
+          <rect width="320" height="400" fill="url(#avGrad)"/>
+          <g transform="translate(60,110)">
+            <path d="M20 60 Q10 6 66 6 Q112 6 106 62 L112 190 Q66 214 24 190 Z" fill="#9c5f3c"/>
+            <path d="M84 56 Q74 4 130 6 Q178 8 170 60 L176 188 Q130 210 88 188 Z" fill="#5c4433" opacity=".95"/>
+            <circle cx="62" cy="34" r="28" fill="#e7ab8c"/>
+            <circle cx="130" cy="30" r="26" fill="#c98e63"/>
+            <path d="M32 20 Q38 -6 68 0 Q94 4 88 28 Q72 12 32 20Z" fill="#3d2c22"/>
+            <path d="M104 18 Q112 -4 138 4 Q160 10 152 30 Q134 12 104 18Z" fill="#241a14"/>
+          </g>
+        </svg>
+      </div>
+      <div class="blocks-list">
+        <div class="block">
+          <h3>Small Rituals, Big Meaning</h3>
+          <p>Morning coffee texts, the same three songs on repeat, the inside jokes nobody else gets — the smallest habits are somehow the ones that hold everything together.</p>
+        </div>
+        <div class="block">
+          <h3>Miles Apart, Never Really Far</h3>
+          <p>Different time zones, one shared calendar. We've learned that distance is just a logistics problem when you're both willing to solve it — call by call, visit by visit.</p>
+        </div>
+        <div class="block">
+          <h3>Why We Keep Choosing Each Other</h3>
+          <p>Not because it's easy every day, but because the ordinary days are better with the right person in them. That's the whole, unglamorous, wonderful truth of it.</p>
+        </div>
+        <div class="block">
+          <h3>Promises We Keep</h3>
+          <p>To listen first, to laugh often, and to keep showing up — for the good weeks and the hard ones. Everything else about "us" is built on that.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= MILESTONES ================= -->
+  <section class="milestones">
+    <div class="label">A Few Little Milestones</div>
+    <div class="milestone-row">
+      <div class="milestone">🌍 <span><b>3</b> countries visited together</span></div>
+      <div class="milestone">📞 <span><b>1,200+</b> calls and counting</span></div>
+      <div class="milestone">📅 <span>Est. <b>2022</b></span></div>
+      <div class="milestone">❤ <span><b>1</b> favorite person, no contest</span></div>
+    </div>
+  </section>
+
+  <!-- ================= FOOTER ================= -->
+  <footer>
+    <h2>Here's to the next chapter</h2>
+    <p>Edit this page freely — swap the copy, the milestones, and the illustrations for your own story.</p>
+    <div class="nav-links">
+      <a href="#story">Our Story</a>
+      <a href="#moments">Moments</a>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>
