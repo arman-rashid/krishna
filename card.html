@@ -695,8 +695,12 @@
         <button class="primary" onclick="flipCard()">↔ Flip card</button>
     </div>
     <div class="toolbar">
-        <button onclick="downloadFace('front')">⬇ Save front</button>
-        <button onclick="downloadFace('back')">⬇ Save back</button>
+        <button onclick="downloadFace('front')">⬇ Save front (PNG)</button>
+        <button onclick="downloadFace('back')">⬇ Save back (PNG)</button>
+    </div>
+    <div class="toolbar">
+        <button onclick="downloadFaceSVG('front')">⬇ Save front (SVG)</button>
+        <button onclick="downloadFaceSVG('back')">⬇ Save back (SVG)</button>
     </div>
 
     <!-- card scene -->
@@ -1029,6 +1033,45 @@
             return alphaCanvas.toDataURL('image/png');
         }
 
+        function coverCropRects(srcW, srcH, targetW, targetH) {
+            const targetRatio = targetW / targetH;
+            const srcRatio = srcW / srcH;
+            let sx, sy, sw, sh;
+            if (srcRatio > targetRatio) {
+                sh = srcH;
+                sw = sh * targetRatio;
+                sx = (srcW - sw) / 2;
+                sy = 0;
+            } else {
+                sw = srcW;
+                sh = sw / targetRatio;
+                sx = 0;
+                sy = (srcH - sh) / 2;
+            }
+            return { sx, sy, sw, sh };
+        }
+
+        // The holder photo boxes use CSS `object-fit: cover`, but html2canvas
+        // does not support object-fit — it was squashing the photo to fill the
+        // box instead of cropping it, which is why the proportions looked
+        // different in the exported PNG than on screen. Baking the exact same
+        // cover-crop into the image's own pixels (same fix as the background
+        // photos) makes the live preview and the export pixel-identical.
+        async function processPhotoForBox(dataUrl, boxEl) {
+            const img = await loadImage(dataUrl);
+            const boxW = boxEl.clientWidth || 140;
+            const boxH = boxEl.clientHeight || 165;
+            const targetW = boxW * 3, targetH = boxH * 3;
+            const { sx, sy, sw, sh } = coverCropRects(img.width, img.height, targetW, targetH);
+
+            const canvas = document.createElement('canvas');
+            canvas.width = targetW;
+            canvas.height = targetH;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, sx, sy, sw, sh, 0, 0, targetW, targetH);
+            return canvas.toDataURL('image/png');
+        }
+
         // ---- photo upload ----
         function wireFrame(boxId, fileId, bgIds, angleDeg) {
             const box = document.getElementById(boxId);
@@ -1047,10 +1090,13 @@
                         img = document.createElement('img');
                         box.insertBefore(img, box.querySelector('.ph-label'));
                     }
-                    img.src = rawDataUrl;
 
-                    const processedUrl = await processPhotoForBg(rawDataUrl, angleDeg);
-                    bgIds.forEach(id => { document.getElementById(id).src = processedUrl; });
+                    const [boxUrl, bgUrl] = await Promise.all([
+                        processPhotoForBox(rawDataUrl, box),
+                        processPhotoForBg(rawDataUrl, angleDeg)
+                    ]);
+                    img.src = boxUrl;
+                    bgIds.forEach(id => { document.getElementById(id).src = bgUrl; });
                 };
                 reader.readAsDataURL(file);
             });
@@ -1178,6 +1224,91 @@
                 }).catch(() => {
                     restore();
                 });
+            };
+
+            if (isFlipped !== wantFlipped) {
+                scene.classList.toggle('flipped');
+                setTimeout(capture, 750);
+            } else {
+                capture();
+            }
+        }
+        // ---- SVG export ----
+        // Wraps the face's live DOM (plus a copy of the page's own <style>
+        // rules) inside an SVG <foreignObject>. Unlike html2canvas — which
+        // reimplements CSS itself and misses things like object-fit, 3D
+        // transforms, and backdrop-filter — a foreignObject is rendered by the
+        // browser's actual layout/paint engine, so it's a much closer match to
+        // what you see on screen. The trade-off: the resulting .svg file only
+        // renders correctly in apps with a real HTML rendering engine (browsers,
+        // Chrome/Edge, some design tools). Plain image viewers, Illustrator, and
+        // most phone gallery apps will not render the foreignObject content and
+        // will show a blank or broken image — so PNG is still the safer choice
+        // for sharing or printing.
+        function buildFaceSVG(targetId) {
+            const el = document.getElementById(targetId);
+            const styleText = document.querySelector('style').textContent;
+
+            const svgNS = 'http://www.w3.org/2000/svg';
+            const xhtmlNS = 'http://www.w3.org/1999/xhtml';
+
+            const svgRoot = document.createElementNS(svgNS, 'svg');
+            svgRoot.setAttribute('xmlns', svgNS);
+            svgRoot.setAttribute('xmlns:xhtml', xhtmlNS);
+            svgRoot.setAttribute('width', '640');
+            svgRoot.setAttribute('height', '404');
+            svgRoot.setAttribute('viewBox', '0 0 640 404');
+
+            const foreignObject = document.createElementNS(svgNS, 'foreignObject');
+            foreignObject.setAttribute('width', '640');
+            foreignObject.setAttribute('height', '404');
+
+            const wrapper = document.createElementNS(xhtmlNS, 'div');
+            wrapper.setAttribute('style', 'width:640px;height:404px;position:relative;overflow:hidden;');
+
+            const styleEl = document.createElementNS(xhtmlNS, 'style');
+            styleEl.textContent = styleText;
+
+            const clone = el.cloneNode(true);
+            clone.style.transform = 'none';
+            clone.style.position = 'absolute';
+            clone.style.top = '0';
+            clone.style.left = '0';
+
+            wrapper.appendChild(styleEl);
+            wrapper.appendChild(clone);
+            foreignObject.appendChild(wrapper);
+            svgRoot.appendChild(foreignObject);
+
+            // XMLSerializer escapes special characters (&, <, etc.) correctly,
+            // unlike manual string concatenation — this is what was producing
+            // an invalid, unparsable SVG before (the Google Fonts @import URL's
+            // unescaped "&" broke strict XML parsing).
+            return new XMLSerializer().serializeToString(svgRoot);
+        }
+
+        function downloadFaceSVG(which) {
+            const scene = document.getElementById('scene');
+            const cardInner = document.getElementById('cardInner');
+            const wantFlipped = which === 'back';
+            const isFlipped = scene.classList.contains('flipped');
+            const targetId = which === 'back' ? 'cardBack' : 'card';
+
+            const capture = () => {
+                const prevInnerTransform = cardInner.style.transform;
+                cardInner.style.transform = 'none';
+
+                const svgString = buildFaceSVG(targetId);
+
+                cardInner.style.transform = prevInnerTransform;
+
+                const blob = new Blob([svgString], { type: 'image/svg+xml' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = which === 'back' ? 'love-permit-back.svg' : 'love-permit-front.svg';
+                link.href = url;
+                link.click();
+                setTimeout(() => URL.revokeObjectURL(url), 2000);
             };
 
             if (isFlipped !== wantFlipped) {
