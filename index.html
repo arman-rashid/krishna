@@ -1,12 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta chartrty noset="UTF-8" />
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>For Krishna 🌹</title>
+    <script>
+        // Pick the theme before anything paints: her saved choice, otherwise day between 7am and 7pm.
+        (function () {
+            var t = null;
+            try { t = localStorage.getItem('krishna-theme'); } catch (e) {}
+            if (t !== 'day' && t !== 'night') { var h = new Date().getHours(); t = (h >= 7 && h < 19) ? 'day' : 'night'; }
+            document.documentElement.setAttribute('data-theme', t);
+        })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Dancing+Script:wght@500;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=DM+Mono:wght@400&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..600,0..100,0..1;1,9..144,300..600,0..100,0..1&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet" />
 
     <!-- Leaflet CSS & JS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -636,12 +645,769 @@
             .map-controls button { font-size: 13px; padding: 8px 16px; }
             .map-prompt { font-size: 17px; padding: 20px 14px; }
         }
+
+        /* ─── 3D BLOOMING ROSE HERO ─── */
+        .bloom-hero {
+            position: relative;
+            z-index: 2;              /* sits above the fixed emoji hearts/stars */
+            isolation: isolate;
+            height: 100svh;
+            min-height: 520px;
+            padding: 0;
+            justify-content: space-between;
+            overflow: hidden;
+            background: radial-gradient(ellipse 70% 60% at 50% 55%, #4a1d36 0%, #2a0f20 50%, #12060e 100%);
+        }
+        #roseCanvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            touch-action: pan-y;     /* horizontal drags turn the rose, vertical swipes still scroll */
+            cursor: grab;
+            opacity: 0;
+            transition: opacity 1.6s ease;
+        }
+        #roseCanvas.ready { opacity: 1; }
+        #roseCanvas.dragging { cursor: grabbing; }
+        .bloom-vignette {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(ellipse 85% 75% at 50% 55%, transparent 55%, rgba(10, 3, 8, 0.7) 100%),
+                linear-gradient(to bottom, rgba(18, 6, 14, 0.55), transparent 28%, transparent 78%, rgba(31, 15, 26, 0.95));
+        }
+        .bloom-ui {
+            position: relative;
+            z-index: 2;
+            pointer-events: none;
+            padding: clamp(44px, 9vh, 88px) 16px 0;
+            text-align: center;
+        }
+        .bloom-ui .eyebrow { margin-bottom: 14px; }
+        .bloom-ui h1.title { margin-bottom: 12px; filter: drop-shadow(0 4px 24px rgba(0, 0, 0, 0.6)); }
+        .bloom-sub {
+            max-width: 420px;
+            margin: 0 auto;
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: clamp(17px, 2.4vw, 21px);
+            line-height: 1.5;
+            color: var(--ivory-dim);
+            text-shadow: 0 2px 16px rgba(0, 0, 0, 0.8);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 1.4s ease, transform 1.4s ease;
+        }
+        .bloom-hero.bloomed .bloom-sub { opacity: 0.95; transform: none; transition-delay: 0.4s; }
+
+        .bloom-bottom {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            padding: 0 16px clamp(28px, 6vh, 56px);
+        }
+        .bloom-stack { display: grid; place-items: center; }
+        .bloom-stack > * { grid-area: 1 / 1; }
+        .bloom-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 26px;
+            border-radius: 40px;
+            border: 1px solid rgba(230, 201, 138, 0.45);
+            background: rgba(31, 15, 26, 0.45);
+            backdrop-filter: blur(var(--blur-sm));
+            -webkit-backdrop-filter: blur(var(--blur-sm));
+            color: var(--gold-light);
+            font-family: 'Lora', serif;
+            font-size: 14.5px;
+            letter-spacing: 0.4px;
+            cursor: pointer;
+            box-shadow: 0 10px 34px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+            transition: opacity 0.8s ease, transform 0.8s ease, background 0.3s ease, border-color 0.3s ease;
+        }
+        .bloom-btn:hover { background: rgba(217, 138, 156, 0.2); border-color: var(--gold-light); }
+        .bloom-btn:focus-visible { outline: 2px solid var(--gold-light); outline-offset: 3px; }
+        .bloom-btn svg { width: 15px; height: 15px; animation: bob 1.8s ease-in-out infinite; }
+        .bloom-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--rose);
+            box-shadow: 0 0 0 0 rgba(217, 138, 156, 0.7);
+            animation: bloomPing 1.8s ease-out infinite;
+        }
+        @keyframes bloomPing { 0% { box-shadow: 0 0 0 0 rgba(217, 138, 156, 0.7); } 100% { box-shadow: 0 0 0 12px rgba(217, 138, 156, 0); } }
+        .bloom-read { opacity: 0; transform: translateY(12px); pointer-events: none; }
+        .bloom-hero.blooming .bloom-cta,
+        .bloom-hero.bloomed .bloom-cta { opacity: 0; transform: translateY(-8px); pointer-events: none; }
+        .bloom-hero.bloomed .bloom-read { opacity: 1; transform: none; pointer-events: auto; transition-delay: 0.9s; }
+        .bloom-hint {
+            font-size: 11px;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--ivory-dim);
+            opacity: 0.45;
+        }
+        @media (max-width: 500px) {
+            .bloom-btn { font-size: 13.5px; padding: 12px 22px; }
+        }
+
+        /* ════════════════════════════════════════════════════════════════
+           DESIGN v2 — "pressed botanical"
+           Flat paper sheets, hairline rules, editorial type, crimson + sage.
+           Two themes: night (ink & wine) and day (parchment & sunlight).
+           Old variables are remapped onto the new tokens so every legacy
+           rule picks up the theme automatically.
+           ════════════════════════════════════════════════════════════════ */
+        :root, :root[data-theme="night"] {
+            --bg: #110b0c;
+            --bg-2: #1a1012;
+            --surface: #1a1214;
+            --surface-2: #231719;
+            --ink: #f1e8dc;
+            --ink-2: rgba(241, 232, 220, 0.74);
+            --ink-3: rgba(241, 232, 220, 0.5);
+            --line: rgba(241, 232, 220, 0.12);
+            --line-strong: rgba(241, 232, 220, 0.26);
+            --accent: #e5637a;
+            --accent-strong: #c8304d;
+            --accent-ink: #1a0b0e;
+            --accent-soft: rgba(229, 99, 122, 0.13);
+            --sage: #96ae8a;
+            --brass: #d2ae78;
+            --shadow: 0 30px 60px -36px rgba(0, 0, 0, 0.85);
+            --grain-opacity: 0.05;
+            --hero-bg: radial-gradient(ellipse 70% 60% at 50% 55%, #3a1622 0%, #1d0d11 55%, #0d0708 100%);
+            --hero-vignette: radial-gradient(ellipse 85% 75% at 50% 55%, transparent 55%, rgba(8, 4, 5, 0.65) 100%);
+            --map-filter: invert(1) hue-rotate(180deg) brightness(0.82) saturate(0.5) sepia(0.25);
+
+            --f-display: 'Fraunces', 'Cormorant Garamond', serif;
+            --f-body: 'Newsreader', 'Lora', Georgia, serif;
+            --f-mono: 'DM Mono', ui-monospace, monospace;
+            --f-hand: 'Caveat', 'Dancing Script', cursive;
+
+            /* legacy names → new tokens */
+            --plum-dark: var(--bg);
+            --plum: var(--bg-2);
+            --plum-soft: var(--surface-2);
+            --ivory: var(--ink);
+            --ivory-dim: var(--ink-2);
+            --rose: var(--accent);
+            --rose-deep: var(--accent);
+            --gold: var(--brass);
+            --gold-light: var(--ink);
+            color-scheme: dark;
+        }
+        :root[data-theme="day"] {
+            --bg: #f3ece1;
+            --bg-2: #ebe1d2;
+            --surface: #fbf7f0;
+            --surface-2: #f3eadd;
+            --ink: #2b1e1b;
+            --ink-2: rgba(43, 30, 27, 0.74);
+            --ink-3: rgba(43, 30, 27, 0.5);
+            --line: rgba(43, 30, 27, 0.13);
+            --line-strong: rgba(43, 30, 27, 0.3);
+            --accent: #a8132f;
+            --accent-strong: #8c0c25;
+            --accent-ink: #fff8f0;
+            --accent-soft: rgba(168, 19, 47, 0.07);
+            --sage: #5b7850;
+            --brass: #94702f;
+            --shadow: 0 26px 50px -34px rgba(90, 55, 25, 0.45);
+            --grain-opacity: 0.07;
+            --hero-bg: radial-gradient(ellipse 70% 60% at 50% 55%, #fffaf1 0%, #f4eadb 55%, #e6d7c1 100%);
+            --hero-vignette: radial-gradient(ellipse 85% 75% at 50% 55%, transparent 60%, rgba(120, 85, 50, 0.16) 100%);
+            --map-filter: sepia(0.18) saturate(0.85);
+            color-scheme: light;
+        }
+
+        html, body {
+            background: var(--bg) !important;
+            color: var(--ink);
+            font-family: var(--f-body);
+            transition: background-color 0.6s ease, color 0.6s ease;
+        }
+        body { font-size: 17px; -webkit-font-smoothing: antialiased; }
+        /* faint paper grain over everything */
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: 70;
+            pointer-events: none;
+            opacity: var(--grain-opacity);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+        ::selection { background: var(--accent); color: var(--accent-ink); }
+
+        /* night-only ambience */
+        .star { background: var(--ink) !important; }
+        :root[data-theme="day"] .stars,
+        :root[data-theme="day"] .firefly { display: none !important; }
+
+        /* emoji hearts → drifting petals */
+        .falling-heart, .rising-heart {
+            font-size: 0 !important;
+            width: 11px; height: 15px;
+            background: var(--accent);
+            filter: none !important;
+            -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 28'%3E%3Cpath d='M10 28C3 22 0 15 1.5 8 3 2 7 0 10 0s7 2 8.5 8C20 15 17 22 10 28z'/%3E%3C/svg%3E") center / contain no-repeat;
+                    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 28'%3E%3Cpath d='M10 28C3 22 0 15 1.5 8 3 2 7 0 10 0s7 2 8.5 8C20 15 17 22 10 28z'/%3E%3C/svg%3E") center / contain no-repeat;
+        }
+        .falling-heart { opacity: 0.35 !important; }
+        .falling-heart:nth-child(3n) { width: 8px; height: 11px; background: var(--brass); }
+        .falling-heart:nth-child(4n) { width: 14px; height: 19px; }
+        .rising-heart { opacity: 0.55 !important; width: 16px; height: 22px; }
+        .love-float, .compliment-float {
+            font-family: var(--f-hand) !important;
+            color: var(--accent) !important;
+            text-shadow: none !important;
+        }
+        .compliment-float { font-size: 22px; opacity: 0.8; }
+
+        /* ── theme toggle ── */
+        .theme-toggle {
+            position: fixed;
+            top: 16px; right: 16px;
+            z-index: 45;
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 8px 14px 8px 10px;
+            border-radius: 999px;
+            border: 1px solid var(--line-strong);
+            background: color-mix(in srgb, var(--surface) 82%, transparent);
+            -webkit-backdrop-filter: blur(8px);
+                    backdrop-filter: blur(8px);
+            color: var(--ink);
+            font-family: var(--f-mono);
+            font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+            cursor: pointer;
+            transition: border-color 0.3s ease, transform 0.2s ease;
+        }
+        .theme-toggle:hover { border-color: var(--accent); }
+        .theme-toggle:active { transform: scale(0.96); }
+        .theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+        .theme-toggle svg { width: 16px; height: 16px; }
+        .theme-toggle .tt-sun { display: none; }
+        :root[data-theme="night"] .theme-toggle .tt-sun { display: block; }
+        :root[data-theme="night"] .theme-toggle .tt-moon { display: none; }
+        ::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+
+        /* ── shared type ── */
+        .eyebrow, .comfort-eyebrow {
+            font-family: var(--f-mono) !important;
+            font-size: 11px !important;
+            letter-spacing: 2.5px !important;
+            color: var(--accent) !important;
+            opacity: 1 !important;
+        }
+        .eyebrow::before, .eyebrow::after { content: "" !important; display: inline-block; width: 22px; height: 1px; background: currentColor; vertical-align: middle; margin: 0 12px; opacity: 0.5; }
+
+        h1.title {
+            font-family: var(--f-display);
+            font-style: italic;
+            font-weight: 400;
+            font-variation-settings: "SOFT" 100, "WONK" 1;
+            letter-spacing: -0.02em;
+            font-size: clamp(48px, 9vw, 96px);
+            line-height: 0.95;
+            background: none !important;
+            color: var(--ink) !important;
+            -webkit-text-fill-color: currentColor;
+            animation: none !important;
+            filter: none !important;
+        }
+
+        /* ── sheets (were glass cards) ── */
+        .liquid-glass {
+            background: var(--surface) !important;
+            -webkit-backdrop-filter: none !important;
+                    backdrop-filter: none !important;
+            border: 1px solid var(--line) !important;
+            border-radius: 4px !important;
+            box-shadow: var(--shadow) !important;
+            animation: none !important;
+        }
+        .liquid-glass::after { display: none !important; }
+
+        main { counter-reset: sheet; }
+        .letter-section { max-width: 640px; padding-top: 72px; }
+        .paper {
+            counter-increment: sheet;
+            padding: 64px 44px 44px !important;
+            margin-bottom: 28px;
+            color: var(--ink);
+        }
+        .paper::before {
+            content: "No. " counter(sheet, decimal-leading-zero);
+            inset: 22px auto auto 44px !important;
+            border: none !important;
+            border-radius: 0;
+            font-family: var(--f-mono);
+            font-size: 10.5px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--ink-3);
+        }
+        .paper::after { display: none; }
+        .paper .mark {
+            font-family: var(--f-hand);
+            font-size: 34px;
+            line-height: 1.1;
+            color: var(--accent);
+            margin-bottom: 18px;
+        }
+        .paper p { font-size: 18px; line-height: 1.75; color: var(--ink); }
+        .letter-section > .paper:first-child p:first-of-type::first-letter {
+            font-family: var(--f-display);
+            font-size: 3.2em;
+            float: left;
+            line-height: 0.85;
+            padding: 6px 10px 0 0;
+            color: var(--accent);
+        }
+        .paper h2 {
+            font-family: var(--f-display);
+            font-style: normal;
+            font-weight: 400;
+            font-variation-settings: "SOFT" 50;
+            font-size: clamp(26px, 4vw, 34px);
+            letter-spacing: -0.01em;
+            line-height: 1.1;
+            color: var(--ink);
+            margin-bottom: 22px;
+        }
+        .reasons { counter-reset: reason; }
+        .reasons li {
+            counter-increment: reason;
+            border-bottom: 1px solid var(--line) !important;
+            color: var(--ink);
+            font-size: 17px;
+            gap: 18px;
+            padding: 15px 0;
+        }
+        .reasons li svg { display: none; }
+        .reasons li::before {
+            content: counter(reason, lower-roman) ".";
+            flex: 0 0 34px;
+            font-family: var(--f-display);
+            font-style: italic;
+            color: var(--accent);
+        }
+        .divider { color: var(--accent); margin: 0 0 26px; }
+        .divider::before, .divider::after { background: var(--line-strong) !important; }
+
+        /* flip cards → index cards */
+        .flip-face { border-radius: 3px !important; border: 1px solid var(--line-strong) !important; }
+        .flip-front {
+            background: var(--surface-2) !important;
+            -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+            box-shadow: none !important;
+            color: var(--ink) !important;
+            font-family: var(--f-mono);
+            font-size: 11.5px !important;
+            letter-spacing: 2px !important;
+        }
+        .flip-back {
+            background: var(--accent) !important;
+            -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+            border-color: var(--accent) !important;
+            color: var(--accent-ink) !important;
+            font-family: var(--f-body) !important;
+            font-size: 15.5px !important;
+            text-shadow: none !important;
+        }
+        .flip-hint, .meter-label, .tap-hint, .comfort-tap-hint, .signature-block .foot, .map-legend {
+            font-family: var(--f-mono) !important;
+            font-size: 10.5px !important;
+            letter-spacing: 2px !important;
+            text-transform: uppercase;
+            color: var(--ink-3) !important;
+            opacity: 1 !important;
+        }
+
+        /* heart meter */
+        .heart-outline { stroke: var(--accent) !important; }
+        .heart-fill { background: linear-gradient(180deg, var(--accent), var(--accent-strong)) !important; }
+        .meter-percent { font-family: var(--f-mono); font-style: normal; font-size: 14px; letter-spacing: 2px; color: var(--ink-2); }
+        .meter-message { font-family: var(--f-display); font-size: 21px; color: var(--accent); }
+
+        /* the photo → mounted print */
+        .eyes-reveal { padding-bottom: 72px; }
+        .eyes-frame {
+            border-radius: 2px !important;
+            border: none !important;
+            padding: 12px 12px 56px;
+            background: var(--surface) !important;
+            box-shadow: var(--shadow), 0 0 0 1px var(--line) !important;
+            transform: rotate(-1.2deg);
+        }
+        .eyes-frame::before { display: none !important; }
+        .eyes-frame .glow-pulse { display: none; }
+        .eyes-frame img { border-radius: 1px; }
+        .eyes-frame::after {
+            content: "fig. a — exhibit, eyes";
+            position: absolute; left: 0; right: 0; bottom: 18px;
+            text-align: center;
+            font-family: var(--f-mono);
+            font-size: 10.5px; letter-spacing: 2px; text-transform: uppercase;
+            color: var(--ink-3);
+            z-index: 3;
+        }
+        .eyes-caption {
+            font-family: var(--f-hand) !important;
+            font-style: normal !important;
+            font-size: 26px !important;
+            color: var(--accent) !important;
+            background: none !important;
+            -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+            border: none !important;
+        }
+        .eyes-caption svg { stroke: var(--accent); }
+
+        /* signature */
+        .signature-block .sig { font-family: var(--f-hand); font-size: 32px; color: var(--ink); }
+        .signature-block .sig:hover { color: var(--accent); text-shadow: none; }
+        .signature-block .sig .hover-reveal {
+            background: var(--ink); color: var(--bg);
+            -webkit-backdrop-filter: none; backdrop-filter: none;
+            border: none; border-radius: 3px;
+            font-family: var(--f-mono); font-style: normal; font-size: 11px; letter-spacing: 1px;
+        }
+
+        /* ── buttons: one family ── */
+        .hug-btn, .comfort-hug-cta, .map-controls button, .comfort-note-box button, .bloom-btn, .comfort-fab {
+            border-radius: 999px !important;
+            -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+            box-shadow: none !important;
+            font-family: var(--f-body) !important;
+            font-style: normal !important;
+            letter-spacing: 0.2px !important;
+            transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease, transform 0.2s ease !important;
+        }
+        .hug-btn, .comfort-hug-cta, .bloom-btn.bloom-read, .map-controls button#goLocationBtn {
+            background: var(--accent) !important;
+            border: 1px solid var(--accent) !important;
+            color: var(--accent-ink) !important;
+        }
+        .hug-btn:hover, .comfort-hug-cta:hover, .bloom-btn.bloom-read:hover, .map-controls button#goLocationBtn:hover {
+            background: var(--accent-strong) !important; border-color: var(--accent-strong) !important; transform: translateY(-1px);
+        }
+        .hug-btn { font-size: 18px !important; padding: 15px 30px !important; }
+        .hug-btn .hug-icon { font-size: 22px; }
+        .hug-glow { display: none; }
+        .bloom-btn.bloom-cta, .map-controls .gps-btn, .comfort-note-box button, .comfort-fab {
+            background: color-mix(in srgb, var(--surface) 80%, transparent) !important;
+            border: 1px solid var(--line-strong) !important;
+            color: var(--ink) !important;
+        }
+        .bloom-btn.bloom-cta:hover, .map-controls .gps-btn:hover, .comfort-note-box button:hover, .comfort-fab:hover {
+            border-color: var(--accent) !important; color: var(--accent) !important;
+        }
+        .comfort-fab { animation: none !important; font-size: 14px !important; padding: 11px 20px !important; }
+        .hug-response, .comfort-response { font-family: var(--f-display); font-size: 19px; color: var(--accent); }
+
+        /* toast */
+        .love-toast {
+            background: var(--ink) !important;
+            color: var(--bg) !important;
+            -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+            border: none !important;
+            border-radius: 3px !important;
+            font-family: var(--f-display) !important;
+            font-size: 17px !important;
+            box-shadow: var(--shadow) !important;
+        }
+
+        /* ── map ── */
+        .map-section .map-head { font-family: var(--f-display); font-style: normal; font-weight: 400; font-size: clamp(22px, 3.4vw, 28px); color: var(--ink); }
+        .map-section .map-sub { font-family: var(--f-mono); font-style: normal; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--ink-3); }
+        .map-controls input {
+            background: var(--surface-2) !important;
+            -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+            border: 1px solid var(--line-strong) !important;
+            border-radius: 999px !important;
+            color: var(--ink) !important;
+            font-family: var(--f-body) !important;
+        }
+        .map-controls input:focus { border-color: var(--accent) !important; box-shadow: 0 0 0 3px var(--accent-soft) !important; }
+        .map-controls input::placeholder { color: var(--ink-3); }
+        .map-prompt {
+            font-family: var(--f-display) !important;
+            font-size: 19px !important;
+            color: var(--ink-2) !important;
+            background: var(--accent-soft) !important;
+            -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+            border: 1px dashed var(--line-strong) !important;
+            border-radius: 3px !important;
+        }
+        .map-quote {
+            font-family: var(--f-hand) !important;
+            font-size: 26px !important;
+            color: var(--ink) !important;
+            text-shadow: none !important;
+            border-bottom: 1px solid var(--line) !important;
+        }
+        .map-container, .map-container #heartMap { border-radius: 3px !important; }
+        .map-container { border: 1px solid var(--line-strong) !important; box-shadow: none !important; background: var(--surface-2) !important; }
+        .map-container #heartMap { background: var(--surface-2) !important; }
+        .map-container .leaflet-tile-pane { filter: var(--map-filter); }
+        .leaflet-popup-content-wrapper, .leaflet-popup-tip {
+            background: var(--surface) !important; color: var(--ink) !important;
+            border: 1px solid var(--line-strong) !important; border-radius: 3px !important;
+            font-family: var(--f-body) !important; font-style: normal !important;
+        }
+        .leaflet-popup-content strong, .leaflet-control-attribution a { color: var(--accent) !important; }
+
+        /* ── comfort corner ── */
+        .comfort-overlay { background: color-mix(in srgb, var(--bg) 78%, transparent) !important; }
+        .comfort-card { border-radius: 4px !important; }
+        .comfort-title { font-family: var(--f-display); font-style: italic; font-weight: 400; font-size: 32px; color: var(--ink); }
+        .comfort-lede, .comfort-footer { color: var(--ink-2) !important; }
+        .comfort-close { background: transparent !important; border: 1px solid var(--line-strong) !important; color: var(--ink) !important; }
+        .comfort-msg { font-family: var(--f-display); font-size: 20px; color: var(--ink); }
+        .breath-text { font-family: var(--f-mono); font-style: normal; font-weight: 400; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #fff8f0; text-shadow: none; }
+        .breath-heart-svg { filter: none !important; }
+        .breath-heart-svg path { fill: var(--accent) !important; }
+        .comfort-dot { background: var(--line-strong) !important; }
+        .comfort-dot.active { background: var(--accent) !important; }
+        .comfort-pick {
+            background: transparent !important;
+            -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+            border: 1px solid var(--line-strong) !important;
+            color: var(--ink-2) !important;
+            font-family: var(--f-body) !important;
+        }
+        .comfort-pick:hover, .comfort-pick.active { background: var(--accent-soft) !important; border-color: var(--accent) !important; color: var(--ink) !important; }
+        .comfort-note-toggle { color: var(--ink-2) !important; font-family: var(--f-mono); }
+        .comfort-note-box textarea { background: var(--surface-2) !important; border: 1px solid var(--line-strong) !important; border-radius: 3px !important; color: var(--ink) !important; font-family: var(--f-body) !important; }
+
+        /* ── hero ── */
+        .bloom-hero { background: var(--hero-bg) !important; transition: background 0.6s ease; }
+        .bloom-vignette {
+            background:
+                var(--hero-vignette),
+                linear-gradient(to bottom, color-mix(in srgb, var(--bg) 45%, transparent), transparent 26%, transparent 80%, var(--bg)) !important;
+        }
+        .bloom-ui h1.title { filter: none !important; }
+        .bloom-sub { font-family: var(--f-display) !important; font-size: clamp(17px, 2.2vw, 20px) !important; color: var(--ink-2) !important; text-shadow: none !important; }
+        .bloom-btn { font-size: 15px !important; padding: 12px 24px !important; }
+        .bloom-dot { background: var(--accent) !important; }
+        .bloom-hint {
+            background: none; border: none; cursor: pointer;
+            font-family: var(--f-mono);
+            font-size: 10.5px; letter-spacing: 2px; text-transform: uppercase;
+            color: var(--ink-3); opacity: 1;
+            padding: 4px 8px;
+        }
+        .bloom-hint:hover { color: var(--accent); }
+
+        .map-prompt .prompt-heart, .map-quote .heart-inline { animation: toastHeartBeat 1.6s ease-in-out infinite !important; box-shadow: none !important; }
+
+        /* loves me, loves me… */
+        .petal-note {
+            max-width: 360px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            pointer-events: none;
+            min-height: 0;
+        }
+        .petal-note.show { opacity: 1; transform: none; }
+        .petal-note .pn-count {
+            display: block;
+            font-family: var(--f-mono);
+            font-size: 10.5px; letter-spacing: 2px; text-transform: uppercase;
+            color: var(--ink-3);
+            margin-bottom: 4px;
+        }
+        .petal-note .pn-head {
+            display: block;
+            font-family: var(--f-hand);
+            font-size: 34px; line-height: 1;
+            color: var(--accent);
+        }
+        .petal-note .pn-text {
+            margin-top: 6px;
+            font-family: var(--f-display);
+            font-style: italic;
+            font-size: 17px; line-height: 1.4;
+            color: var(--ink);
+        }
+        @media (max-width: 500px) {
+            .paper { padding: 56px 22px 30px !important; }
+            .paper::before { inset: 22px auto auto 22px !important; }
+            .paper p { font-size: 17px; }
+            .theme-toggle { top: 12px; right: 12px; padding: 7px 10px; }
+            .theme-toggle .tt-label { display: none; }
+            .petal-note .pn-head { font-size: 30px; }
+            .petal-note .pn-text { font-size: 16px; }
+        }
+
+        /* ─── v3: softer corners, travelling rose, layering fixes ─── */
+        .liquid-glass, .paper { border-radius: 22px !important; }
+        .flip-face { border-radius: 16px !important; }
+        .eyes-frame { border-radius: 18px !important; }
+        .eyes-frame img { border-radius: 10px !important; }
+        .map-container, .map-container #heartMap { border-radius: 18px !important; }
+        .map-prompt { border-radius: 16px !important; }
+        .leaflet-popup-content-wrapper { border-radius: 14px !important; }
+        .comfort-card { border-radius: 26px !important; }
+        .comfort-note-box textarea { border-radius: 14px !important; }
+        .love-toast { border-radius: 999px !important; }
+        .signature-block .sig .hover-reveal { border-radius: 999px !important; }
+
+        /* the rose canvas lives above the page and follows the scroll */
+        #roseCanvas {
+            position: fixed !important;
+            inset: 0;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 3;
+            pointer-events: none;
+        }
+        #roseCanvas.interactive { pointer-events: auto; }
+        .bloom-hero { z-index: auto !important; isolation: auto !important; }
+        .bloom-ui, .bloom-bottom { z-index: 4 !important; }
+        .bloom-bottom > * { pointer-events: auto; }
+        .bloom-bottom { pointer-events: none; }
+        .rose-landing {
+            height: 78vh;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 4vh;
+        }
+        .rose-landing p {
+            font-family: var(--f-mono);
+            font-size: 10.5px; letter-spacing: 2px; text-transform: uppercase;
+            color: var(--ink-3);
+            position: relative; z-index: 4;
+        }
+
+        /* petal note reads cleanly over the stem */
+        .petal-note {
+            padding: 12px 22px 14px;
+            border-radius: 20px;
+            background: color-mix(in srgb, var(--surface) 78%, transparent);
+            -webkit-backdrop-filter: blur(10px);
+                    backdrop-filter: blur(10px);
+            border: 1px solid var(--line);
+        }
+
+        /* effects launched from inside the rough-day window must sit above it */
+        .confetti-piece, .sparkle-particle { z-index: 65 !important; }
+        .hug-animation-layer, .hug-hearts-container { z-index: 66 !important; }
+        #hug3d {
+            position: fixed; inset: 0; z-index: 67;
+            width: 100vw; height: 100vh;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.45s ease;
+            background: radial-gradient(ellipse 60% 55% at 50% 55%, color-mix(in srgb, var(--bg) 55%, transparent), transparent 75%);
+        }
+        #hug3d.show { opacity: 1; }
+
+        /* ─── two ends of one map ─── */
+        .world-stage {
+            position: relative;
+            aspect-ratio: 960 / 500;
+            margin: 14px -18px 0;
+            border-radius: 16px;
+            overflow: hidden;
+            background:
+                radial-gradient(ellipse 60% 70% at 62% 42%, var(--accent-soft), transparent 70%),
+                color-mix(in srgb, var(--bg) 60%, transparent);
+            border: 1px solid var(--line);
+        }
+        #worldSvg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: 0; transition: opacity 1.2s ease; }
+        .world-stage.ready #worldSvg { opacity: 1; }
+        .world-loading {
+            position: absolute; inset: 0; display: grid; place-items: center; margin: 0; padding: 16px; text-align: center;
+            font-family: var(--f-mono); font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--ink-3);
+            transition: opacity 0.6s ease;
+        }
+        .world-stage.ready .world-loading { opacity: 0; pointer-events: none; }
+        .w-sphere { fill: color-mix(in srgb, var(--brass) 3%, transparent); stroke: var(--line-strong); stroke-width: 0.8; vector-effect: non-scaling-stroke; }
+        .w-grat { fill: none; stroke: var(--line); stroke-width: 0.5; vector-effect: non-scaling-stroke; }
+        .w-lands { opacity: 0.35; transition: opacity 1.4s ease; }
+        .world-stage.lit .w-lands { opacity: 1; }
+        .w-land {
+            fill: color-mix(in srgb, var(--brass) 9%, transparent);
+            stroke: var(--brass); stroke-opacity: 0.8; stroke-width: 0.6; vector-effect: non-scaling-stroke;
+            transition: fill 1.4s ease, stroke 1.4s ease, stroke-width 1.4s ease;
+        }
+        .world-stage.india .w-land[data-id="356"],
+        .world-stage.joined .w-land[data-id="276"] {
+            fill: color-mix(in srgb, var(--accent) 26%, transparent);
+            stroke: var(--accent); stroke-opacity: 1; stroke-width: 1.3;
+            filter: url(#wGlowHot);
+        }
+        .w-link { fill: none; stroke: var(--brass); stroke-linecap: round; opacity: 0; }
+        .w-arc { fill: none; stroke: var(--accent); stroke-linecap: round; opacity: 0; filter: url(#wGlowHot); }
+        .w-arc.her { stroke: #ffc870; }
+        :root[data-theme="day"] .w-arc.her { stroke: #c98a1e; }
+        .w-mk { opacity: 0; transition: opacity 0.7s ease; }
+        .w-mk.on { opacity: 1; }
+        .w-dot { fill: var(--accent); stroke: var(--bg); stroke-width: 1.5; }
+        .w-mk.her .w-dot { fill: #ffc870; }
+        :root[data-theme="day"] .w-mk.her .w-dot { fill: #c98a1e; }
+        .w-ring { fill: none; stroke: var(--accent); stroke-width: 1.2; opacity: 0; transform-box: fill-box; transform-origin: center; }
+        .w-mk.her .w-ring { stroke: #ffc870; }
+        .w-mk.on .w-ring { animation: wPulse 2.6s ease-out infinite; }
+        @keyframes wPulse { 0% { opacity: 0.9; transform: scale(0.3); } 100% { opacity: 0; transform: scale(1.8); } }
+        .w-label {
+            font-family: var(--f-mono); font-size: 11px; letter-spacing: 1.2px; text-transform: uppercase;
+            fill: var(--ink); paint-order: stroke; stroke: var(--bg); stroke-width: 3.5px; stroke-linejoin: round;
+        }
+        .w-spark { fill: #fff6dc; filter: url(#wGlowHot); opacity: 0; }
+        .w-spark.on { opacity: 1; }
+        .w-heart { fill: var(--accent); filter: url(#wGlowHot); transform-box: fill-box; transform-origin: center; transform: scale(0); opacity: 0; }
+        .w-mk.us.joined .w-heart { animation: wHeartIn 1s cubic-bezier(.3,1.6,.5,1) forwards, wBeat 1.6s ease-in-out 1s infinite; }
+        .w-mk.us.joined .w-dot { opacity: 0; }
+        @keyframes wHeartIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes wBeat { 0%, 100% { transform: scale(1); opacity: 1; } 15% { transform: scale(1.22); opacity: 1; } 30% { transform: scale(1); opacity: 1; } 45% { transform: scale(1.12); opacity: 1; } }
+        .world-caption {
+            min-height: 3.2em; margin: 18px auto 4px; max-width: 460px; text-align: center;
+            font-family: var(--f-display); font-size: clamp(17px, 2.4vw, 20px); line-height: 1.45; color: var(--ink);
+            opacity: 0; transform: translateY(6px); transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .world-caption.show { opacity: 1; transform: none; }
+        .world-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; padding-top: 16px; border-top: 1px solid var(--line); text-align: center; }
+        .world-stats b { display: block; font-family: var(--f-display); font-weight: 400; font-size: clamp(20px, 3.4vw, 28px); color: var(--accent); font-variant-numeric: tabular-nums; }
+        .world-stats span { display: block; margin-top: 2px; font-family: var(--f-mono); font-size: 10px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--ink-3); }
+        .world-replay {
+            display: block; margin: 18px auto 0; padding: 8px 18px; border-radius: 999px; cursor: pointer;
+            background: transparent; border: 1px solid var(--line-strong); color: var(--ink-2);
+            font-family: var(--f-mono); font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+            opacity: 0; pointer-events: none; transition: opacity 0.6s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+        .world-replay.show { opacity: 1; pointer-events: auto; }
+        .world-replay:hover { border-color: var(--accent); color: var(--accent); }
+        .world-replay:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+        @media (max-width: 600px) {
+            .world-stage { margin: 12px -8px 0; border-radius: 12px; }
+            .w-label { font-size: 9.5px; letter-spacing: 0.8px; }
+            .world-stats span { font-size: 9px; letter-spacing: 0.8px; }
+        }
     </style>
 </head>
 <body>
     <div class="stars" id="starsContainer"></div>
     <div class="love-toast" id="loveToast"><span class="toast-heart">💛</span> You are so, so loved</div>
     <div class="hug-animation-layer" id="hugAnimationLayer"></div>
+
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch between day and night">
+        <svg class="tt-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>
+        <svg class="tt-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>
+        <span class="tt-label" id="themeLabel">night</span>
+    </button>
 
     <!-- ─── COMFORT CORNER ─── -->
     <button class="comfort-fab" id="comfortFab" aria-haspopup="dialog" aria-label="Having a hard day?">rough day?</button>
@@ -694,25 +1460,35 @@
         </div>
     </div>
 
-    <main>
-        <section class="hero">
-            <p class="eyebrow">a little something, sealed with wax</p>
-            <h1 class="title" id="titleName">For Krishna</h1>
-            <p class="hero-sub">Just a little something I made for you. Open it whenever you're ready 💛</p>
+    <canvas id="roseCanvas" aria-label="A 3D rose. Tap it to make it bloom." role="img"></canvas>
 
-            <div class="envelope-wrap" id="envelopeWrap" role="button" tabindex="0" aria-label="Open the letter">
-                <div class="glow-ring"></div>
-                <div class="envelope liquid-glass">
-                    <div class="env-back"></div>
-                    <div class="env-letter"><span>my chamak challo,</span></div>
-                    <div class="env-front"></div>
-                    <div class="env-flap"></div>
-                    <div class="seal">
-                        <svg viewBox="0 0 24 24" fill="none"><path d="M12 20s-7.5-4.6-9.7-9.1C.6 7.6 2.4 4.5 5.6 4.1c1.9-.2 3.6.8 4.4 2.3.9-1.5 2.6-2.5 4.5-2.3 3.2.4 5 3.5 3.3 6.8C19.5 15.4 12 20 12 20z" fill="#3a1a2e"/></svg>
-                    </div>
-                </div>
+    <main>
+        <section class="hero bloom-hero" id="bloomHero">
+            <div class="bloom-vignette" aria-hidden="true"></div>
+
+            <div class="bloom-ui">
+                <p class="eyebrow">a little something, grown just for you</p>
+                <h1 class="title" id="titleName">For Krishna</h1>
+                <p class="bloom-sub">Every petal is one more reason. Take your time, it's all yours 💛</p>
             </div>
-            <p class="hint"><span>tap to open</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg></p>
+
+            <div class="bloom-bottom">
+                <div class="petal-note" id="petalNote" aria-live="polite">
+                    <span class="pn-count" id="pnCount"></span>
+                    <span class="pn-head" id="pnHead"></span>
+                    <p class="pn-text" id="pnText"></p>
+                </div>
+                <div class="bloom-stack">
+                    <button class="bloom-btn bloom-cta" id="bloomCta" type="button">
+                        <span class="bloom-dot" aria-hidden="true"></span> tap the rose to let it bloom
+                    </button>
+                    <button class="bloom-btn bloom-read" id="bloomRead" type="button" tabindex="-1">
+                        read my letter
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+                    </button>
+                </div>
+                <button class="bloom-hint" id="bloomHint" type="button">drag to turn it around</button>
+            </div>
         </section>
 
         <section class="letter-section" id="letterSection">
@@ -767,6 +1543,26 @@
             </div>
         </section>
 
+        <!-- ─── TWO ENDS OF ONE MAP ─── -->
+        <section class="map-section world-section" id="worldSection">
+            <div class="paper liquid-glass world-card">
+                <p class="map-head">two ends of one map</p>
+                <p class="map-sub">Kashmir · Assam · Germany</p>
+                <div class="world-stage" id="worldStage">
+                    <svg id="worldSvg" viewBox="0 0 960 500" preserveAspectRatio="xMidYMid meet" role="img"
+                         aria-label="A world map. A line joins Kashmir and Assam in India, then two glowing paths fly from each of them to Germany and meet in a heart."></svg>
+                    <p class="world-loading">drawing the world…</p>
+                </div>
+                <p class="world-caption" id="worldCaption" aria-live="polite">&nbsp;</p>
+                <div class="world-stats" id="worldStats">
+                    <div><b data-k="home">·</b><span>km between our homes</span></div>
+                    <div><b data-k="flown">·</b><span>km we flew, between us</span></div>
+                    <div><b data-k="one">·</b><span>place we both landed</span></div>
+                </div>
+                <button class="world-replay" id="worldReplay" type="button">↻ play it again</button>
+            </div>
+        </section>
+
         <!-- ─── MAP SECTION ─── -->
         <section class="map-section" id="mapSection">
             <div class="paper liquid-glass" style="padding: 30px 30px 36px;">
@@ -811,6 +1607,7 @@
             <p class="hug-response" id="hugResponse"></p>
             <div class="hug-hearts-container" id="hugHeartsContainer"></div>
         </section>
+        <div class="rose-landing" id="roseLanding"><p>it followed you all the way down. it's yours.</p></div>
         <div class="signature-block">
             <p class="sig">Written with clumsy hands, restless mind and a loving heart, Arman<span class="hover-reveal">✨ psst... you're my favorite person ✨</span></p>
             <p class="foot">made with love, just for you 💛</p>
@@ -926,14 +1723,28 @@
             createSparkleBurst(e.clientX, e.clientY, PERF.mobile ? 5 : 10);
         });
 
-        // ─── ENVELOPE LOGIC ───
-        const envelopeWrap = document.getElementById('envelopeWrap');
+        // ─── ROSE → LETTER LOGIC ───
+        // The 3D rose (module script at the bottom) blooms on tap, then reveals "read my letter".
+        const bloomHero = document.getElementById('bloomHero');
+        const bloomRead = document.getElementById('bloomRead');
         const letterSection = document.getElementById('letterSection');
+        let letterOpened = false;
+
+        window.onRoseBloomed = () => {
+            const r = bloomHero.getBoundingClientRect();
+            createSparkleBurst(r.left + r.width / 2, r.top + r.height * 0.55, PERF.mobile ? 10 : 22);
+            setTimeout(() => showLoveToast(), 900);
+        };
+        // If WebGL / the CDN isn't available, skip straight to the letter button.
+        setTimeout(() => { if (!window.__roseReady) bloomHero.classList.add('bloomed'); }, 5000);
+        document.getElementById('bloomCta').addEventListener('click', () => {
+            if (!window.__roseReady) { bloomHero.classList.add('bloomed'); openEnvelope(); }
+        });
 
         function openEnvelope() {
-            if (envelopeWrap.classList.contains('opened')) return;
-            envelopeWrap.classList.add('opened');
-            const rect = envelopeWrap.getBoundingClientRect();
+            if (letterOpened) { letterSection.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+            letterOpened = true;
+            const rect = bloomRead.getBoundingClientRect();
             const cx = rect.left + rect.width / 2;
             const cy = rect.top + rect.height / 2;
             const bigHeart = document.createElement('div');
@@ -964,9 +1775,68 @@
             setTimeout(() => showLoveToast(), 600);
             setTimeout(() => { letterSection.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 700);
         }
-        envelopeWrap.addEventListener('click', openEnvelope);
-        envelopeWrap.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault();
-                openEnvelope(); } });
+        bloomRead.addEventListener('click', openEnvelope);
+
+        // ─── LOVES ME, LOVES ME… ───
+        // After the rose blooms, each tap plucks a petal (see the 3D module) and shows one of these.
+        const petalNotes = [
+            ['loves me', "your laugh, the one you try to hide and never can."],
+            ['loves me more', "the way you say my name when you're sleepy."],
+            ['loves me', "how you remember tiny things nobody else notices."],
+            ['loves me, obviously', "your eyes. I will never, ever get over them."],
+            ['loves me a lot', "you're kind even when nobody's watching."],
+            ['loves me', "you make the most boring day feel like something."],
+            ['loves me even more', "your texts. every single one of them."],
+            ['loves me', "how brave you are, even when you don't feel it."],
+            ['loves me, no question', "you're my favourite person to do nothing with."],
+            ['loves me', "the way you care so hard about your people."],
+            ['loves me so much', "you, exactly as you are. no edits."],
+            ['loves me. always.', "see? not one single petal said otherwise 🌹"]
+        ];
+        window.PETAL_COUNT = petalNotes.length;
+        const petalNote = document.getElementById('petalNote');
+        window.onPetalPlucked = (i, x, y) => {
+            const [head, text] = petalNotes[Math.min(i, petalNotes.length - 1)];
+            petalNote.classList.remove('show');
+            setTimeout(() => {
+                document.getElementById('pnCount').textContent = `petal ${String(i + 1).padStart(2, '0')} of ${petalNotes.length}`;
+                document.getElementById('pnHead').textContent = head;
+                document.getElementById('pnText').textContent = text;
+                petalNote.classList.add('show');
+            }, 180);
+            if (x != null) createSparkleBurst(x, y, PERF.mobile ? 6 : 12);
+            if (i === petalNotes.length - 1) setTimeout(() => showLoveToast(), 1200);
+        };
+
+        // ─── DAY / NIGHT ───
+        const themeToggle = document.getElementById('themeToggle');
+        const themeLabel = document.getElementById('themeLabel');
+        function syncThemeLabel() {
+            const t = document.documentElement.getAttribute('data-theme');
+            themeLabel.textContent = t === 'day' ? 'night' : 'day';   // label names where the button takes you
+            themeToggle.setAttribute('aria-label', t === 'day' ? 'Switch to night mode' : 'Switch to day mode');
+        }
+        function applyTheme(t) {
+            document.documentElement.setAttribute('data-theme', t);
+            try { localStorage.setItem('krishna-theme', t); } catch (e) {}
+            syncThemeLabel();
+            window.dispatchEvent(new CustomEvent('themechange', { detail: t }));
+        }
+        themeToggle.addEventListener('click', () => {
+            const next = document.documentElement.getAttribute('data-theme') === 'day' ? 'night' : 'day';
+            if (!document.startViewTransition || PERF.reduced) { applyTheme(next); return; }
+            const r = themeToggle.getBoundingClientRect();
+            const x = r.left + r.width / 2, y = r.top + r.height / 2;
+            const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+            const vt = document.startViewTransition(() => applyTheme(next));
+            vt.ready.then(() => {
+                document.documentElement.animate(
+                    { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
+                    { duration: 700, easing: 'cubic-bezier(.22,1,.36,1)', pseudoElement: '::view-transition-new(root)' }
+                );
+            }).catch(() => {});
+        });
+        syncThemeLabel();
 
         // ─── SCROLL REVEAL ───
         const papers = document.querySelectorAll('.paper, .eyes-reveal');
@@ -1066,7 +1936,7 @@
             toastTimeout = setTimeout(() => { loveToast.classList.remove('show');
                 toastTimeout = null; }, 4000);
         }
-        setTimeout(() => { if (!envelopeWrap.classList.contains('opened')) showLoveToast(); }, 8000);
+        setTimeout(() => { if (!window.__roseBloomed && !letterOpened) showLoveToast(); }, 8000);
 
         // ─── COMPLIMENTS ───
         const compliments = ["You're the best part of my day ✨", "Your smile lives in my mind rent-free 💛",
@@ -1103,6 +1973,7 @@
         let hugIndex = 0;
 
         function triggerHugAnimation() {
+            if (typeof window.play3DHug === 'function') { window.play3DHug(); return; }   // big 3D cartoon hug
             const layer = document.getElementById('hugAnimationLayer');
             layer.innerHTML = '';
             const boy = document.createElement('div');
@@ -1616,6 +2487,1247 @@
 
             console.log('📍 Map handlers attached. Click "Go" or use GPS.');
         })();
+    </script>
+    <!-- ─── 3D BLOOMING ROSE ─── -->
+    <script>
+        // ─── TWO ENDS OF ONE MAP ───
+        // A glowing world map: Kashmir and Assam light up, a thread joins them, then both fly west and meet in Germany.
+        (function worldStory() {
+            const section = document.getElementById('worldSection');
+            if (!section) return;
+            const stage = document.getElementById('worldStage');
+            const svg = document.getElementById('worldSvg');
+            const caption = document.getElementById('worldCaption');
+            const replayBtn = document.getElementById('worldReplay');
+            const statEls = {};
+            section.querySelectorAll('[data-k]').forEach(b => { statEls[b.dataset.k] = b; });
+            const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const NS = 'http://www.w3.org/2000/svg';
+            const W = 960, H = 500, FULL = [0, 0, W, H];
+
+            const PLACES = {
+                kashmir: { lon: 74.7973, lat: 34.0837, label: 'Kashmir · me',  dx: -10, dy: -10, anchor: 'end' },
+                assam:   { lon: 91.7362, lat: 26.1445, label: 'Assam · you',   dx: 10,  dy: 18,  anchor: 'start' },
+                germany: { lon: 10.4515, lat: 51.1657, label: 'Germany · us', dx: 0,   dy: -20, anchor: 'middle' }
+            };
+            function km(a, b) {
+                const R = 6371, r = Math.PI / 180;
+                const dLat = (b.lat - a.lat) * r, dLon = (b.lon - a.lon) * r;
+                const h = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(dLon / 2) ** 2;
+                return 2 * R * Math.asin(Math.sqrt(h));
+            }
+            const round = n => Math.round(n / 50) * 50;
+            const D = {
+                home: round(km(PLACES.kashmir, PLACES.assam)),
+                me: round(km(PLACES.kashmir, PLACES.germany)),
+                you: round(km(PLACES.assam, PLACES.germany))
+            };
+            const fmt = n => n.toLocaleString('en-US');
+            const CAPTIONS = [
+                'You grew up by the Brahmaputra. I grew up by the Jhelum.',
+                `About ${fmt(D.home)} km apart, the same country, and our paths never once crossed.`,
+                `Then we both flew west. About ${fmt(D.you)} km for you, ${fmt(D.me)} km for me.`,
+                'Of every place in this whole world, we both landed in the same one. 💛'
+            ];
+
+            const el = (tag, attrs, parent) => {
+                const n = document.createElementNS(NS, tag);
+                for (const k in attrs) n.setAttribute(k, attrs[k]);
+                if (parent) parent.appendChild(n);
+                return n;
+            };
+            const lerp = (a, b, t) => a + (b - a) * t;
+            const ease = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+            let built = false, loading = false, played = false, run = 0;
+            let vb = FULL.slice(), zoomBox = FULL;
+            const floating = [];        // things drawn at screen size: markers, sparks
+            const strokes = [];         // [path, px width] kept the same width on screen while zooming
+            let link, arcMe, arcYou, sparkMe, sparkYou, mk = {};
+
+            const unitsPerPx = () => vb[2] / (stage.getBoundingClientRect().width || W);
+            function layout() {
+                const s = unitsPerPx();
+                floating.forEach(g => g.setAttribute('transform', `translate(${g._p[0]},${g._p[1]}) scale(${s})`));
+                strokes.forEach(([p, w]) => { p.style.strokeWidth = w * s; });
+                if (link && link._dashed) link.style.strokeDasharray = `${1.5 * s} ${5 * s}`;
+            }
+            function setVB(v) { vb = v; svg.setAttribute('viewBox', v.join(' ')); layout(); }
+
+            function animate(ms, fn) {
+                const my = run;
+                return new Promise(res => {
+                    const t0 = performance.now();
+                    (function f(now) {
+                        if (my !== run) return res(false);
+                        const t = Math.min(1, (now - t0) / ms);
+                        fn(ease(t));
+                        if (t < 1) requestAnimationFrame(f); else res(true);
+                    })(t0);
+                });
+            }
+            const wait = ms => { const my = run; return new Promise(r => setTimeout(() => r(my === run), ms)); };
+
+            function loadScript(src) {
+                return new Promise((res, rej) => {
+                    const s = document.createElement('script');
+                    s.src = src; s.onload = res; s.onerror = rej;
+                    document.head.appendChild(s);
+                });
+            }
+
+            async function build() {
+                if (loading) return;
+                loading = true;
+                try {
+                    if (!window.d3) await loadScript('https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js');
+                    if (!window.topojson) await loadScript('https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js');
+                    const res = await fetch('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json');
+                    if (!res.ok) throw new Error('map data');
+                    draw(await res.json());
+                    built = true;
+                    stage.classList.add('ready');
+                    maybePlay();
+                } catch (e) {
+                    stage.querySelector('.world-loading').textContent = "the map couldn't load right now, but you already know where we are 💛";
+                }
+            }
+
+            function curve(a, b, bend) {
+                const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2;
+                const dx = b[0] - a[0], dy = b[1] - a[1];
+                const cx = mx - dy * bend, cy = my + dx * bend;
+                return `M${a[0]},${a[1]} Q${cx},${cy} ${b[0]},${b[1]}`;
+            }
+
+            function draw(world) {
+                const proj = d3.geoNaturalEarth1().fitExtent([[10, 10], [W - 10, H - 10]], { type: 'Sphere' });
+                const path = d3.geoPath(proj);
+
+                const defs = el('defs', {}, svg);
+                const glow = (id, sd) => {
+                    const f = el('filter', { id, x: '-30%', y: '-30%', width: '160%', height: '160%' }, defs);
+                    el('feGaussianBlur', { stdDeviation: sd, result: 'b' }, f);
+                    const m = el('feMerge', {}, f);
+                    el('feMergeNode', { in: 'b' }, m); el('feMergeNode', { in: 'b' }, m); el('feMergeNode', { in: 'SourceGraphic' }, m);
+                };
+                glow('wGlow', 1.6);
+                glow('wGlowHot', 2.4);
+
+                el('path', { d: path({ type: 'Sphere' }), class: 'w-sphere' }, svg);
+                el('path', { d: path(d3.geoGraticule10()), class: 'w-grat' }, svg);
+                const lands = el('g', { class: 'w-lands', filter: 'url(#wGlow)' }, svg);
+                const countries = topojson.feature(world, world.objects.countries).features.filter(f => f.id !== '010');
+                const hot = [];
+                countries.forEach(f => {
+                    const p = el('path', { d: path(f), class: 'w-land', 'data-id': f.id }, lands);
+                    if (f.id === '356' || f.id === '276') hot.push(p);
+                });
+                hot.forEach(p => lands.appendChild(p));   // India + Germany drawn last so their glow sits on top
+
+                const P = {};
+                for (const k in PLACES) P[k] = proj([PLACES[k].lon, PLACES[k].lat]);
+
+                const links = el('g', {}, svg);
+                link = el('path', { d: curve(P.kashmir, P.assam, 0.28), class: 'w-link' }, links);
+                arcMe = el('path', { d: curve(P.kashmir, P.germany, 0.3), class: 'w-arc' }, links);
+                arcYou = el('path', { d: curve(P.assam, P.germany, 0.4), class: 'w-arc her' }, links);
+                strokes.push([link, 1.4], [arcMe, 2], [arcYou, 2]);
+
+                const top = el('g', {}, svg);
+                function marker(key, cls) {
+                    const pl = PLACES[key];
+                    const g = el('g', { class: 'w-mk ' + cls }, top);
+                    g._p = P[key];
+                    el('circle', { r: 14, class: 'w-ring' }, g);
+                    el('circle', { r: 4.5, class: 'w-dot' }, g);
+                    const t = el('text', { x: pl.dx, y: pl.dy, 'text-anchor': pl.anchor, class: 'w-label' }, g);
+                    t.textContent = pl.label;
+                    floating.push(g);
+                    return g;
+                }
+                mk.me = marker('kashmir', 'me');
+                mk.you = marker('assam', 'her');
+                mk.us = marker('germany', 'us');
+                const hg = el('g', { transform: 'translate(-12,-12.5)' }, mk.us);
+                el('path', { class: 'w-heart', d: 'M12 21s-7-4.35-9.5-9C.7 8.3 2.3 5 5.8 4.6c2-.2 3.7.9 4.5 2.4.8-1.5 2.5-2.6 4.5-2.4 3.5.4 5.1 3.7 3.3 7.4C19 16.65 12 21 12 21z' }, hg);
+                const spark = (p) => { const g = el('g', {}, top); g._p = p.slice(); el('circle', { r: 3.4, class: 'w-spark' }, g); floating.push(g); return g; };
+                sparkMe = spark(P.kashmir);
+                sparkYou = spark(P.assam);
+
+                // the zoom frames the whole journey, kept to the map's aspect ratio
+                const xs = [P.kashmir[0], P.assam[0], P.germany[0]], ys = [P.kashmir[1], P.assam[1], P.germany[1]];
+                let x0 = Math.min(...xs) - 70, x1 = Math.max(...xs) + 70, y0 = Math.min(...ys) - 90, y1 = Math.max(...ys) + 60;
+                let w = x1 - x0, h = y1 - y0;
+                if (w / h < W / H) { const nw = h * W / H; x0 -= (nw - w) / 2; w = nw; } else { const nh = w * H / W; y0 -= (nh - h) / 2; h = nh; }
+                zoomBox = [x0, y0, w, h];
+
+                setVB(FULL);
+                window.addEventListener('resize', layout);
+            }
+
+            function say(i) {
+                caption.classList.remove('show');
+                setTimeout(() => { caption.textContent = CAPTIONS[i]; caption.classList.add('show'); }, reduced ? 0 : 260);
+            }
+            function countTo(key, n) {
+                const b = statEls[key];
+                if (reduced) { b.textContent = fmt(n); return; }
+                animate(1300, t => { b.textContent = fmt(Math.round(n * t)); });
+            }
+            function drawOn(p, ms, spark) {
+                const L = p.getTotalLength();
+                p.style.opacity = 1;
+                p.style.strokeDasharray = `${L} ${L}`;
+                p.style.strokeDashoffset = L;
+                if (spark) spark.firstChild.classList.add('on');
+                return animate(ms, t => {
+                    p.style.strokeDashoffset = L * (1 - t);
+                    if (spark) { const q = p.getPointAtLength(L * t); spark._p = [q.x, q.y]; spark.setAttribute('transform', `translate(${q.x},${q.y}) scale(${unitsPerPx()})`); }
+                }).then(ok => { if (spark) spark.firstChild.classList.remove('on'); return ok; });
+            }
+
+            function reset() {
+                stage.classList.remove('lit', 'india', 'joined');
+                [mk.me, mk.you, mk.us].forEach(m => m.classList.remove('on', 'joined'));
+                [link, arcMe, arcYou].forEach(p => { p.style.opacity = 0; p.style.strokeDasharray = ''; });
+                link._dashed = false;
+                Object.values(statEls).forEach(b => { b.textContent = '·'; });
+                replayBtn.classList.remove('show');
+                caption.classList.remove('show');
+                setVB(FULL);
+            }
+
+            function finish() {
+                stage.classList.add('lit', 'india', 'joined');
+                [mk.me, mk.you, mk.us].forEach(m => m.classList.add('on'));
+                mk.us.classList.add('joined');
+                [link, arcMe, arcYou].forEach(p => { p.style.opacity = 1; p.style.strokeDasharray = ''; p.style.strokeDashoffset = 0; });
+                link._dashed = true;
+                setVB(zoomBox);
+                say(3);
+                countTo('home', D.home); countTo('flown', D.me + D.you); countTo('one', 1);
+                replayBtn.classList.add('show');
+            }
+
+            async function play() {
+                ++run;
+                reset();
+                if (reduced) { finish(); return; }
+                stage.classList.add('lit');
+                if (!await wait(800)) return;
+                mk.me.classList.add('on'); say(0);
+                if (!await wait(900)) return;
+                mk.you.classList.add('on'); stage.classList.add('india');
+                if (!await wait(1700)) return;
+                say(1); countTo('home', D.home);
+                if (!await drawOn(link, 1500)) return;
+                link._dashed = true; link.style.strokeDashoffset = 0; layout();
+                if (!await wait(1600)) return;
+                const from = vb.slice();
+                if (!await animate(1900, t => setVB(from.map((v, i) => lerp(v, zoomBox[i], t))))) return;
+                say(2);
+                const ok = await Promise.all([drawOn(arcMe, 2600, sparkMe), drawOn(arcYou, 3000, sparkYou)]);
+                if (!ok.every(Boolean)) return;
+                mk.us.classList.add('on', 'joined'); stage.classList.add('joined');
+                if (window.createSparkleBurst) {
+                    const r = mk.us.getBoundingClientRect();
+                    window.createSparkleBurst(r.left + r.width / 2, r.top + r.height / 2, 16);
+                }
+                say(3); countTo('flown', D.me + D.you); countTo('one', 1);
+                if (!await wait(1400)) return;
+                replayBtn.classList.add('show');
+            }
+
+            function maybePlay() {
+                if (!built || played) return;
+                const r = stage.getBoundingClientRect();
+                if (r.top < innerHeight * 0.75 && r.bottom > innerHeight * 0.25) { played = true; play(); }
+            }
+
+            new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) build(); }, { rootMargin: '900px 0px' }).observe(section);
+            new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) maybePlay(); }, { threshold: [0.5, 0.8] }).observe(stage);
+            replayBtn.addEventListener('click', () => { played = true; play(); });
+        })();
+    </script>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+    <script type="module">
+        import * as THREE from 'three';
+        import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+        const hero = document.getElementById('bloomHero');
+        const canvas = document.getElementById('roseCanvas');
+        const cta = document.getElementById('bloomCta');
+        const MOBILE = Math.min(window.innerWidth, window.innerHeight) < 700;
+        const REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const BLOOM_SECONDS = REDUCED ? 0.8 : 7.5;
+
+        // ── renderer ──
+        let renderer;
+        try {
+            renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
+        } catch (err) {
+            hero.classList.add('bloomed');       // no WebGL: just show the letter button
+            throw err;
+        }
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, MOBILE ? 1.75 : 2));
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.0;
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 60);
+
+        // Each theme relights the whole scene: night is a wine-dark room, day is a sunlit sill.
+        const THEMES = {
+            night: {
+                bg: ['#3e1624', '#220c13', '#120709', '#0b0506'], bgIntensity: 1, fade: '#000000', additive: true,
+                hemi: [0xffe6ee, 0x2a0d1c, 0.55], key: [0xfff0e0, 2.8], rim: [0xff7aa2, 2.2], fill: [0xc9a15c, 0.6],
+                exposure: 1.0, glow: [0.25, 0.2], heart: 1.45,
+                pollen: ['#ffcf7a', '#ff8fb0'], pollenGain: [0.25, 0.55], pollenSize: 0.06
+            },
+            day: {
+                bg: ['#fff1dc', '#fbe8cf', '#f1dcc0', '#e8d0b2'], bgIntensity: 1.55, fade: '#f6ede0', additive: false,
+                hemi: [0xfff8ee, 0x9c8462, 1.05], key: [0xfff2dc, 3.4], rim: [0xffd9b8, 1.1], fill: [0xfff4e6, 0.7],
+                exposure: 0.95, glow: [0.04, 0.04], heart: 0.65,
+                pollen: ['#b98a3e', '#c2566e'], pollenGain: [0.5, 0.9], pollenSize: 0.045
+            }
+        };
+        let theme = THEMES[document.documentElement.getAttribute('data-theme')] || THEMES.night;
+
+        function makeBackground(stops) {
+            const c = document.createElement('canvas');
+            c.width = c.height = 512;
+            const g = c.getContext('2d');
+            const grad = g.createRadialGradient(256, 270, 10, 256, 270, 360);
+            grad.addColorStop(0, stops[0]);
+            grad.addColorStop(0.35, stops[1]);
+            grad.addColorStop(0.75, stops[2]);
+            grad.addColorStop(1, stops[3]);
+            g.fillStyle = grad;
+            g.fillRect(0, 0, 512, 512);
+            const tex = new THREE.CanvasTexture(c);
+            tex.colorSpace = THREE.SRGBColorSpace;
+            if (scene.background) scene.background.dispose();
+            scene.background = tex;
+        }
+
+        const pmrem = new THREE.PMREMGenerator(renderer);
+        scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture;
+
+        // ── lights ──
+        const hemi = new THREE.HemisphereLight(0xffe6ee, 0x2a0d1c, 0.55);
+        scene.add(hemi);
+        const key = new THREE.DirectionalLight(0xfff0e0, 2.8);
+        key.position.set(2.6, 5, 3.4);
+        key.castShadow = true;
+        key.shadow.mapSize.set(MOBILE ? 1024 : 2048, MOBILE ? 1024 : 2048);
+        Object.assign(key.shadow.camera, { left: -2, right: 2, top: 2, bottom: -2, near: 1, far: 14 });
+        key.shadow.bias = -0.0004;
+        key.shadow.normalBias = 0.02;
+        scene.add(key);
+        const rim = new THREE.DirectionalLight(0xff7aa2, 2.2);
+        rim.position.set(-4, 2.2, -3.5);
+        scene.add(rim);
+        const fill = new THREE.DirectionalLight(0xc9a15c, 0.6);
+        fill.position.set(3, -1, 2);
+        scene.add(fill);
+        const heartGlow = new THREE.PointLight(0xffc870, 0, 3.8, 2);
+        heartGlow.position.set(0, 0.55, 0);
+        scene.add(heartGlow);
+
+        // ── procedural textures ──
+        function veinTexture(leaf) {
+            const c = document.createElement('canvas');
+            c.width = c.height = 256;
+            const g = c.getContext('2d');
+            g.fillStyle = '#ffffff';
+            g.fillRect(0, 0, 256, 256);
+            if (leaf) {
+                g.strokeStyle = 'rgba(40,70,20,0.55)';
+                g.lineWidth = 3;
+                g.beginPath(); g.moveTo(128, 256); g.lineTo(128, 0); g.stroke();
+                g.lineWidth = 1.2;
+                for (let i = 0; i < 9; i++) {
+                    const y = 236 - i * 26;
+                    [-1, 1].forEach(sx => {
+                        g.beginPath(); g.moveTo(128, y);
+                        g.quadraticCurveTo(128 + sx * 50, y - 14, 128 + sx * 120, y - 44); g.stroke();
+                    });
+                }
+            } else {
+                for (let i = 0; i < 46; i++) {
+                    const f = i / 45;
+                    g.strokeStyle = `rgba(90,0,20,${0.05 + Math.random() * 0.08})`;
+                    g.lineWidth = 0.6 + Math.random();
+                    g.beginPath();
+                    g.moveTo(128 + (f - 0.5) * 40, 256);
+                    g.quadraticCurveTo(128 + (f - 0.5) * 160, 140, f * 256, 0);
+                    g.stroke();
+                }
+                for (let i = 0; i < 1400; i++) {               // velvet speckle
+                    g.fillStyle = `rgba(${Math.random() < 0.5 ? '255,255,255' : '80,0,20'},${Math.random() * 0.07})`;
+                    g.fillRect(Math.random() * 256, Math.random() * 256, 1.5, 1.5);
+                }
+            }
+            const tex = new THREE.CanvasTexture(c);
+            tex.colorSpace = THREE.SRGBColorSpace;
+            tex.anisotropy = 4;
+            return tex;
+        }
+        function spriteTexture() {
+            const c = document.createElement('canvas');
+            c.width = c.height = 64;
+            const g = c.getContext('2d');
+            const grad = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+            grad.addColorStop(0, 'rgba(255,255,255,1)');
+            grad.addColorStop(0.25, 'rgba(255,240,210,0.8)');
+            grad.addColorStop(1, 'rgba(255,200,150,0)');
+            g.fillStyle = grad;
+            g.fillRect(0, 0, 64, 64);
+            return new THREE.CanvasTexture(c);
+        }
+
+        const petalVeins = veinTexture(false);
+        const leafVeins = veinTexture(true);
+        const petalMat = new THREE.MeshPhysicalMaterial({
+            vertexColors: true, side: THREE.DoubleSide, map: petalVeins, bumpMap: petalVeins, bumpScale: 0.6,
+            roughness: 0.58, metalness: 0, sheen: 0.7, sheenRoughness: 0.4, sheenColor: new THREE.Color('#c23a5c'),
+            envMapIntensity: 0.3
+        });
+        const sepalMat = new THREE.MeshPhysicalMaterial({
+            vertexColors: true, side: THREE.DoubleSide, roughness: 0.6, sheen: 0.4, sheenColor: new THREE.Color('#9fd27a'),
+            envMapIntensity: 0.4
+        });
+        const leafMat = new THREE.MeshPhysicalMaterial({
+            vertexColors: true, side: THREE.DoubleSide, map: leafVeins, bumpMap: leafVeins, bumpScale: 0.8,
+            roughness: 0.42, clearcoat: 0.35, clearcoatRoughness: 0.5, envMapIntensity: 0.5
+        });
+        const stemMat = new THREE.MeshPhysicalMaterial({ color: 0x2f5a24, roughness: 0.55, clearcoat: 0.2, envMapIntensity: 0.5 });
+
+        // ── parametric petal ──
+        // A petal is a grid in (u across, v along). Its spine is a curve in the (radial, up) plane
+        // that tilts outward and curls as it opens; across its width it wraps around an arc whose
+        // curvature tightens when closed (hugging the bud) and relaxes into a shallow cup when open.
+        const SU = MOBILE ? 10 : 14;
+        const SV = MOBILE ? 16 : 24;
+        const SR = new Float32Array(SV + 1), SY = new Float32Array(SV + 1), SC = new Float32Array(SV + 1), SS = new Float32Array(SV + 1);
+        const lerp = (a, b, t) => a + (b - a) * t;
+        const clamp01 = (x) => Math.max(0, Math.min(1, x));
+        const easeInOutSine = (x) => -(Math.cos(Math.PI * x) - 1) / 2;
+        const easeInOutCubic = (x) => x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+
+        function profile(v, pointy) {
+            if (pointy) return Math.pow(Math.sin(Math.PI * Math.min(1, 0.06 + 0.94 * v)), 0.85) * (1 - 0.3 * v);
+            // narrow claw at the base, broad body, round tip
+            const body = 0.3 + 0.7 * Math.sin(Math.PI * 0.5 * Math.min(1, v / 0.62));
+            const tip = v > 0.62 ? Math.sqrt(Math.max(0, 1 - Math.pow((v - 0.62) / 0.38, 2))) : 1;
+            return body * tip;
+        }
+        // rows are packed closer together towards the tip so the rounded edge stays smooth
+        const VMAP = new Float32Array(SV + 1);
+        for (let j = 0; j <= SV; j++) VMAP[j] = 1 - Math.pow(1 - j / SV, 1.5);
+
+        function makePart(P, material, colorFn) {
+            const geo = new THREE.PlaneGeometry(1, 1, SU, SV);
+            const uv = geo.attributes.uv.array;
+            const n = uv.length / 2;
+            const col = new Float32Array(n * 3);
+            const c = new THREE.Color();
+            for (let k = 0; k < n; k++) {
+                colorFn(c, uv[2 * k], VMAP[Math.round(uv[2 * k + 1] * SV)]);
+                col[3 * k] = c.r; col[3 * k + 1] = c.g; col[3 * k + 2] = c.b;
+            }
+            geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+            const mesh = new THREE.Mesh(geo, material);
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+            mesh.frustumCulled = false;
+            mesh.userData.P = P;
+            shapePart(mesh, 0);
+            return mesh;
+        }
+
+        function shapePart(mesh, p) {
+            const P = mesh.userData.P, geo = mesh.geometry;
+            const pos = geo.attributes.position.array, uv = geo.attributes.uv.array;
+            const tilt = lerp(P.tilt0, P.tilt1, p);
+            const curl = lerp(P.curl0, P.curl1, p);
+            const roll = P.roll * p;
+            let r = P.r0, y = P.y0;
+            for (let j = 0; j <= SV; j++) {
+                const v = VMAP[j];
+                const phi = tilt + curl * v * v;
+                SR[j] = r; SY[j] = y; SC[j] = Math.cos(phi); SS[j] = Math.sin(phi);
+                if (j < SV) {
+                    const ds = P.L * (VMAP[j + 1] - v);
+                    r += Math.sin(phi) * ds;
+                    y += Math.cos(phi) * ds;
+                }
+            }
+            const ca = Math.cos(P.az), sa = Math.sin(P.az);
+            const hwMax = P.W * 0.5;
+            for (let k = 0, n = uv.length / 2; k < n; k++) {
+                const u = uv[2 * k];
+                const j = Math.round(uv[2 * k + 1] * SV);
+                const v = VMAP[j];
+                const s = (u - 0.5) * 2;
+                const arc = s * hwMax * profile(v, P.pointy);
+                // width curvature: closed petals wrap the bud (kappa ~ 1/radius), open ones form a shallow cup
+                const kClosed = P.wrap / Math.max(SR[j], 0.05);
+                const kappa = Math.min(lerp(kClosed, P.cup1, p), 14);
+                let lateral, off;
+                if (Math.abs(kappa) < 1e-3) { lateral = arc; off = 0; }
+                else { lateral = Math.sin(kappa * arc) / kappa; off = (1 - Math.cos(kappa * arc)) / kappa; }
+                off -= roll * s * s * v * v * hwMax * 0.9;                                   // edges roll back at the tip
+                off += P.rufA * Math.sin(s * P.rufF + P.seed) * v * v * v * hwMax;           // gentle ruffle
+                if (P.fold) off -= P.fold * Math.abs(arc);                                   // leaf midrib crease
+                const rr = SR[j] - SC[j] * off;
+                const yy = SY[j] + SS[j] * off;
+                pos[3 * k] = ca * rr - sa * lateral;
+                pos[3 * k + 1] = yy;
+                pos[3 * k + 2] = sa * rr + ca * lateral;
+            }
+            geo.attributes.position.needsUpdate = true;
+            geo.computeVertexNormals();
+        }
+
+        // ── build the rose ──
+        const rose = new THREE.Group();
+        const head = new THREE.Group();
+        rose.add(head);
+        scene.add(rose);
+
+        const cBase = new THREE.Color('#3a020c'), cMid = new THREE.Color('#82071f'), cTip = new THREE.Color('#b0173b');
+        const cHeart = new THREE.Color('#e9a35c'), tmp = new THREE.Color();
+        const petals = [];
+        const N_PETALS = MOBILE ? 30 : 38;
+        const GOLDEN = Math.PI * (3 - Math.sqrt(5));
+
+        for (let i = 0; i < N_PETALS; i++) {
+            const t = i / (N_PETALS - 1);                 // 0 = innermost, 1 = outermost
+            const jit = () => (Math.random() - 0.5);
+            const L = lerp(0.5, 1.0, Math.pow(t, 0.8)) * (1 + jit() * 0.08);
+            const P = {
+                t, L,
+                W: L * lerp(0.95, 1.25, t),
+                az: i * GOLDEN + jit() * 0.15,
+                r0: lerp(0.02, 0.17, t),
+                y0: lerp(0.16, -0.06, t),
+                tilt0: lerp(0.3, 0.45, t), curl0: lerp(-0.8, -1.2, t),
+                tilt1: lerp(0.18, 0.98, Math.pow(t, 1.3)) + jit() * 0.1,
+                curl1: lerp(-0.85, 0.42, Math.pow(t, 1.2)) + jit() * 0.12,
+                wrap: lerp(1.0, 0.92, t), cup1: lerp(3.6, 1.5, t),
+                roll: lerp(0, 0.45, t * t),
+                rufA: 0.05 + Math.random() * 0.05, rufF: 4 + Math.random() * 4, seed: Math.random() * 6.28,
+                start: (1 - t) * 0.5, dur: 0.5,
+                maxOpen: lerp(0.45, 1, clamp01(t / 0.28)),
+                pointy: false
+            };
+            const shade = (0.7 + 0.3 * t) * (0.92 + Math.random() * 0.16);
+            const mesh = makePart(P, petalMat, (c, u, v) => {
+                if (v < 0.5) c.copy(cBase).lerp(cMid, v / 0.5); else c.copy(cMid).lerp(cTip, (v - 0.5) / 0.5);
+                if (v < 0.16) c.lerp(cHeart, (1 - v / 0.16) * 0.35);
+                const s = Math.abs(u * 2 - 1);
+                c.multiplyScalar(shade * (1 - 0.25 * Math.pow(s, 4)) * (0.85 + 0.15 * v));
+            });
+            head.add(mesh);
+            petals.push(mesh);
+        }
+
+        // sepals
+        const cSepal = new THREE.Color('#2e5a1e'), cSepalTip = new THREE.Color('#6f8f3a');
+        const sepals = [];
+        for (let i = 0; i < 5; i++) {
+            const P = {
+                L: 0.72, W: 0.15, az: i * (Math.PI * 2 / 5) + 0.3, r0: 0.14, y0: -0.12,
+                tilt0: 0.45, curl0: -0.55, tilt1: 2.05 + Math.random() * 0.25, curl1: 0.7,
+                wrap: 0.5, cup1: 2.2, roll: 0, rufA: 0.03, rufF: 3, seed: Math.random() * 6,
+                start: 0, dur: 0.35, maxOpen: 1, pointy: true
+            };
+            const m = makePart(P, sepalMat, (c, u, v) => c.copy(cSepal).lerp(cSepalTip, v * 0.7));
+            head.add(m);
+            sepals.push(m);
+        }
+
+        // receptacle (the little green hip under the flower)
+        const hip = new THREE.Mesh(new THREE.SphereGeometry(0.17, 24, 16), stemMat);
+        hip.scale.set(1, 0.85, 1);
+        hip.position.y = -0.14;
+        hip.castShadow = true;
+        head.add(hip);
+
+        // stem
+        const stemCurve = new THREE.CatmullRomCurve3([
+            new THREE.Vector3(0, -0.12, 0), new THREE.Vector3(0.04, -1.0, 0.03),
+            new THREE.Vector3(-0.05, -2.2, -0.02), new THREE.Vector3(0.03, -3.6, 0.02), new THREE.Vector3(0, -7.5, 0)
+        ]);
+        const stem = new THREE.Mesh(new THREE.TubeGeometry(stemCurve, 80, 0.05, 12, false), stemMat);
+        stem.castShadow = stem.receiveShadow = true;
+        rose.add(stem);
+
+        // thorns
+        const thornGeo = new THREE.ConeGeometry(0.03, 0.14, 8);
+        thornGeo.translate(0, 0.07, 0);
+        const thornMat = new THREE.MeshStandardMaterial({ color: 0x5a3a1c, roughness: 0.5 });
+        [0.2, 0.33, 0.47, 0.6, 0.72].forEach((f, i) => {
+            const p = stemCurve.getPointAt(f);
+            const a = i * 2.2;
+            const th = new THREE.Mesh(thornGeo, thornMat);
+            th.position.set(p.x + Math.cos(a) * 0.045, p.y, p.z + Math.sin(a) * 0.045);
+            th.lookAt(p.x + Math.cos(a), p.y - 0.6, p.z + Math.sin(a));
+            th.rotateX(Math.PI / 2);
+            rose.add(th);
+        });
+
+        // compound leaves: a petiole with one terminal and two lateral leaflets
+        const cLeaf = new THREE.Color('#1f4a1a'), cLeafTip = new THREE.Color('#3f6f2a'), cLeafEdge = new THREE.Color('#6b2a1e');
+        const leafColor = (c, u, v) => {
+            c.copy(cLeaf).lerp(cLeafTip, v * 0.8);
+            c.lerp(cLeafEdge, Math.pow(Math.abs(u * 2 - 1), 6) * 0.5);
+        };
+        function addLeaf(f, az, size) {
+            const node = stemCurve.getPointAt(f);
+            const dir = new THREE.Vector3(Math.cos(az), 0.35, Math.sin(az)).normalize();
+            const len = 0.42 * size;
+            const petiole = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.018, len, 6), stemMat);
+            petiole.position.copy(node).addScaledVector(dir, len / 2);
+            petiole.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir);
+            rose.add(petiole);
+            const leaflet = (offset, azL, L) => {
+                const P = {
+                    L, W: L * 0.62, az: azL, r0: 0, y0: 0, tilt0: 1.05, curl0: 0.55, tilt1: 1.05, curl1: 0.55,
+                    wrap: 0, cup1: 0, roll: 0, rufA: 0.04, rufF: 9, seed: Math.random() * 6, fold: 0.25, pointy: true
+                };
+                P.wrap = 0;
+                const m = makePart(P, leafMat, leafColor);
+                m.position.copy(node).addScaledVector(dir, offset);
+                rose.add(m);
+            };
+            leaflet(len, az, 0.62 * size);
+            leaflet(len * 0.55, az + 1.0, 0.44 * size);
+            leaflet(len * 0.55, az - 1.0, 0.44 * size);
+        }
+        addLeaf(0.24, 0.4, 1.0);
+        addLeaf(0.4, 0.4 + Math.PI, 0.9);
+
+        // ── gold pollen floating in the air ──
+        const sprite = spriteTexture();
+        const POLLEN = MOBILE ? 160 : 420;
+        const pollenGeo = new THREE.BufferGeometry();
+        const pollenPos = new Float32Array(POLLEN * 3), pollenCol = new Float32Array(POLLEN * 3), pollenSpd = new Float32Array(POLLEN);
+        const gold = new THREE.Color(), pink = new THREE.Color(), fadeTo = new THREE.Color();
+        const pollenMix = new Float32Array(POLLEN), pollenGain = new Float32Array(POLLEN);
+        for (let i = 0; i < POLLEN; i++) {
+            pollenPos[3 * i] = (Math.random() - 0.5) * 9;
+            pollenPos[3 * i + 1] = -3 + Math.random() * 7;
+            pollenPos[3 * i + 2] = (Math.random() - 0.5) * 6 - 0.5;
+            pollenMix[i] = Math.random() < 0.7 ? 0 : 1;
+            pollenGain[i] = Math.random();
+            pollenSpd[i] = 0.04 + Math.random() * 0.12;
+        }
+        pollenGeo.setAttribute('position', new THREE.BufferAttribute(pollenPos, 3));
+        pollenGeo.setAttribute('color', new THREE.BufferAttribute(pollenCol, 3));
+        const pollenMat = new THREE.PointsMaterial({ size: 0.06, map: sprite, vertexColors: true, transparent: true, depthWrite: false });
+        const pollen = new THREE.Points(pollenGeo, pollenMat);
+        scene.add(pollen);
+        function paintPollen() {
+            gold.set(theme.pollen[0]); pink.set(theme.pollen[1]); fadeTo.set(theme.fade);
+            const [g0, g1] = theme.pollenGain;
+            for (let i = 0; i < POLLEN; i++) {
+                // additive (night): darker = fainter. normal (day): closer to the background = fainter.
+                tmp.copy(fadeTo).lerp(pollenMix[i] ? pink : gold, lerp(g0, g1, pollenGain[i]));
+                pollenCol[3 * i] = tmp.r; pollenCol[3 * i + 1] = tmp.g; pollenCol[3 * i + 2] = tmp.b;
+            }
+            pollenGeo.attributes.color.needsUpdate = true;
+            pollenMat.blending = theme.additive ? THREE.AdditiveBlending : THREE.NormalBlending;
+            pollenMat.size = theme.pollenSize;
+            pollenMat.needsUpdate = true;
+        }
+        paintPollen();
+
+        // ── sparkle burst when it opens ──
+        const BURST = MOBILE ? 140 : 280;
+        const burstGeo = new THREE.BufferGeometry();
+        const bPos = new Float32Array(BURST * 3), bCol = new Float32Array(BURST * 3), bVel = new Float32Array(BURST * 3), bLife = new Float32Array(BURST).fill(1), bBase = [];
+        burstGeo.setAttribute('position', new THREE.BufferAttribute(bPos, 3));
+        burstGeo.setAttribute('color', new THREE.BufferAttribute(bCol, 3));
+        const bMix = Array.from({ length: BURST }, () => Math.random() < 0.6 ? 0 : 1);
+        const bGain = Array.from({ length: BURST }, () => 1.4 + Math.random());
+        function paintBurstBase() {
+            bBase.length = 0;
+            for (let i = 0; i < BURST; i++) {
+                const c = (bMix[i] ? pink : gold).clone();
+                bBase.push(theme.additive ? c.multiplyScalar(bGain[i]) : c);
+            }
+        }
+        paintBurstBase();
+        const burstMat = new THREE.PointsMaterial({ size: 0.07, map: sprite, vertexColors: true, transparent: true, depthWrite: false });
+        const burst = new THREE.Points(burstGeo, burstMat);
+        burst.frustumCulled = false;
+        scene.add(burst);
+        let burstFired = false;
+        function fireBurst() {
+            for (let i = 0; i < BURST; i++) {
+                const th = Math.random() * Math.PI * 2, up = Math.random();
+                const sp = 0.6 + Math.random() * 1.6;
+                bPos[3 * i] = (Math.random() - 0.5) * 0.3; bPos[3 * i + 1] = 0.45; bPos[3 * i + 2] = (Math.random() - 0.5) * 0.3;
+                bVel[3 * i] = Math.cos(th) * sp * (1 - up * 0.5);
+                bVel[3 * i + 1] = 0.4 + up * 1.6;
+                bVel[3 * i + 2] = Math.sin(th) * sp * (1 - up * 0.5);
+                bLife[i] = 0.001 + Math.random() * 0.15;  // slightly staggered lifetimes
+            }
+        }
+        for (let i = 0; i < BURST; i++) bPos[3 * i + 1] = -100;   // nothing visible until it fires
+
+        // ── loose petals drifting down after it blooms ──
+        const loose = [];
+        const looseGeoSrc = makePart({
+            L: 0.42, W: 0.5, az: 0, r0: 0, y0: -0.2, tilt0: 0.9, curl0: 0.4, tilt1: 0.9, curl1: 0.4,
+            wrap: 0, cup1: 0, roll: 0, rufA: 0.06, rufF: 5, seed: 1, pointy: false
+        }, petalMat, (c, u, v) => { c.copy(cMid).lerp(cTip, v); });
+        // give the drifting petals a cupped shape by baking a small curvature
+        looseGeoSrc.userData.P.cup1 = 2.6; shapePart(looseGeoSrc, 1);
+        for (let i = 0; i < (MOBILE ? 7 : 14); i++) {
+            const m = new THREE.Mesh(looseGeoSrc.geometry, petalMat);
+            m.castShadow = false;
+            m.visible = false;
+            m.userData = { vy: 0, spin: new THREE.Vector3(), phase: Math.random() * 6, alive: false };
+            scene.add(m);
+            loose.push(m);
+        }
+        function spawnLoose(m) {
+            m.position.set((Math.random() - 0.5) * 5, 3.2 + Math.random() * 1.5, (Math.random() - 0.5) * 3 - 0.3);
+            m.rotation.set(Math.random() * 6, Math.random() * 6, Math.random() * 6);
+            m.scale.setScalar(0.6 + Math.random() * 0.5);
+            m.userData.vy = 0.22 + Math.random() * 0.25;
+            m.userData.spin.set((Math.random() - 0.5) * 1.6, (Math.random() - 0.5) * 1.6, (Math.random() - 0.5) * 1.6);
+            m.userData.alive = true;
+            m.visible = true;
+        }
+
+        // (no post-processing: the canvas is transparent and floats over the page)
+
+        // ── sizing ──
+        let aspect = 1, VW = window.innerWidth, VH = window.innerHeight;
+        function resize() {
+            const w = window.innerWidth, h = window.innerHeight;
+            VW = w; VH = h;
+            aspect = w / h;
+            renderer.setSize(w, h, false);
+            camera.aspect = aspect;
+            camera.updateProjectionMatrix();
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // ── day / night ──
+        function setSceneTheme(name) {
+            theme = THEMES[name] || THEMES.night;
+            hemi.color.set(theme.hemi[0]); hemi.groundColor.set(theme.hemi[1]); hemi.intensity = theme.hemi[2];
+            key.color.set(theme.key[0]); key.intensity = theme.key[1];
+            rim.color.set(theme.rim[0]); rim.intensity = theme.rim[1];
+            fill.color.set(theme.fill[0]); fill.intensity = theme.fill[1];
+            renderer.toneMappingExposure = theme.exposure;
+            paintPollen();
+            paintBurstBase();
+            burstMat.blending = theme.additive ? THREE.AdditiveBlending : THREE.NormalBlending;
+            burstMat.needsUpdate = true;
+        }
+        setSceneTheme(document.documentElement.getAttribute('data-theme'));
+        window.addEventListener('themechange', (e) => {
+            setSceneTheme(e.detail);
+            renderer.render(scene, camera);       // paint now so the view-transition snapshot already shows the new light
+        });
+
+        // ── interaction ──
+        let bloomT = 0, blooming = false, bloomedFired = false;
+        let dragRot = 0, dragVel = 0, autoRot = 0;
+        const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
+        let down = null;
+        const hint = document.getElementById('bloomHint');
+
+        function startBloom() {
+            if (blooming) return;
+            blooming = true;
+            hero.classList.add('blooming');
+            document.getElementById('bloomRead').tabIndex = 0;
+        }
+        cta.addEventListener('click', startBloom);
+
+        // ── loves me, loves me… : pluck the outer petals one at a time ──
+        const PLUCKABLE = window.PETAL_COUNT || 12;
+        const pluckPool = petals.slice().sort((a, b) => b.userData.P.t - a.userData.P.t).slice(0, PLUCKABLE);
+        let plucked = 0;
+        const falling = [];
+        const _v = new THREE.Vector3(), _cam = new THREE.Vector3();
+        function pluck(x, y) {
+            if (bloomT < 1) return;
+            if (plucked >= PLUCKABLE) { window.onPetalPlucked && window.onPetalPlucked(PLUCKABLE - 1, x, y); return; }
+            // take the remaining outer petal that faces the camera most
+            _cam.copy(camera.position).setY(0).normalize();
+            let best = null, bestDot = -Infinity;
+            for (const m of pluckPool) {
+                if (m.userData.P.plucked) continue;
+                _v.set(Math.cos(m.userData.P.az), 0, Math.sin(m.userData.P.az)).transformDirection(head.matrixWorld);
+                const d = _v.x * _cam.x + _v.z * _cam.z;
+                if (d > bestDot) { bestDot = d; best = m; }
+            }
+            if (!best) return;
+            best.userData.P.plucked = true;
+            // re-centre the geometry so it tumbles around its own middle, then hand it to the world
+            const g = best.geometry;
+            g.computeBoundingBox();
+            const c = g.boundingBox.getCenter(new THREE.Vector3());
+            g.translate(-c.x, -c.y, -c.z);
+            best.position.copy(c);
+            scene.attach(best);
+            best.castShadow = false;
+            const out = best.position.clone().setY(0).normalize();
+            best.userData.fall = {
+                vel: out.multiplyScalar(0.8 + Math.random() * 0.4).add(new THREE.Vector3(0, 0.7 + Math.random() * 0.4, 0)),
+                spin: new THREE.Vector3((Math.random() - 0.5) * 4, (Math.random() - 0.5) * 4, (Math.random() - 0.5) * 4),
+                life: 0, phase: Math.random() * 6
+            };
+            falling.push(best);
+            plucked++;
+            if (window.onPetalPlucked) window.onPetalPlucked(plucked - 1, x, y);
+            hint.textContent = plucked >= PLUCKABLE ? 'every single petal agreed' : `tap the rose to pluck another · ${PLUCKABLE - plucked} left`;
+        }
+        hint.addEventListener('click', () => {
+            if (!blooming) startBloom();
+            else pluck(null, null);
+        });
+        canvas.addEventListener('pointerdown', (e) => {
+            down = { x: e.clientX, y: e.clientY, last: e.clientX, time: performance.now(), moved: 0 };
+            canvas.classList.add('dragging');
+        });
+        window.addEventListener('pointermove', (e) => {
+            pointer.tx = (e.clientX / window.innerWidth - 0.5) * 2;
+            pointer.ty = (e.clientY / window.innerHeight - 0.5) * 2;
+            if (!down) return;
+            const dx = e.clientX - down.last;
+            down.last = e.clientX;
+            down.moved += Math.abs(dx) + Math.abs(e.movementY || 0);
+            dragRot += dx * 0.009;
+            dragVel = dx * 0.009;
+        });
+        const endDrag = (e) => {
+            if (!down) return;
+            const quick = performance.now() - down.time < 400;
+            const still = Math.hypot(e.clientX - down.x, e.clientY - down.y) < 10;
+            if (e.type === 'pointerup' && quick && still) {
+                if (bloomT >= 1) pluck(e.clientX, e.clientY);
+                else startBloom();
+            }
+            down = null;
+            canvas.classList.remove('dragging');
+        };
+        window.addEventListener('pointerup', endDrag);
+        window.addEventListener('pointercancel', endDrag);
+
+        let visible = true;
+
+        // ══ 3D cartoon hug ══
+        // Two cel-shaded little people walk in from the sides, hug with their eyes closed, hearts pop out.
+        let hugStage = null;
+        function buildHugStage() {
+            const cv = document.createElement('canvas');
+            cv.id = 'hug3d';
+            document.body.appendChild(cv);
+            const r = new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: true });
+            r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+            r.outputColorSpace = THREE.SRGBColorSpace;
+            const sc = new THREE.Scene();
+            const cam = new THREE.PerspectiveCamera(32, 1, 0.1, 50);
+            cam.position.set(0, 1.35, 9.2);
+            cam.lookAt(0, 1.15, 0);
+            sc.add(new THREE.AmbientLight(0xffffff, 0.9));
+            const sun = new THREE.DirectionalLight(0xffffff, 2.2);
+            sun.position.set(3, 5, 6);
+            sc.add(sun);
+
+            // 3-band toon ramp
+            const ramp = new THREE.DataTexture(new Uint8Array([90, 90, 90, 255, 175, 175, 175, 255, 255, 255, 255, 255]), 3, 1);
+            ramp.minFilter = ramp.magFilter = THREE.NearestFilter;
+            ramp.needsUpdate = true;
+            const toon = (hex) => new THREE.MeshToonMaterial({ color: hex, gradientMap: ramp });
+            const outlineMat = new THREE.MeshBasicMaterial({ color: 0x1d1012, side: THREE.BackSide });
+
+            // every visible part gets a back-face "ink" hull for the cartoon outline
+            function part(geo, mat, parent, pos, scale) {
+                const m = new THREE.Mesh(geo, mat);
+                if (pos) m.position.set(...pos);
+                if (scale) m.scale.set(...scale);
+                const o = new THREE.Mesh(geo, outlineMat);
+                o.scale.setScalar(1.06);
+                m.add(o);
+                parent.add(m);
+                return m;
+            }
+
+            function person(o) {
+                const root = new THREE.Group();
+                const body = new THREE.Group();
+                root.add(body);
+                const skin = toon(o.skin), cloth = toon(o.cloth), hair = toon(o.hair), dark = toon(0x2b2024);
+                // legs
+                const legs = [-0.2, 0.2].map(x => {
+                    const hip = new THREE.Group(); hip.position.set(x, 0.85, 0); body.add(hip);
+                    part(new THREE.CapsuleGeometry(0.15, 0.5, 6, 12), toon(o.pants), hip, [0, -0.4, 0]);
+                    part(new THREE.SphereGeometry(0.19, 16, 12), dark, hip, [0, -0.78, 0.07], [1, 0.65, 1.35]);
+                    return hip;
+                });
+                // torso: a soft capsule for him, a little bell-shaped dress for her
+                if (o.dress) part(new THREE.CylinderGeometry(0.34, 0.66, 1.05, 24), cloth, body, [0, 1.3, 0]);
+                else part(new THREE.CapsuleGeometry(0.42, 0.55, 8, 18), cloth, body, [0, 1.35, 0]);
+                // head
+                const head = new THREE.Group(); head.position.set(0, 2.28, 0); body.add(head);
+                part(new THREE.SphereGeometry(0.58, 32, 24), skin, head);
+                // hair cap (+ long hair for her)
+                part(new THREE.SphereGeometry(0.62, 32, 16, 0, Math.PI * 2, 0, Math.PI * 0.52), hair, head, [0, 0.04, -0.03]);
+                if (o.longHair) {
+                    part(new THREE.SphereGeometry(0.55, 24, 18), hair, head, [0, -0.38, -0.28], [1.05, 1.25, 0.7]);
+                    part(new THREE.SphereGeometry(0.2, 16, 12), toon(0xe5637a), head, [0.42, 0.42, 0.1]);   // a flower clip
+                } else {
+                    part(new THREE.SphereGeometry(0.22, 16, 12), hair, head, [0.18, 0.56, 0.2], [1.3, 0.6, 1]); // quiff
+                }
+                // face
+                const eyes = [-0.2, 0.2].map(x => {
+                    const e = new THREE.Mesh(new THREE.SphereGeometry(0.075, 16, 12), toon(0x1d1012));
+                    e.position.set(x, 0.05, 0.53); e.scale.set(1, 1.25, 0.6); head.add(e);
+                    const glint = new THREE.Mesh(new THREE.SphereGeometry(0.025, 8, 6), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+                    glint.position.set(0.025, 0.035, 0.06); e.add(glint);
+                    return e;
+                });
+                [-0.33, 0.33].forEach(x => {
+                    const b = new THREE.Mesh(new THREE.SphereGeometry(0.1, 16, 10), new THREE.MeshBasicMaterial({ color: 0xff8a9c, transparent: true, opacity: 0.55 }));
+                    b.position.set(x, -0.12, 0.5); b.scale.set(1.2, 0.6, 0.4); head.add(b);
+                });
+                const smile = new THREE.Mesh(new THREE.TorusGeometry(0.12, 0.022, 8, 20, Math.PI), toon(0x1d1012));
+                smile.position.set(0, -0.15, 0.55); smile.rotation.z = Math.PI; head.add(smile);
+                // arms hang from shoulder pivots
+                const arms = [-1, 1].map(side => {
+                    const sh = new THREE.Group(); sh.position.set(side * 0.5, 1.72, 0); body.add(sh);
+                    part(new THREE.CapsuleGeometry(0.12, 0.62, 6, 12), cloth, sh, [0, -0.38, 0]);
+                    part(new THREE.SphereGeometry(0.14, 14, 10), skin, sh, [0, -0.8, 0]);
+                    sh.rotation.z = side * 0.18;
+                    return sh;
+                });
+                return { root, body, head, legs, arms, eyes };
+            }
+
+            const him = person({ skin: 0xc98d63, cloth: 0x3f6f8f, pants: 0x2f3a4a, hair: 0x22160f });
+            const her = person({ skin: 0xd8a07a, cloth: 0xe5637a, pants: 0xd8a07a, hair: 0x2a1812, dress: true, longHair: true });
+            sc.add(him.root, her.root);
+            // soft blob shadows under their feet
+            const blobTex = (() => {
+                const c = document.createElement('canvas'); c.width = c.height = 64;
+                const g = c.getContext('2d');
+                const gr = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+                gr.addColorStop(0, 'rgba(30,10,15,0.4)'); gr.addColorStop(1, 'rgba(30,10,15,0)');
+                g.fillStyle = gr; g.fillRect(0, 0, 64, 64);
+                return new THREE.CanvasTexture(c);
+            })();
+            [him, her].forEach(p => {
+                const m = new THREE.Mesh(new THREE.PlaneGeometry(1.7, 0.8), new THREE.MeshBasicMaterial({ map: blobTex, transparent: true, depthWrite: false }));
+                m.rotation.x = -Math.PI / 2;
+                m.position.y = 0.02;
+                p.root.add(m);
+            });
+
+            // hearts
+            const hs = new THREE.Shape();
+            hs.moveTo(0, -0.5);
+            hs.bezierCurveTo(-0.1, -0.35, -0.6, -0.1, -0.6, 0.2);
+            hs.bezierCurveTo(-0.6, 0.5, -0.25, 0.65, 0, 0.38);
+            hs.bezierCurveTo(0.25, 0.65, 0.6, 0.5, 0.6, 0.2);
+            hs.bezierCurveTo(0.6, -0.1, 0.1, -0.35, 0, -0.5);
+            const heartGeo = new THREE.ExtrudeGeometry(hs, { depth: 0.18, bevelEnabled: true, bevelSize: 0.06, bevelThickness: 0.06, bevelSegments: 3 });
+            heartGeo.center();
+            const hearts = [];
+            for (let i = 0; i < 9; i++) {
+                const h = part(heartGeo, toon(i % 3 === 0 ? 0xffb0c0 : 0xe23a5a), sc, [0, -10, 0]);
+                h.userData = { t0: 1.85 + i * 0.14, dx: (Math.random() - 0.5) * 3.2, sp: 0.9 + Math.random() * 0.6, rot: (Math.random() - 0.5) * 3 };
+                hearts.push(h);
+            }
+            return { cv, r, sc, cam, him, her, hearts, playing: false };
+        }
+
+        function play3DHug(seek = 0) {
+            if (!hugStage) hugStage = buildHugStage();
+            const H = hugStage;
+            if (H.playing) return;
+            H.playing = true;
+            const w = window.innerWidth, h = window.innerHeight;
+            H.r.setSize(w, h, false);
+            H.cam.aspect = w / h;
+            // keep them big on portrait screens too
+            H.cam.position.z = w / h < 1 ? 9.2 / Math.max(0.5, w / h) * 0.82 : 9.2;
+            H.cam.updateProjectionMatrix();
+            H.cv.classList.add('show');
+            const DUR = 4.4;
+            const start = performance.now() - seek * 1000;
+            const ease = (x) => 1 - Math.pow(1 - x, 3);
+            function step() {
+                const t = (performance.now() - start) / 1000;
+                const walk = ease(clamp01(t / 1.3));
+                const hug = smooth(clamp01((t - 1.25) / 0.45));
+                const squeeze = t > 1.7 && t < 3.6 ? Math.sin((t - 1.7) * 7) * 0.025 : 0;
+                [[H.him, -1], [H.her, 1]].forEach(([p, side]) => {
+                    const x = lerp(side * 5.2, side * 0.66, walk) - side * 0.04 * hug;
+                    p.root.position.set(x, Math.abs(Math.sin(t * 11)) * 0.12 * (1 - walk), -side * 0.28 * hug);
+                    p.root.rotation.y = -side * (0.45 + 0.25 * hug);
+                    p.body.rotation.z = side * 0.12 * hug + Math.sin(t * 11) * 0.05 * (1 - walk);
+                    p.body.scale.set(1 + squeeze, 1 - squeeze, 1 + squeeze);
+                    p.legs.forEach((l, i) => { l.rotation.x = Math.sin(t * 11 + i * Math.PI) * 0.55 * (1 - walk); });
+                    p.arms.forEach((a, i) => {
+                        const s = i === 0 ? -1 : 1;
+                        a.rotation.x = lerp(Math.sin(t * 11 + i * Math.PI) * 0.4 * (1 - walk), -1.35, hug);
+                        a.rotation.z = lerp(s * 0.18, -s * 0.75, hug);
+                    });
+                    p.head.rotation.z = side * 0.08 * hug;
+                    const blink = hug > 0.5 ? 0.12 : 1;                           // happy closed eyes while hugging
+                    p.eyes.forEach(e => { e.scale.y = lerp(e.scale.y, 1.25 * blink, 0.3); });
+                });
+                H.hearts.forEach(hh => {
+                    const u = hh.userData, k = t - u.t0;
+                    if (k < 0) { hh.position.y = -10; return; }
+                    hh.position.set(u.dx * Math.min(1, k), 2.6 + k * u.sp, 0.6);
+                    hh.rotation.y = k * u.rot;
+                    hh.scale.setScalar(Math.min(1, k * 4) * 0.55 * Math.max(0, 1 - Math.max(0, k - 1.6) / 0.6));
+                });
+                H.r.render(H.sc, H.cam);
+                if (t > DUR - 0.5) H.cv.classList.remove('show');
+                if (t < DUR) requestAnimationFrame(step);
+                else { H.playing = false; }
+            }
+            requestAnimationFrame(step);
+        }
+        window.play3DHug = play3DHug;
+
+        // ── the rose travels down the page with you ──
+        // Each stop is a section; when that section is centred in the viewport the rose rests at its pose.
+        // side: 0 = centre, 1 = right margin, -1 = left margin. size: relative size at that stop.
+        // y: 0 = high in the viewport, 1 = low. jx: nudge within the margin. arc: how it swoops on the way there.
+        // The path is shuffled on every visit so it never settles into a left-right-left rhythm.
+        const stops = [
+            { el: hero, side: 0, size: 1 },
+            ...[
+                '#letterSection > div.paper:nth-of-type(1)',
+                '#letterSection > div.paper:nth-of-type(2)',
+                '#eyesReveal',
+                '#letterSection > div.paper:nth-of-type(3)',
+                '#letterSection > div.paper:nth-of-type(4)',
+                '#worldSection',
+                '#mapSection',
+                '.hug-section'
+            ].map(sel => ({ sel })),
+            { sel: '#roseLanding', side: 0, size: 0.62, landing: true }
+        ].map(s => ({ ...s, el: s.el || document.querySelector(s.sel) })).filter(s => s.el);
+        (function shufflePath() {
+            const rnd = (a, b) => a + Math.random() * (b - a);
+            let side = Math.random() < 0.5 ? 1 : -1, y = 0.5, size = 1;
+            stops.forEach((st, k) => {
+                if (st.side === 0) { st.arc = rnd(-0.07, 0.09); return; }
+                // usually cross over, but sometimes stay on the same side and just move up or down
+                const stay = k > 1 && Math.random() < 0.4;
+                if (!stay && k > 1) side = -side;
+                st.side = side;
+                let ny;
+                do { ny = Math.random(); } while (Math.abs(ny - y) < (stay ? 0.45 : 0.2));
+                st.y = y = ny;
+                let ns;
+                do { ns = rnd(0.35, 1.1); } while (Math.abs(ns - size) < 0.25);
+                st.size = size = ns;
+                st.jx = rnd(-1, 1);
+                st.arc = rnd(-0.1, 0.12);
+            });
+        })();
+        const smooth = (x) => x * x * (3 - 2 * x);
+        let curX = null, curY = 0, curS = 1;
+
+        function stopPose(st) {
+            const W = VW, H = VH;
+            const headW = 0.56 * H;                         // rose-head width on screen at scale 1
+            const gutter = (W - Math.min(W, 680)) / 2;
+            if (st.side === 0) {
+                if (st.landing) return { x: W / 2, y: H * 0.47, s: st.size * Math.min(1, (W * 0.9) / headW) };
+                return { x: W / 2, y: H / 2, s: 1 };
+            }
+            if (gutter > 150) {                             // wide screens: wander through the margins
+                const s = Math.min(1.1, (gutter * 0.92 / headW) * st.size);
+                const slack = Math.max(0, (gutter - headW * s) / 2);
+                const cx = (st.side > 0 ? W - gutter / 2 : gutter / 2) + st.jx * slack * 0.8;
+                const m = 0.14 + 0.22 * Math.min(1, s);    // bigger roses stay nearer the middle
+                return { x: cx, y: H * lerp(m, 1 - m, st.y), s };
+            }
+            // narrow screens: a small rose rides along the edge, high or low
+            const s = (55 + 70 * st.size) / headW;
+            return { x: (st.side > 0 ? W - 62 : 62) + st.jx * 12, y: lerp(H * 0.3, H - 140, st.y), s };
+        }
+
+        function placeOnPage() {
+            const sy = window.scrollY;
+            for (let k = 0; k < stops.length; k++) {
+                const r = stops[k].el.getBoundingClientRect();
+                stops[k].key = k === 0 ? 0 : r.top + sy + r.height / 2 - VH / 2;
+            }
+            let i = 0;
+            while (i < stops.length - 1 && sy > stops[i + 1].key) i++;
+            const a = stopPose(stops[i]);
+            const nxt = stops[i + 1];
+            const b = nxt ? stopPose(nxt) : a;
+            // rest near each stop, glide in between
+            const u = nxt ? clamp01((sy - stops[i].key) / Math.max(1, nxt.key - stops[i].key)) : 0;
+            const t = smooth(clamp01((u - 0.2) / 0.6));
+            const tx = lerp(a.x, b.x, t);
+            const ty = lerp(a.y, b.y, t) - Math.sin(Math.PI * t) * VH * (nxt ? nxt.arc : 0);   // a swoop between stops
+            const ts = lerp(a.s, b.s, t);
+            if (curX === null) { curX = tx; curY = ty; curS = ts; }
+            curX += (tx - curX) * 0.12; curY += (ty - curY) * 0.12; curS += (ts - curS) * 0.12;
+            const s = Math.max(0.05, curS);
+            camera.setViewOffset(VW, VH, VW / 2 - curX / s, VH / 2 - curY / s, VW / s, VH / s);
+
+            // the gold dust belongs to the opening scene; let it thin out over the text
+            pollenMat.opacity = 1 - 0.85 * clamp01(sy / (VH * 0.8));
+            canvas.classList.toggle('interactive', sy < VH * 0.5);
+            if (!blooming && sy > VH * 0.45) startBloom();   // scrolled on without tapping: it blooms anyway
+        }
+
+        // ── animation loop ──
+        let last = performance.now(), time = 0, looseTimer = 0;
+        const target = new THREE.Vector3();
+
+        function tick(now) {
+            requestAnimationFrame(tick);
+            if (document.hidden) { last = now; return; }
+            const dt = Math.min(0.05, (now - last) / 1000);
+            last = now;
+            time += dt;
+
+            if (blooming && bloomT < 1) bloomT = Math.min(1, bloomT + dt / BLOOM_SECONDS);
+            const bloom = easeInOutCubic(bloomT);
+            const breathe = 0.03 + 0.02 * Math.sin(time * 1.4);     // the closed bud gently "breathes"
+            const b = Math.max(bloom, breathe);
+
+            for (const m of petals) {
+                const P = m.userData.P;
+                if (P.plucked) continue;
+                let p = easeInOutSine(clamp01((b - P.start) / P.dur)) * P.maxOpen;
+                if (bloomT >= 1) p += 0.012 * Math.sin(time * 0.9 + P.seed);   // living sway once open
+                shapePart(m, p);
+            }
+            for (const m of sepals) shapePart(m, easeInOutSine(clamp01(b / m.userData.P.dur)));
+
+            heartGlow.intensity = theme.heart * bloom;
+
+            if (!burstFired && bloomT > 0.5) { burstFired = true; if (!REDUCED) fireBurst(); }
+            if (burstFired) {
+                for (let i = 0; i < BURST; i++) {
+                    bLife[i] += dt * 0.38;
+                    const L = bLife[i];
+                    if (L >= 1) { bPos[3 * i + 1] = -100; continue; }              // spent: park it out of sight
+                    if (L <= 0) continue;
+                    bVel[3 * i + 1] -= dt * 0.55;
+                    bVel[3 * i] *= 0.985; bVel[3 * i + 2] *= 0.985;
+                    bPos[3 * i] += bVel[3 * i] * dt; bPos[3 * i + 1] += bVel[3 * i + 1] * dt; bPos[3 * i + 2] += bVel[3 * i + 2] * dt;
+                    const a = Math.pow(1 - L, 1.6) * (0.6 + 0.4 * Math.sin(time * 18 + i));
+                    bCol[3 * i] = lerp(fadeTo.r, bBase[i].r, a); bCol[3 * i + 1] = lerp(fadeTo.g, bBase[i].g, a); bCol[3 * i + 2] = lerp(fadeTo.b, bBase[i].b, a);
+                }
+                burstGeo.attributes.position.needsUpdate = true;
+                burstGeo.attributes.color.needsUpdate = true;
+            }
+
+            // pollen drift
+            for (let i = 0; i < POLLEN; i++) {
+                pollenPos[3 * i + 1] += pollenSpd[i] * dt;
+                pollenPos[3 * i] += Math.sin(time * 0.5 + i) * 0.04 * dt;
+                if (pollenPos[3 * i + 1] > 4) pollenPos[3 * i + 1] = -3;
+            }
+            pollenGeo.attributes.position.needsUpdate = true;
+
+            // drifting petals
+            if (bloomT >= 1 && !REDUCED) {
+                looseTimer -= dt;
+                if (looseTimer <= 0) {
+                    looseTimer = 1.4 + Math.random() * 1.6;
+                    const free = loose.find(m => !m.userData.alive);
+                    if (free) spawnLoose(free);
+                }
+            }
+            for (const m of loose) {
+                if (!m.userData.alive) continue;
+                const u = m.userData;
+                m.position.y -= u.vy * dt;
+                m.position.x += Math.sin(time * 0.8 + u.phase) * 0.25 * dt;
+                m.rotation.x += u.spin.x * dt; m.rotation.y += u.spin.y * dt; m.rotation.z += u.spin.z * dt;
+                if (m.position.y < -3.5) { u.alive = false; m.visible = false; }
+            }
+
+            // plucked petals: flung out, then flutter down like paper
+            for (let i = falling.length - 1; i >= 0; i--) {
+                const m = falling[i], f = m.userData.fall;
+                f.life += dt;
+                f.vel.y = Math.max(-0.45, f.vel.y - 1.1 * dt);
+                f.vel.x *= 0.975; f.vel.z *= 0.975;
+                m.position.addScaledVector(f.vel, dt);
+                m.position.x += Math.sin(time * 2.2 + f.phase) * 0.35 * dt;
+                m.rotation.x += f.spin.x * dt; m.rotation.y += f.spin.y * dt; m.rotation.z += f.spin.z * dt;
+                if (f.life > 4.5) m.scale.setScalar(Math.max(0.001, 1 - (f.life - 4.5) / 1.5));
+                if (f.life > 6 || m.position.y < -4.5) {
+                    scene.remove(m);
+                    m.geometry.dispose();
+                    falling.splice(i, 1);
+                }
+            }
+
+            // rotation: slow turntable + drag with inertia
+            if (!REDUCED) autoRot += dt * 0.14;
+            if (!down) { dragRot += dragVel; dragVel *= 0.94; }
+            rose.rotation.y = autoRot + dragRot;
+            rose.rotation.z = Math.sin(time * 0.6) * 0.025;
+            rose.rotation.x = Math.sin(time * 0.45) * 0.015;
+
+            // camera: rises and moves in a little as it opens, with soft mouse parallax
+            pointer.x += (pointer.tx - pointer.x) * 0.04;
+            pointer.y += (pointer.ty - pointer.y) * 0.04;
+            const fit = aspect < 1 ? Math.min(1.9, 0.82 / aspect) : 1;
+            const dist = lerp(4.6, 5.6, bloom) * fit;
+            const elev = lerp(0.22, 0.6, bloom) - pointer.y * 0.06;
+            const azim = pointer.x * 0.12;
+            target.set(0, lerp(0.42, 0.4, bloom) - (aspect < 1 ? 0.25 : 0), 0);
+            camera.position.set(
+                target.x + Math.sin(azim) * Math.cos(elev) * dist,
+                target.y + Math.sin(elev) * dist,
+                target.z + Math.cos(azim) * Math.cos(elev) * dist
+            );
+            camera.lookAt(target);
+
+            placeOnPage();
+            renderer.render(scene, camera);
+
+            if (!bloomedFired && bloomT > 0.78) {
+                bloomedFired = true;
+                hero.classList.add('bloomed');
+                hint.textContent = 'tap the rose to pluck a petal';
+                window.__roseBloomed = true;
+                if (typeof window.onRoseBloomed === 'function') window.onRoseBloomed();
+            }
+        }
+
+        window.__roseReady = true;
+        requestAnimationFrame((t) => { last = t; canvas.classList.add('ready'); tick(t); });
     </script>
 </body>
 </html>
