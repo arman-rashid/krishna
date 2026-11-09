@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Krishna 💖 Arhan — 4BHI3R ❤️</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffe3f1; --bg2:#fff6fb; --ink:#4a0f33; --pink:#ff2d95; --hot:#e0007a;
+  --lav:#b98cff; --yellow:#fff27a; --card:#ffffff; --muted:#8a4a6e;
+  color-scheme: light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#1e0a24; --bg2:#2a0f33; --ink:#ffd9ef; --pink:#ff5fb0; --hot:#ff86c4;
+    --lav:#c7a3ff; --yellow:#ffe94d; --card:#331540; --muted:#d9a3c6;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1e0a24; --bg2:#2a0f33; --ink:#ffd9ef; --pink:#ff5fb0; --hot:#ff86c4;
+  --lav:#c7a3ff; --yellow:#ffe94d; --card:#331540; --muted:#d9a3c6;
+  color-scheme: dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0; color:var(--ink); background:var(--bg);
+  background-image:
+    radial-gradient(circle at 12px 12px, color-mix(in srgb,var(--pink) 22%,transparent) 2px, transparent 3px);
+  background-size:28px 28px;
+  font-family:"Comic Neue","Comic Sans MS","Chalkboard SE",cursive,sans-serif;
+  font-size:18px; line-height:1.55; overflow-x:hidden;
+}
+.marquee{background:var(--pink);color:#fff;font-weight:700;overflow:hidden;white-space:nowrap;padding:.4rem 0;border-bottom:3px dashed var(--yellow)}
+.marquee span{display:inline-block;padding-left:100%;animation:scroll 22s linear infinite}
+@keyframes scroll{to{transform:translateX(-100%)}}
+main{max-width:720px;margin:0 auto;padding:1.5rem 1rem 4rem}
+h1,h2{font-family:"Pacifico","Brush Script MT",cursive;font-weight:400;line-height:1.25;margin:0}
+h1{
+  font-size:clamp(2.6rem,11vw,4.6rem); text-align:center; color:var(--hot);
+  text-shadow:3px 3px 0 var(--yellow),6px 6px 0 var(--lav);
+  margin:1.2rem 0 .3rem; transform:rotate(-3deg);
+}
+.sub{text-align:center;font-size:1.15rem;margin:0 0 .4rem}
+.sub2{text-align:center;color:var(--muted);font-size:.95rem;margin:0}
+.glitter{
+  background:linear-gradient(90deg,var(--hot),var(--lav),var(--yellow),var(--hot));
+  background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:shine 4s linear infinite;
+}
+@keyframes shine{to{background-position:300% 0}}
+section{margin-top:3rem}
+h2{font-size:clamp(1.7rem,6vw,2.3rem);color:var(--hot);margin-bottom:.8rem}
+.box{background:var(--card);border:3px solid var(--pink);border-radius:18px 4px 18px 4px;padding:1.1rem 1.2rem;box-shadow:6px 6px 0 var(--lav)}
+.report{display:grid;gap:.9rem}
+.row{display:grid;grid-template-columns:1fr auto;gap:.3rem 1rem;align-items:baseline}
+.row b{font-size:1.5rem;color:var(--hot);font-variant-numeric:tabular-nums}
+.bar{grid-column:1/-1;height:12px;border-radius:99px;background:color-mix(in srgb,var(--lav) 30%,transparent);overflow:hidden;display:flex}
+.bar i{display:block;height:100%}
+.bar .a{background:var(--hot)} .bar .k{background:var(--lav)}
+.note{grid-column:1/-1;color:var(--muted);font-size:.92rem;margin:0}
+.legend{font-size:.9rem;color:var(--muted);margin:.2rem 0 0}
+.legend span{display:inline-block;width:.8em;height:.8em;border-radius:50%;vertical-align:-1px;margin-right:.3em}
+.quotes{display:grid;gap:1.1rem}
+.chat{display:flex;flex-direction:column;gap:.35rem}
+.msg{max-width:85%;padding:.45rem .8rem;border-radius:16px;font-size:1rem;line-height:1.4}
+.msg.a{align-self:flex-end;background:var(--pink);color:#fff;border-bottom-right-radius:4px}
+.msg.k{align-self:flex-start;background:var(--bg2);border:2px solid var(--lav);border-bottom-left-radius:4px}
+.caption{font-size:.9rem;color:var(--muted);text-align:center;margin:.2rem 0 0;font-style:italic}
+.fight{text-align:center}
+.fight p{font-size:1.25rem;margin:.2rem 0 1rem}
+.arena{position:relative;height:150px}
+.btn{font:inherit;font-weight:700;font-size:1.1rem;border:3px solid var(--ink);border-radius:999px;padding:.6rem 1.3rem;cursor:pointer;box-shadow:3px 3px 0 var(--ink);transition:transform .15s}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+.btn:focus-visible,.coupon:focus-visible{outline:4px dashed var(--yellow);outline-offset:3px}
+#yes{background:var(--card);color:var(--ink);position:absolute;left:58%;top:40px;transition:left .25s,top .25s}
+#no{background:var(--hot);color:#fff;position:absolute;left:12%;top:40px;transform-origin:center}
+#result{display:none;font-size:1.3rem}
+#result.show{display:block}
+#result h3{font-family:"Pacifico",cursive;font-weight:400;font-size:2rem;color:var(--hot);margin:.2rem 0}
+.coupons{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem}
+.coupon{font:inherit;text-align:left;color:var(--ink);background:var(--bg2);border:3px dashed var(--hot);border-radius:12px;padding:1rem;cursor:pointer;position:relative}
+.coupon strong{display:block;font-size:1.1rem;margin-bottom:.3rem}
+.coupon small{color:var(--muted)}
+.coupon.used{opacity:.55}
+.coupon.used::after{content:"REDEEMED 💋";position:absolute;right:.6rem;top:50%;transform:translateY(-50%) rotate(-14deg);border:3px solid var(--hot);color:var(--hot);font-weight:700;padding:.1rem .4rem;border-radius:6px;background:var(--card)}
+.sig{text-align:center;margin-top:3.5rem}
+.sig .big{font-family:"Pacifico",cursive;font-size:1.8rem;color:var(--hot)}
+.counter{display:inline-block;background:#000;color:#3f3;font-family:"Courier New",monospace;padding:.15rem .5rem;border:2px inset #999;letter-spacing:.15em;font-size:.95rem}
+.heart{position:fixed;top:-40px;pointer-events:none;z-index:50;animation:fall linear forwards;user-select:none}
+@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
+.spark{position:fixed;pointer-events:none;z-index:60;font-size:14px;animation:fade .8s ease-out forwards}
+@keyframes fade{to{opacity:0;transform:translateY(18px) scale(.4)}}
+@media (prefers-reduced-motion: reduce){
+  .marquee span,.glitter{animation:none}
+  .marquee span{padding-left:1rem}
+}
+</style>
+</head>
+<body>
+<div class="marquee" aria-hidden="true"><span>✨💖 WeLcOmE tO kRiShNa’S oFfIcIaL fAn PaGe 💖✨ &nbsp;&nbsp; ~*~ bhul gya na mujhe? NEVER ~*~ &nbsp;&nbsp; 🙄🙄🙄 sTaRrInG tHe WoRlD’s #1 eYe-RoLlEr 🙄🙄🙄 &nbsp;&nbsp; ♥ 4 eVeR ♥ &nbsp;&nbsp; ~*~ mErE hOtAy HuWe TuMhE kYa HoGa ~*~</span></div>
+
+<main>
+  <h1>Krishna 💖 Arhan</h1>
+  <p class="sub"><span class="glitter"><b>Mere hotay huwe tumhe kya hoga 😁</b></span></p>
+  <p class="sub2">(dialogue marne m kaafi aage hai, I know, I know)</p>
+
+  <section aria-labelledby="r">
+    <h2 id="r">Official Annual Report 📊</h2>
+    <div class="box report">
+      <p class="legend" style="margin:0">Audited period: 9 Sep – 8 Nov 2026. Two months. <span style="background:var(--hot)"></span>Arhan &nbsp;<span style="background:var(--lav)"></span>Krishna</p>
+
+      <div class="row"><span>Total messages</span><b>4,030</b>
+        <div class="bar"><i class="a" style="width:54%"></i><i class="k" style="width:46%"></i></div>
+        <p class="note">2,191 me vs 1,838 you. Toh “msg nhi kr skta???” wala case dismissed. ⚖️</p></div>
+
+      <div class="row"><span>“I love you” sent</span><b>53 : 22</b>
+        <div class="bar"><i class="a" style="width:71%"></i><i class="k" style="width:29%"></i></div>
+        <p class="note">You are 31 behind. Catching up starts today. No excuses.</p></div>
+
+      <div class="row"><span>🙄 deployed</span><b>50 : 193</b>
+        <div class="bar"><i class="a" style="width:21%"></i><i class="k" style="width:79%"></i></div>
+        <p class="note">Your eyes must be very tired. Gold medal, eye-roll category. 🥇</p></div>
+
+      <div class="row"><span>Question marks fired by Krishna</span><b>623</b>
+        <p class="note">That is roughly ten “??????????” per day. A national record.</p></div>
+
+      <div class="row"><span>Good mornings exchanged</span><b>86</b>
+        <p class="note">And 42 good nights, plus 23 official uses of “pagal.”</p></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="q">
+    <h2 id="q">Greatest Hits 🎶</h2>
+    <div class="quotes">
+      <div class="box">
+        <div class="chat">
+          <div class="msg k">Bhul gya na mujhe?</div>
+          <div class="msg k">??????????????????</div>
+          <div class="msg a">I love you tonns</div>
+          <div class="msg k">Lag nhi rha wese. But believe kr hi leti hoon</div>
+        </div>
+        <p class="caption">14 Sep. Lag jaye ga, I promised. Is it lagging yet?</p>
+      </div>
+      <div class="box">
+        <div class="chat">
+          <div class="msg k">You can’t say anything??????</div>
+          <div class="msg a">Come</div>
+          <div class="msg a">I am here</div>
+          <div class="msg a">Smith machine</div>
+        </div>
+        <p class="caption">Most romantic sentence ever written in a gym.</p>
+      </div>
+      <div class="box">
+        <div class="chat">
+          <div class="msg a">I.love you despite you making my blood boil sometimes</div>
+          <div class="msg a">Only promise i intend to keep in my life😁</div>
+        </div>
+        <p class="caption">Still valid. Typo included at no extra cost.</p>
+      </div>
+      <div class="box">
+        <div class="chat">
+          <div class="msg a">Pagal aurat. If i said in 15 min it means 15 mins</div>
+        </div>
+        <p class="caption">Certified German punctuality. Karlsruhe has changed me.</p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="f" class="fight">
+    <h2 id="f">Important Survey 📝</h2>
+    <div class="box">
+      <p id="qtext">Ab bhi naraz ho? 🥺</p>
+      <div class="arena" id="arena">
+        <button class="btn" id="no" type="button">Nahi 💖</button>
+        <button class="btn" id="yes" type="button">Haan 😤</button>
+      </div>
+      <div id="result" role="status" aria-live="polite">
+        <h3>Correct answer!!</h3>
+        <p>Main 5 min door hoon. Not 15. FIVE.<br>Ab aa jao. Ya main aa raha hoon. 🏃‍♂️💨</p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="c">
+    <h2 id="c">Love Coupons 🎟️</h2>
+    <p style="margin-top:0">Tap to redeem. Non-transferable. Valid forever. No “Rehne de” allowed.</p>
+    <div class="coupons" id="coupons">
+      <button class="coupon" type="button" data-id="roti"><strong>🫓 2 rotis with ghee</strong><small>Made by me. Since someone promised and never made them.</small></button>
+      <button class="coupon" type="button" data-id="bed"><strong>🛏️ Sad day rescue</strong><small>You stay in bed, I come over. You don’t even have to ask.</small></button>
+      <button class="coupon" type="button" data-id="tram"><strong>🚋 Tram route of your choice</strong><small>Even if it stops multiple times. Even via central station.</small></button>
+      <button class="coupon" type="button" data-id="baklava"><strong>🍯 Baklava, whenever</strong><small>Answer to “Tumhe baklava khana hai?” is now permanently yes.</small></button>
+      <button class="coupon" type="button" data-id="movie"><strong>🎬 Movie date</strong><small>You book, I come. Ramayana part 2 if needed.</small></button>
+      <button class="coupon" type="button" data-id="gym"><strong>🏋️ Smith machine priority</strong><small>I wait for you. Like always. Even when you’re late.</small></button>
+    </div>
+  </section>
+
+  <div class="sig">
+    <p class="big">Love you sooooo much 😘</p>
+    <p>– Your egoistic person (the same old one) 😁</p>
+    <p>You are visitor # <span class="counter">000001</span> &nbsp;and the only one who matters.</p>
+    <p style="color:var(--muted);font-size:.9rem">Best viewed in Internet Explorer 6 at 800×600 🌸</p>
+    <p><a href="index.html" style="color:var(--hot);font-weight:700">← back to your letter 🌹</a></p>
+  </div>
+</main>
+
+<script>
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var emojis = ['💖','💕','💗','🌸','✨','💘','🥰'];
+
+  function rain(n){
+    if(reduce) return;
+    for(var i=0;i<n;i++){
+      (function(i){
+        setTimeout(function(){
+          var h=document.createElement('span');
+          h.className='heart';
+          h.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+          h.style.left=Math.random()*100+'vw';
+          h.style.fontSize=(16+Math.random()*26)+'px';
+          h.style.animationDuration=(3+Math.random()*3)+'s';
+          document.body.appendChild(h);
+          setTimeout(function(){h.remove()},6500);
+        }, i*70);
+      })(i);
+    }
+  }
+  rain(30);
+
+  // sparkle trail
+  if(!reduce){
+    var last=0;
+    function spark(x,y){
+      var now=Date.now(); if(now-last<45) return; last=now;
+      var s=document.createElement('span'); s.className='spark';
+      s.textContent=Math.random()<.5?'✨':'💖';
+      s.style.left=(x-7)+'px'; s.style.top=(y-7)+'px';
+      document.body.appendChild(s); setTimeout(function(){s.remove()},800);
+    }
+    window.addEventListener('pointermove',function(e){spark(e.clientX,e.clientY)});
+  }
+
+  // the survey
+  var yes=document.getElementById('yes'), no=document.getElementById('no'),
+      arena=document.getElementById('arena'), result=document.getElementById('result'),
+      qtext=document.getElementById('qtext');
+  var scale=1, tries=0;
+  var taunts=['Haan 😤','Pakka? 🥺','Soch lo 😢','Ego? 🙄','Rehne de 😭','Galat button','Try again 😁'];
+  function flee(e){
+    if(e) e.preventDefault();
+    tries++;
+    var w=arena.clientWidth-yes.offsetWidth, h=arena.clientHeight-yes.offsetHeight;
+    yes.style.left=Math.max(0,Math.random()*w)+'px';
+    yes.style.top=Math.max(0,Math.random()*h)+'px';
+    yes.textContent=taunts[tries%taunts.length];
+    scale=Math.min(scale+0.18,2.4);
+    no.style.transform='scale('+scale+')';
+  }
+  yes.addEventListener('pointerenter',function(e){ if(e.pointerType==='mouse') flee(); });
+  yes.addEventListener('click',flee);
+  no.addEventListener('click',function(){
+    arena.style.display='none'; qtext.style.display='none';
+    result.classList.add('show'); rain(80);
+  });
+
+  // coupons
+  var KEY='krishna-coupons';
+  var used={};
+  try{ used=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ used={}; }
+  document.querySelectorAll('.coupon').forEach(function(c){
+    var id=c.dataset.id;
+    if(used[id]) c.classList.add('used');
+    c.setAttribute('aria-pressed', used[id]?'true':'false');
+    c.addEventListener('click',function(){
+      used[id]=!used[id];
+      c.classList.toggle('used',!!used[id]);
+      c.setAttribute('aria-pressed', used[id]?'true':'false');
+      try{ localStorage.setItem(KEY,JSON.stringify(used)); }catch(e){}
+      if(used[id]) rain(15);
+    });
+  });
+})();
+</script>
+</body>
+</html>
+
