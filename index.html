@@ -1101,6 +1101,16 @@
         .hug-btn { font-size: 18px !important; padding: 15px 30px !important; }
         .hug-btn .hug-icon { font-size: 22px; }
         .hug-glow { display: none; }
+        .side-links { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 14px; }
+        .side-link {
+            display: inline-flex; align-items: center; gap: 8px; padding: 11px 22px; border-radius: 999px;
+            border: 1px solid var(--line-strong); background: color-mix(in srgb, var(--surface) 80%, transparent);
+            color: var(--ink); font-family: var(--f-body); font-size: 16px; text-decoration: none;
+            transition: border-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
+        }
+        .side-link:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+        .side-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+        .side-link.is-open { border-color: var(--brass); color: var(--brass); }
         .bloom-btn.bloom-cta, .map-controls .gps-btn, .comfort-note-box button, .comfort-fab {
             background: color-mix(in srgb, var(--surface) 80%, transparent) !important;
             border: 1px solid var(--line-strong) !important;
@@ -1603,13 +1613,23 @@
         </section>
 
         <section class="hug-section">
+            <div class="side-links">
+                <a class="side-link" id="bdayLink" href="birthday.html"><span aria-hidden="true">🎁</span> <span id="bdayLabel">A little surprise · opens 15 Nov</span></a>
+                <a class="side-link" href="fanpage.html"><span aria-hidden="true">📊</span> Our conversation stats</a>
+            </div>
             <div class="hug-btn-wrap"><div class="hug-glow"></div><button class="hug-btn" id="hugBtn"><span class="hug-icon">🤗</span> Click me! for a warm hug</button></div>
             <p class="hug-response" id="hugResponse"></p>
             <div class="hug-hearts-container" id="hugHeartsContainer"></div>
         </section>
-        <section class="hug-section">
-            <div class="hug-btn-wrap"><div class="hug-glow"></div><a class="hug-btn" href="fanpage.html" style="text-decoration:none"><span class="hug-icon">💖</span> Krishna's official fan page</a></div>
-        </section>
+        <script>
+            (function () {
+                // On/after her birthday the button changes its mind.
+                if (Date.now() >= new Date(2026, 10, 15).getTime()) {
+                    document.getElementById('bdayLabel').textContent = 'Happy Birthday, Chamak challo · open me';
+                    document.getElementById('bdayLink').classList.add('is-open');
+                }
+            })();
+        </script>
         <div class="rose-landing" id="roseLanding"><p>it followed you all the way down. it's yours.</p></div>
         <div class="signature-block">
             <p class="sig">Written with clumsy hands, restless mind and a loving heart, Arman<span class="hover-reveal">✨ psst... you're my favorite person ✨</span></p>

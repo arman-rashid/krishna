@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Happy Birthday, Krishna 🎂</title>
+<script>
+  (function () {
+    var t = null;
+    try { t = localStorage.getItem('krishna-theme'); } catch (e) {}
+    if (t !== 'day' && t !== 'night') { var h = new Date().getHours(); t = (h >= 7 && h < 19) ? 'day' : 'night'; }
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=DM+Mono:wght@400&family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet" />
+<style>
+  :root, :root[data-theme="night"] {
+    --bg: #110b0c; --bg-2: #1a1012; --surface: #1a1214; --surface-2: #231719;
+    --ink: #f1e8dc; --ink-2: rgba(241,232,220,.74); --ink-3: rgba(241,232,220,.5);
+    --line: rgba(241,232,220,.12); --line-strong: rgba(241,232,220,.26);
+    --accent: #e5637a; --accent-strong: #c8304d; --accent-ink: #1a0b0e; --accent-soft: rgba(229,99,122,.13);
+    --brass: #d2ae78; --flame: #ffcf6b; --paper: #f7efe2; --paper-ink: #3a2622;
+    --hero: radial-gradient(ellipse 80% 60% at 50% 40%, #3a1622 0%, #1d0d11 55%, #0d0708 100%);
+    --shadow: 0 30px 60px -36px rgba(0,0,0,.85);
+    color-scheme: dark;
+  }
+  :root[data-theme="day"] {
+    --bg: #f3ece1; --bg-2: #ebe1d2; --surface: #fbf7f0; --surface-2: #f3eadd;
+    --ink: #2b1e1b; --ink-2: rgba(43,30,27,.74); --ink-3: rgba(43,30,27,.5);
+    --line: rgba(43,30,27,.13); --line-strong: rgba(43,30,27,.3);
+    --accent: #a8132f; --accent-strong: #8c0c25; --accent-ink: #fff8f0; --accent-soft: rgba(168,19,47,.07);
+    --brass: #94702f; --flame: #f2a531; --paper: #fffaf2; --paper-ink: #3a2622;
+    --hero: radial-gradient(ellipse 80% 60% at 50% 40%, #fffaf1 0%, #f4eadb 55%, #e6d7c1 100%);
+    --shadow: 0 26px 50px -34px rgba(90,55,25,.45);
+    color-scheme: light;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: 'Newsreader', Georgia, serif; font-size: 18px; line-height: 1.6;
+    overflow-x: hidden; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 0 16px; }
+  h1, h2 { font-family: 'Fraunces', serif; font-weight: 400; line-height: 1.15; margin: 0; letter-spacing: -.01em; }
+  h1 em, h2 em { color: var(--accent); }
+  .eyebrow { font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); margin: 0 0 12px; }
+  .btn {
+    font: inherit; font-size: 17px; display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 26px; border-radius: 999px; cursor: pointer; text-decoration: none;
+    background: var(--accent); color: var(--accent-ink); border: 1px solid var(--accent);
+    transition: background .25s, transform .2s;
+  }
+  .btn:hover { background: var(--accent-strong); transform: translateY(-1px); }
+  .btn:disabled { opacity: .4; cursor: default; transform: none; }
+  .btn.ghost { background: transparent; color: var(--ink); border-color: var(--line-strong); }
+  .btn.ghost:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+  .btn:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  /* ───────── locked ───────── */
+  #locked { min-height: 100svh; display: flex; align-items: center; justify-content: center; text-align: center; background: var(--hero); padding: 40px 16px; }
+  .envelope { position: relative; width: 220px; height: 140px; margin: 0 auto 34px; }
+  .envelope .body { position: absolute; inset: 0; background: var(--surface-2); border: 1px solid var(--line-strong); border-radius: 6px; box-shadow: var(--shadow); }
+  .envelope .flap { position: absolute; left: 0; right: 0; top: 0; height: 80px; background: var(--surface); border: 1px solid var(--line-strong); clip-path: polygon(0 0, 100% 0, 50% 100%); border-radius: 6px 6px 0 0; }
+  .envelope .seal { position: absolute; left: 50%; top: 62px; width: 44px; height: 44px; margin-left: -22px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font-family: 'Caveat', cursive; font-size: 22px; box-shadow: 0 4px 12px rgba(0,0,0,.3); animation: wobble 3.5s ease-in-out infinite; }
+  @keyframes wobble { 0%, 90%, 100% { transform: rotate(0); } 93% { transform: rotate(-12deg); } 96% { transform: rotate(10deg); } }
+  #locked > div { width: 100%; min-width: 0; }
+  #locked h1 { font-size: clamp(30px, 7vw, 44px); margin-bottom: 10px; }
+  #locked p.lead { color: var(--ink-2); margin: 0 auto 28px; max-width: 30ch; }
+  .countdown { display: flex; justify-content: center; gap: 10px; margin-bottom: 28px; }
+  .countdown div { min-width: 68px; padding: 12px 6px 8px; border: 1px solid var(--line); border-radius: 14px; background: color-mix(in srgb, var(--surface) 70%, transparent); }
+  .countdown b { display: block; font-family: 'Fraunces', serif; font-weight: 400; font-size: 32px; line-height: 1; font-variant-numeric: tabular-nums; }
+  .countdown span { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
+  .tease { font-family: 'Caveat', cursive; font-size: 24px; color: var(--accent); min-height: 34px; margin: 0 0 22px; }
+
+  /* ───────── cake ───────── */
+  #opened { display: none; }
+  #opened.show { display: block; }
+  .stage { min-height: 100svh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: var(--hero); padding: 48px 16px; position: relative; overflow: hidden; }
+  .stage h1 { font-size: clamp(34px, 9vw, 60px); }
+  .stage .instr { color: var(--ink-2); margin: 10px 0 0; min-height: 1.6em; max-width: 34ch; }
+  .stars-bg { position: absolute; inset: 0; pointer-events: none; }
+  .stars-bg i { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: var(--ink); opacity: .5; animation: tw 3s ease-in-out infinite alternate; }
+  :root[data-theme="day"] .stars-bg { display: none; }
+  @keyframes tw { from { opacity: .1; } to { opacity: .7; } }
+  .cake { position: relative; width: 240px; height: 230px; margin: 34px auto 10px; }
+  .tier { position: absolute; left: 50%; transform: translateX(-50%); border-radius: 12px 12px 8px 8px; }
+  .tier.bottom { bottom: 0; width: 240px; height: 86px; background: linear-gradient(#f6d3dc, #e9aebd); }
+  .tier.top { bottom: 80px; width: 176px; height: 70px; background: linear-gradient(#fff4ea, #f2dcc8); }
+  .tier::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 18px; border-radius: 12px 12px 0 0;
+    background: radial-gradient(circle at 10px 16px, transparent 9px, currentColor 10px) 0 0 / 20px 20px repeat-x; }
+  .tier.bottom::before { color: #fff4ea; }
+  .tier.top::before { color: #e5637a; }
+  .tier .dots { position: absolute; left: 12px; right: 12px; bottom: 16px; height: 10px; background: radial-gradient(circle, #c8304d 3px, transparent 4px) 0 0 / 24px 10px repeat-x; opacity: .7; }
+  .tier .name { position: absolute; inset: 22px 0 0; text-align: center; font-family: 'Caveat', cursive; font-size: 26px; color: #b9607a; }
+  .plate { position: absolute; left: 50%; bottom: -10px; transform: translateX(-50%); width: 280px; height: 14px; border-radius: 50%; background: var(--line-strong); }
+  .candles { position: absolute; bottom: 150px; left: 50%; transform: translateX(-50%); display: flex; gap: 30px; }
+  .candle { position: relative; width: 14px; height: 52px; border: 0; padding: 0; cursor: pointer; border-radius: 3px;
+    background: repeating-linear-gradient(135deg, #fff 0 6px, #e5637a 6px 12px); }
+  .candle::before { content: ""; position: absolute; inset: -30px -16px -6px; } /* bigger tap target */
+  .candle::after { content: ""; position: absolute; left: 50%; top: -8px; width: 2px; height: 8px; margin-left: -1px; background: #3a2a22; }
+  .flame { position: absolute; left: 50%; top: -34px; width: 16px; height: 26px; margin-left: -8px; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    background: radial-gradient(ellipse at 50% 70%, #fff6d6 0%, var(--flame) 45%, rgba(255,120,40,.0) 75%);
+    filter: drop-shadow(0 0 10px rgba(255,190,90,.8)); animation: flicker .14s ease-in-out infinite alternate; transform-origin: 50% 90%; transition: opacity .35s, transform .35s; }
+  @keyframes flicker { from { transform: scaleY(1) rotate(-2deg); } to { transform: scaleY(1.08) rotate(2deg); } }
+  .candle.out .flame { opacity: 0; transform: scale(.2) translateY(6px); animation: none; }
+  .smoke { position: absolute; left: 50%; top: -30px; width: 8px; height: 8px; margin-left: -4px; border-radius: 50%; background: var(--ink-3); opacity: 0; pointer-events: none; }
+  .candle.out .smoke { animation: smoke 1.4s ease-out forwards; }
+  @keyframes smoke { 0% { opacity: .6; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-50px) translateX(8px) scale(3); } }
+  .reveal-title { opacity: 0; transform: translateY(14px); transition: opacity 1.2s ease, transform 1.2s ease; }
+  .reveal-title.show { opacity: 1; transform: none; }
+  .reveal-title p { font-family: 'Caveat', cursive; font-size: 26px; color: var(--brass); margin: 8px 0 0; }
+  .scroll-hint { margin-top: 26px; font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); opacity: 0; transition: opacity 1s 1.4s; text-decoration: none; }
+  .scroll-hint.show { opacity: 1; }
+  .confetti { position: fixed; top: -20px; z-index: 50; pointer-events: none; width: 8px; height: 14px; border-radius: 2px; animation: drop linear forwards; }
+  @keyframes drop { to { transform: translateY(110vh) rotate(720deg); } }
+  .floaty { position: fixed; z-index: 50; pointer-events: none; animation: rise 3.5s ease-out forwards; }
+  @keyframes rise { 0% { opacity: 0; transform: translateY(0) scale(.6); } 15% { opacity: 1; } 100% { opacity: 0; transform: translateY(-60vh) scale(1.2); } }
+  .sound { position: fixed; right: 14px; bottom: 14px; z-index: 40; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line-strong); background: color-mix(in srgb, var(--surface) 85%, transparent); color: var(--ink); font-size: 18px; cursor: pointer; display: none; }
+  .sound.show { display: block; }
+
+  /* ───────── sections ───────── */
+  section.block { padding: 96px 0 0; }
+  section.block h2 { font-size: clamp(28px, 6vw, 38px); margin-bottom: 14px; }
+  section.block p.sub { color: var(--ink-2); margin: 0 0 26px; }
+  .fade { opacity: 0; transform: translateY(16px); transition: opacity .9s ease, transform .9s ease; }
+  .fade.in { opacity: 1; transform: none; }
+  .interlude { text-align: center; padding: 96px 0 0; font-family: 'Fraunces', serif; font-style: italic; font-size: clamp(22px, 5vw, 28px); color: var(--ink-2); line-height: 1.4; }
+  .interlude b { font-weight: 400; color: var(--accent); }
+
+  /* memory deck */
+  .deck { position: relative; height: 370px; margin: 0 auto; max-width: 420px; }
+  .mem {
+    position: absolute; inset: 0; border-radius: 18px; padding: 26px 24px 22px; text-align: left;
+    background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow);
+    display: flex; flex-direction: column; transition: transform .55s cubic-bezier(.22,1,.36,1), opacity .45s;
+  }
+  .mem .when { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin: 0 0 14px; }
+  .mem h3 { font-family: 'Fraunces', serif; font-weight: 400; font-size: 25px; line-height: 1.2; margin: 0 0 12px; }
+  .mem p { margin: 0; color: var(--ink-2); font-size: 17px; }
+  .mem .bubble { display: inline-block; align-self: flex-start; max-width: 85%; margin: 0 0 6px; padding: 6px 12px; border-radius: 14px 14px 14px 4px; background: var(--surface-2); border: 1px solid var(--line); font-size: 15px; color: var(--ink); }
+  .mem .bubble.me { border-radius: 14px 14px 4px 14px; background: var(--accent-soft); align-self: flex-end; }
+  .mem .foot { margin-top: auto; font-family: 'Caveat', cursive; font-size: 22px; color: var(--accent); }
+  .mem.gone { opacity: 0; transform: translateX(-120%) rotate(-12deg) !important; pointer-events: none; }
+  .deck-ctrl { display: flex; justify-content: center; align-items: center; gap: 14px; margin-top: 22px; }
+  .deck-ctrl .count { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--ink-3); min-width: 60px; text-align: center; }
+
+  /* polaroids */
+  .pstack { position: relative; height: 470px; max-width: 360px; margin: 0 auto; }
+  .polaroid { position: absolute; left: 50%; top: 0; width: min(300px, 80vw); margin: 0 0 0 calc(min(300px, 80vw) / -2); padding: 12px 12px 16px; background: #fbf7f0; color: #2b1e1b; border-radius: 4px; box-shadow: var(--shadow), 0 2px 8px rgba(0,0,0,.25); cursor: pointer; border: 0; font: inherit; transition: transform .6s cubic-bezier(.22,1,.36,1); }
+  .polaroid img { display: block; width: 100%; aspect-ratio: 4/5; object-fit: cover; background: #e6d7c1; pointer-events: none; }
+  .polaroid span { display: block; font-family: 'Caveat', cursive; font-size: 23px; text-align: center; margin-top: 8px; }
+  .ptip { text-align: center; font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); margin: 6px 0 0; }
+
+  /* jar */
+  .jar-wrap { text-align: center; }
+  .jar { position: relative; width: 170px; height: 210px; margin: 0 auto; border: 0; padding: 0; background: none; cursor: pointer; }
+  .jar .glass { position: absolute; inset: 26px 0 0; border: 3px solid var(--line-strong); border-radius: 26px 26px 40px 40px; background: color-mix(in srgb, var(--accent) 6%, transparent); overflow: hidden; }
+  .jar .lid { position: absolute; left: 30px; right: 30px; top: 6px; height: 26px; border-radius: 8px; background: var(--brass); }
+  .jar .slip { position: absolute; width: 34px; height: 14px; border-radius: 3px; }
+  .jar:hover .glass { border-color: var(--accent); }
+  .jar.shake { animation: jshake .45s ease; }
+  @keyframes jshake { 0%,100% { transform: rotate(0); } 25% { transform: rotate(-7deg); } 50% { transform: rotate(6deg); } 75% { transform: rotate(-3deg); } }
+  .reason { max-width: 440px; margin: 24px auto 0; min-height: 120px; padding: 22px 22px; background: var(--paper); color: var(--paper-ink); border-radius: 6px; box-shadow: var(--shadow); transform: rotate(-1deg); font-family: 'Caveat', cursive; font-size: 27px; line-height: 1.3; display: flex; flex-direction: column; justify-content: center; }
+  .reason small { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; opacity: .55; margin-bottom: 6px; }
+  .reason.pop { animation: pop .5s cubic-bezier(.22,1.4,.36,1); }
+  @keyframes pop { from { transform: rotate(-1deg) scale(.85) translateY(-20px); opacity: 0; } to { transform: rotate(-1deg) scale(1); opacity: 1; } }
+
+  /* open when */
+  .ow-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .ow { position: relative; font: inherit; color: var(--ink); text-align: left; cursor: pointer; border: 1px solid var(--line-strong); border-radius: 12px; padding: 18px 14px 16px; background: var(--surface); min-height: 110px; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; transition: border-color .25s, transform .2s; }
+  .ow::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 46px; background: var(--surface-2); clip-path: polygon(0 0, 100% 0, 50% 100%); border-bottom: 1px solid var(--line); }
+  .ow:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .ow small { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); }
+  .ow b { font-weight: 400; font-family: 'Fraunces', serif; font-size: 18px; line-height: 1.2; }
+  .ow.read small::after { content: " · opened"; color: var(--accent); }
+  .modal { position: fixed; inset: 0; z-index: 60; display: none; align-items: center; justify-content: center; padding: 16px; background: rgba(10,5,6,.6); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+  .modal.show { display: flex; }
+  .note { position: relative; max-width: 460px; width: 100%; max-height: 86svh; overflow: auto; background: var(--paper); color: var(--paper-ink); border-radius: 8px; padding: 30px 26px 24px; box-shadow: 0 30px 80px rgba(0,0,0,.5); animation: pop .5s cubic-bezier(.22,1.2,.36,1); }
+  .note h3 { font-family: 'Fraunces', serif; font-weight: 400; font-style: italic; font-size: 24px; margin: 0 0 14px; color: #a8132f; }
+  .note p { margin: 0 0 12px; font-size: 18px; }
+  .note .sig { font-family: 'Caveat', cursive; font-size: 26px; color: #a8132f; margin: 6px 0 0; }
+  .note .x { position: absolute; right: 10px; top: 8px; border: 0; background: none; font-size: 22px; cursor: pointer; color: var(--paper-ink); opacity: .6; width: 40px; height: 40px; }
+
+  /* bucket list */
+  .bucket { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .bucket label { display: flex; gap: 14px; align-items: flex-start; padding: 13px 16px; border: 1px solid var(--line); border-radius: 14px; background: color-mix(in srgb, var(--surface) 70%, transparent); cursor: pointer; transition: border-color .2s; }
+  .bucket label:hover { border-color: var(--line-strong); }
+  .bucket input { appearance: none; -webkit-appearance: none; flex: 0 0 22px; width: 22px; height: 22px; margin: 3px 0 0; border: 2px solid var(--line-strong); border-radius: 50%; display: grid; place-items: center; cursor: pointer; }
+  .bucket input:checked { background: var(--accent); border-color: var(--accent); }
+  .bucket input:checked::after { content: "♥"; color: var(--accent-ink); font-size: 12px; line-height: 1; }
+  .bucket input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .bucket input:checked + span { text-decoration: line-through; text-decoration-color: var(--accent); color: var(--ink-2); }
+  .bucket-note { font-family: 'Caveat', cursive; font-size: 22px; color: var(--accent); text-align: center; margin: 16px 0 0; }
+
+  /* wishes */
+  .wishes { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .wishes li { display: flex; gap: 14px; align-items: flex-start; padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px; background: color-mix(in srgb, var(--surface) 70%, transparent);
+    opacity: 0; transform: translateY(12px); transition: opacity .6s, transform .6s; }
+  .wishes li.in { opacity: 1; transform: none; }
+  .wishes li span:first-child { font-size: 22px; line-height: 1.3; }
+
+  /* the letter */
+  .sealed { text-align: center; }
+  .big-env { position: relative; width: min(320px, 86vw); aspect-ratio: 16/10; margin: 0 auto; border: 0; padding: 0; background: none; cursor: pointer; perspective: 800px; }
+  .big-env .back { position: absolute; inset: 0; background: #e9d9c3; border-radius: 8px; box-shadow: var(--shadow); }
+  .big-env .front { position: absolute; inset: 0; border-radius: 8px; background: linear-gradient(to top right, #f1e3cf 50%, transparent 50%) left / 50% 100% no-repeat, linear-gradient(to top left, #f1e3cf 50%, transparent 50%) right / 50% 100% no-repeat; z-index: 3; }
+  .big-env .top { position: absolute; left: 0; right: 0; top: 0; height: 60%; background: #e2cfb3; clip-path: polygon(0 0, 100% 0, 50% 100%); transform-origin: top; transition: transform .8s ease; z-index: 4; border-radius: 8px 8px 0 0; }
+  .big-env .wax { position: absolute; left: 50%; top: 52%; width: 56px; height: 56px; margin: -28px 0 0 -28px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #d84a62, #8c0c25); color: #fbe3e8; display: grid; place-items: center; font-family: 'Caveat', cursive; font-size: 28px; z-index: 5; box-shadow: 0 4px 10px rgba(0,0,0,.35); transition: opacity .4s, transform .4s; }
+  .big-env .peek { position: absolute; left: 8%; right: 8%; top: 12%; bottom: 8%; background: var(--paper); border-radius: 4px; z-index: 2; transition: transform .9s .5s ease; }
+  .big-env.opened .top { transform: rotateX(180deg); z-index: 1; }
+  .big-env.opened .wax { opacity: 0; transform: scale(1.4); }
+  .big-env.opened .peek { transform: translateY(-40%); }
+  .env-hint { font-family: 'Caveat', cursive; font-size: 24px; color: var(--accent); margin: 18px 0 0; }
+  .letter { display: none; margin-top: 30px; background: var(--paper); color: var(--paper-ink); border-radius: 6px; padding: 38px 28px 34px; box-shadow: var(--shadow);
+    background-image: repeating-linear-gradient(transparent 0 33px, rgba(168,19,47,.07) 33px 34px); }
+  .letter.show { display: block; }
+  .letter p { margin: 0 0 18px; font-size: 19px; line-height: 1.75; opacity: 0; transform: translateY(10px); transition: opacity 1.4s ease, transform 1.4s ease; }
+  .letter p.in { opacity: 1; transform: none; }
+  .letter .salut { font-family: 'Caveat', cursive; font-size: 32px; color: #a8132f; }
+  .letter .quote { font-style: italic; padding-left: 14px; border-left: 2px solid rgba(168,19,47,.4); }
+  .letter .sign { font-family: 'Caveat', cursive; font-size: 30px; color: #a8132f; line-height: 1.3; margin-top: 26px; }
+  .letter .ps { font-size: 16px; opacity: .8; }
+
+  /* gift */
+  .gift { text-align: center; }
+  .ticket { margin: 0 auto; max-width: 420px; border: 2px dashed var(--accent); border-radius: 16px; padding: 22px 20px; background: var(--accent-soft); position: relative; }
+  .ticket strong { display: block; font-family: 'Fraunces', serif; font-weight: 400; font-size: 26px; margin-bottom: 6px; }
+  .ticket small { display: block; color: var(--ink-2); font-size: 15px; margin-bottom: 18px; }
+  .ticket.claimed::after { content: "CLAIMED 💋"; position: absolute; right: 14px; top: 14px; transform: rotate(10deg); font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: .1em; border: 2px solid var(--accent); color: var(--accent); padding: 3px 8px; border-radius: 6px; }
+
+  /* hold to hug */
+  .hold { text-align: center; padding: 110px 0 40px; }
+  .hold-btn { position: relative; width: 150px; height: 150px; border: 0; background: none; cursor: pointer; padding: 0; touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+  .hold-btn svg { width: 100%; height: 100%; overflow: visible; }
+  .hold-btn .h-bg { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.5; }
+  .hold-btn .h-fill { fill: var(--accent); }
+  .hold-btn.beat svg { animation: beat 1s ease-in-out infinite; }
+  @keyframes beat { 0%,100% { transform: scale(1); } 15% { transform: scale(1.12); } 30% { transform: scale(1); } 45% { transform: scale(1.08); } }
+  .hold-txt { font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); margin: 14px 0 0; }
+  .final { max-width: 30ch; margin: 26px auto 0; opacity: 0; transform: translateY(10px); transition: opacity 1.4s, transform 1.4s; }
+  .final.show { opacity: 1; transform: none; }
+  .final h2 { font-size: clamp(28px, 7vw, 40px); margin-bottom: 12px; }
+  .final p { color: var(--ink-2); margin: 0 0 10px; }
+  .end { text-align: center; padding: 40px 0 70px; }
+  .end a { color: var(--ink-3); }
+
+  @media (max-width: 420px) {
+    .countdown div { min-width: 60px; }
+    .countdown b { font-size: 26px; }
+    .deck { height: 400px; }
+    .letter { padding: 30px 20px 28px; }
+    .pstack { height: 440px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═════════ before 15 Nov ═════════ -->
+<div id="locked">
+  <div>
+    <div class="envelope" aria-hidden="true"><div class="body"></div><div class="flap"></div><div class="seal">K</div></div>
+    <p class="eyebrow">sealed until 15 november</p>
+    <h1>Not yet, <em>Chamak challo</em></h1>
+    <p class="lead">Something is waiting for you here. It opens on your birthday, not one second earlier.</p>
+    <div class="countdown" role="timer" aria-live="off">
+      <div><b id="cd-d">0</b><span>days</span></div>
+      <div><b id="cd-h">0</b><span>hours</span></div>
+      <div><b id="cd-m">0</b><span>min</span></div>
+      <div><b id="cd-s">0</b><span>sec</span></div>
+    </div>
+    <p class="tease" id="tease" aria-live="polite"></p>
+    <button class="btn ghost" id="knock" type="button">try to peek 👀</button>
+    <p style="margin-top:28px"><a href="index.html" style="color:var(--ink-3)">← back to your letter</a></p>
+  </div>
+</div>
+
+<!-- ═════════ on/after 15 Nov ═════════ -->
+<div id="opened">
+  <button class="sound" id="sound" type="button" aria-label="Mute music">🔊</button>
+
+  <header class="stage">
+    <div class="stars-bg" id="stars" aria-hidden="true"></div>
+    <p class="eyebrow" id="stageEyebrow">15 november · make a wish first</p>
+    <div class="reveal-title" id="bigTitle">
+      <h1>Happy Birthday,<br><em>Krishna</em></h1>
+      <p>the world got a lot better on this day</p>
+    </div>
+    <div class="cake" aria-label="A birthday cake with three candles">
+      <div class="candles">
+        <button class="candle" type="button" aria-label="Blow out candle 1"><span class="flame"></span><span class="smoke"></span></button>
+        <button class="candle" type="button" aria-label="Blow out candle 2"><span class="flame"></span><span class="smoke"></span></button>
+        <button class="candle" type="button" aria-label="Blow out candle 3"><span class="flame"></span><span class="smoke"></span></button>
+      </div>
+      <div class="tier top"></div>
+      <div class="tier bottom"><div class="name">Krishna</div><div class="dots"></div></div>
+      <div class="plate"></div>
+    </div>
+    <p class="instr" id="instr">Turn your sound on. Close your eyes, make a wish, then tap each candle to blow it out.</p>
+    <a class="scroll-hint" id="scrollHint" href="#ch1">I made you a few things ↓</a>
+  </header>
+
+  <main class="wrap">
+
+    <p class="interlude fade">For months you were just someone I knew.<br>Now I can't remember<br>what my days were like <b>before you.</b></p>
+
+    <!-- 1. memories -->
+    <section class="block" id="ch1" aria-labelledby="mem-h">
+      <p class="eyebrow">chapter one</p>
+      <h2 id="mem-h">Remember when…</h2>
+      <p class="sub">A few of my favourite bits of us. Tap “next” to flip through.</p>
+      <div class="deck" id="deck">
+        <article class="mem">
+          <p class="when">the map</p>
+          <h3>Two ends of one country, one city in Germany.</h3>
+          <p>You from Assam, me from Kashmir. Thousands of kilometres apart, and somehow we both ended up landing in the same place. I still think the universe planned that one carefully.</p>
+          <p class="foot">best accident ever</p>
+        </article>
+        <article class="mem">
+          <p class="when">six months ago</p>
+          <h3>The day we met.</h3>
+          <p>I knew you long before I fell for you. You were just Krishna back then. I had no idea the same girl would one day become the best part of every single day.</p>
+          <p class="foot">slow start, best ending</p>
+        </article>
+        <article class="mem">
+          <p class="when">14 september</p>
+          <span class="bubble">Bhul gya na mujhe?</span>
+          <span class="bubble">??????????????????</span>
+          <span class="bubble me">I love you tonns</span>
+          <span class="bubble">Lag nhi rha wese. But believe kr hi leti hoon</span>
+          <p class="foot">I never forgot you. Not even once.</p>
+        </article>
+        <article class="mem">
+          <p class="when">the gym</p>
+          <h3>“Come. I am here. Smith machine.”</h3>
+          <p>The most romantic thing anyone has ever said next to a barbell. I'd still wait for you there. Even when you're late. Especially when you're late.</p>
+          <p class="foot">gym date champions 🏋️</p>
+        </article>
+        <article class="mem">
+          <p class="when">the tram</p>
+          <h3>Every slow tram ride.</h3>
+          <p>The ones that stop at every station. The ones via central station. I never minded any of them, because you were sitting next to me.</p>
+          <p class="foot">longest route, best route 🚋</p>
+        </article>
+        <article class="mem">
+          <p class="when">the snacks</p>
+          <h3>“Tumhe baklava khana hai?”</h3>
+          <p>Correct answer, then and forever: yes. Also, still waiting on those 2 rotis with ghee you promised. Today you're excused. Tomorrow, no.</p>
+          <p class="foot">🍯 + 🫓 = love</p>
+        </article>
+        <article class="mem">
+          <p class="when">the punctuality</p>
+          <span class="bubble me">Pagal aurat. If i said in 15 min it means 15 mins</span>
+          <p style="margin-top:12px">Karlsruhe made me German about time. You made me soft about everything else.</p>
+          <p class="foot">for you it's 5 min now, not 15</p>
+        </article>
+        <article class="mem">
+          <p class="when">the promise</p>
+          <span class="bubble me">I love you despite you making my blood boil sometimes</span>
+          <span class="bubble me">Only promise i intend to keep in my life😁</span>
+          <p class="foot">still keeping it. always will.</p>
+        </article>
+        <article class="mem">
+          <p class="when">always</p>
+          <h3>“Mere hotay huwe tumhe kya hoga.”</h3>
+          <p>I said it as a dialogue. I meant it as a promise. Another year, same promise, and it's only getting stronger.</p>
+          <p class="foot">still true 😁</p>
+        </article>
+      </div>
+      <div class="deck-ctrl">
+        <button class="btn ghost" id="prev" type="button" aria-label="Previous memory">←</button>
+        <span class="count" id="count">1 / 9</span>
+        <button class="btn" id="next" type="button">next →</button>
+      </div>
+    </section>
+
+    <!-- 2. photos -->
+    <section class="block" aria-labelledby="pic-h">
+      <p class="eyebrow">chapter two</p>
+      <h2 id="pic-h">My favourite view</h2>
+      <p class="sub">I wanted to put real photos of us here, but we don't have any yet. So for now, cartoon us will have to do. Our first real one is going on this page, that's a promise. 📸</p>
+      <div class="pstack" id="pstack">
+        <button class="polaroid" type="button"><img src="images/hero-couple.jpg" alt="The two of us" loading="lazy" /><span>us. my favourite word.</span></button>
+        <button class="polaroid" type="button"><img src="images/faces-couple.jpg" alt="Our faces, close together" loading="lazy" /><span>exhibit a: those eyes</span></button>
+        <button class="polaroid" type="button"><img src="images/arch-couple.jpg" alt="The two of us under an arch" loading="lazy" /><span>many more places, together</span></button>
+      </div>
+      <p class="ptip">tap the photo to shuffle</p>
+    </section>
+
+    <!-- 3. jar -->
+    <section class="block jar-wrap" aria-labelledby="jar-h">
+      <p class="eyebrow">chapter three</p>
+      <h2 id="jar-h">A jar full of reasons</h2>
+      <p class="sub">Why I love you. Tap the jar. Keep tapping. It doesn't really run out.</p>
+      <button class="jar" id="jar" type="button" aria-label="Pull a reason from the jar">
+        <span class="lid"></span>
+        <span class="glass" id="glass"></span>
+      </button>
+      <div class="reason" id="reason" aria-live="polite"><small>reason 0</small>Go on. Tap it.</div>
+    </section>
+
+    <p class="interlude fade">You once said,<br><b>“lag nhi rha wese.”</b><br>So I made you a few things<br>you can keep for the hard days.</p>
+
+    <!-- 4. open when -->
+    <section class="block" aria-labelledby="ow-h">
+      <p class="eyebrow">chapter four</p>
+      <h2 id="ow-h">Open when…</h2>
+      <p class="sub">Not all for today. Save them. Come back to this page whenever one of these is true, and I'll be here.</p>
+      <div class="ow-grid" id="owGrid">
+        <button class="ow" type="button" data-n="home"><small>open when</small><b>you miss home</b></button>
+        <button class="ow" type="button" data-n="sad"><small>open when</small><b>it's a bad day</b></button>
+        <button class="ow" type="button" data-n="angry"><small>open when</small><b>you're angry at me</b></button>
+        <button class="ow" type="button" data-n="doubt"><small>open when</small><b>you doubt yourself</b></button>
+        <button class="ow" type="button" data-n="sleep"><small>open when</small><b>you can't sleep</b></button>
+        <button class="ow" type="button" data-n="miss"><small>open when</small><b>you miss me</b></button>
+      </div>
+    </section>
+
+    <!-- 5. bucket list -->
+    <section class="block" aria-labelledby="bk-h">
+      <p class="eyebrow">chapter five</p>
+      <h2 id="bk-h">Things I want to do with you</h2>
+      <p class="sub">Our list. Tick them off as we do them. I'm planning to need a much longer page.</p>
+      <ul class="bucket" id="bucket">
+        <li><label><input type="checkbox" data-id="market"><span>Walk through the Christmas market with glühwein and cold noses 🎄</span></label></li>
+        <li><label><input type="checkbox" data-id="snow"><span>See the first snow together and pretend we're not cold ❄️</span></label></li>
+        <li><label><input type="checkbox" data-id="strasbourg"><span>A random day trip to Strasbourg, just because it's right there 🇫🇷</span></label></li>
+        <li><label><input type="checkbox" data-id="forest"><span>Get lost in the Black Forest (on purpose this time) 🌲</span></label></li>
+        <li><label><input type="checkbox" data-id="rotis"><span>Make rotis together. You make them, I eat them. Teamwork. 🫓</span></label></li>
+        <li><label><input type="checkbox" data-id="sunrise"><span>Stay up all night talking and watch the sunrise 🌅</span></label></li>
+        <li><label><input type="checkbox" data-id="photobooth"><span>Our first real photo together (then a silly photobooth strip, then a hundred more) 📸</span></label></li>
+        <li><label><input type="checkbox" data-id="kashmir"><span>Show you Kashmir: Dal Lake, the mountains, my home 🏔️</span></label></li>
+        <li><label><input type="checkbox" data-id="assam"><span>You show me Assam: the tea gardens, the Brahmaputra, everything you grew up with 🍃</span></label></li>
+        <li><label><input type="checkbox" data-id="next"><span>Your next birthday. Together. And every one after that 🎂</span></label></li>
+      </ul>
+      <p class="bucket-note" id="bucketNote"></p>
+    </section>
+
+    <!-- 6. wishes -->
+    <section class="block" aria-labelledby="wish-h">
+      <p class="eyebrow">chapter six</p>
+      <h2 id="wish-h">What I wish for you this year</h2>
+      <p class="sub">My wish list, since you already made yours.</p>
+      <ul class="wishes" id="wishes">
+        <li><span>🌸</span><span>More days where you laugh at your own jokes so hard you can't finish them.</span></li>
+        <li><span>✨</span><span>Good news, big and small, arriving all year long.</span></li>
+        <li><span>☀️</span><span>Mornings that don't feel heavy, and nights where you actually sleep.</span></li>
+        <li><span>🏡</span><span>That this country starts feeling a little more like home. I'm working on it.</span></li>
+        <li><span>🫂</span><span>Someone who shows up in 5 minutes when you need him. (Already sorted. You're welcome.)</span></li>
+        <li><span>🍯</span><span>Unlimited baklava, zero guilt.</span></li>
+        <li><span>💛</span><span>That you see yourself even half as clearly as I see you.</span></li>
+      </ul>
+    </section>
+
+    <!-- 7. the letter -->
+    <section class="block sealed" aria-labelledby="letter-h">
+      <p class="eyebrow">chapter seven</p>
+      <h2 id="letter-h">The letter</h2>
+      <p class="sub">Read this one slowly. Somewhere quiet, if you can.</p>
+      <button class="big-env" id="bigEnv" type="button" aria-label="Open the letter" aria-expanded="false">
+        <span class="back"></span><span class="peek"></span><span class="front"></span><span class="top"></span><span class="wax">K</span>
+      </button>
+      <p class="env-hint" id="envHint">tap to break the seal</p>
+
+      <div class="letter" id="letter" style="text-align:left">
+        <p class="salut">My Krishna,</p>
+        <p>I've started this letter more times than I want to admit. Every version sounded too small for what I actually feel, so I'm going to stop trying to make it perfect and just tell you the truth.</p>
+        <p>This is the first of your birthdays that I get to be a part of. We met six months ago, and for a while you were just someone I knew. I didn't see it coming, the way you slowly became the person I think about first and last every day. Today I can't imagine a single morning without your “good morning” being the first thing I look for. I don't know how someone rearranges an entire life this quietly, but you did. And I wouldn't undo one second of it.</p>
+        <p>Do you remember the 14th of September? You asked me, “Bhul gya na mujhe?” and when I told you I love you, you wrote:</p>
+        <p class="quote">“Lag nhi rha wese. But believe kr hi leti hoon.”</p>
+        <p>I have thought about that line more than you will ever know. You chose to believe me before I had earned it. That is the bravest, kindest thing anyone has ever done for me. And since that day, everything I do is me trying to make it <em>lag</em>. I hope, by now, it does, at least a little. And if it doesn't yet, that's okay. I'm not going anywhere until it does.</p>
+        <p>You grew up in Assam. I grew up in Kashmir. Two people from opposite corners of the same country, who both had to fly thousands of kilometres to a city neither of us knew, just to find each other. I don't believe in many things, Krishna. But I believe in that.</p>
+        <p>I know birthdays far from home can feel a little quiet. Your family is far away today, and if some part of you misses home right now, that's okay. Let it. I can't be the people who have loved you your whole life, or the house you grew up in, or the food that tastes like your childhood. But I can promise you this: as long as I'm here, you will never be alone in this country. Not on your birthday. Not on a random Tuesday. Not at 2 a.m. when everything feels heavy and you don't want to say it out loud.</p>
+        <p>Mere hotay huwe tumhe kya hoga. I said it once as a filmy dialogue. Today I'm saying it as a vow.</p>
+        <p>I love your eyes, which honestly are unfair to the rest of the world. I love that you laugh at your own jokes before you even finish them. I love how much you care about people, even the ones who never notice. I love your 623 question marks and your 193 eye-rolls. I even love you when you make my blood boil, maybe especially then, because even when we fight, you are still the one person I want to make things right with.</p>
+        <p>You don't always see yourself the way I see you. So today, just for today, borrow my eyes. You are kind. You are so much stronger than you think. You are braver than you give yourself credit for. And you are loved, completely, by someone who has no plans of ever stopping.</p>
+        <p>Thank you for being born. Thank you to your family, for raising the person I love. And thank you, Krishna, for letting me in, for every “??????”, for every good night, for choosing to believe me when you didn't have to.</p>
+        <p>I once told you that loving you was the only promise I intend to keep in my life. I'm writing it down again here, so you can hold me to it forever: I will keep choosing you. On the easy days and the hard ones. In Karlsruhe, or in Kashmir, or in Assam, or wherever this life decides to take us.</p>
+        <p>Happy birthday, my Chamak challo. This is the first one.<br>I want to be there for every single one after it.</p>
+        <p class="sign">Forever yours,<br>Arman 💛</p>
+        <p class="ps">P.S. If you cried, you're allowed to blame it on the cake. If you didn't, I'll try harder next year. 😁</p>
+      </div>
+    </section>
+
+    <!-- 8. gift -->
+    <section class="block gift" aria-labelledby="gift-h">
+      <p class="eyebrow">chapter eight</p>
+      <h2 id="gift-h">Your birthday pass 🎟️</h2>
+      <p class="sub">Valid for one full day. Your rules. No “rehne de” allowed.</p>
+      <div class="ticket" id="ticket">
+        <strong>One whole day of yes</strong>
+        <small>Whatever you want to eat, wherever you want to go, whatever movie you choose (yes, even Ramayana part 2). I just say yes.</small>
+        <button class="btn" id="claim" type="button">claim it 💝</button>
+      </div>
+    </section>
+
+    <!-- 9. hold -->
+    <section class="hold" aria-labelledby="hold-h">
+      <p class="eyebrow">the last thing</p>
+      <h2 id="hold-h" style="font-size:clamp(26px,6vw,34px);margin-bottom:28px">Press and hold the heart</h2>
+      <button class="hold-btn" id="holdBtn" type="button" aria-describedby="holdTxt">
+        <svg viewBox="0 0 100 92" aria-hidden="true">
+          <defs><clipPath id="hc"><path d="M50 88 C20 66 2 50 2 28 C2 12 14 2 28 2 C38 2 46 8 50 16 C54 8 62 2 72 2 C86 2 98 12 98 28 C98 50 80 66 50 88Z"/></clipPath></defs>
+          <path class="h-bg" d="M50 88 C20 66 2 50 2 28 C2 12 14 2 28 2 C38 2 46 8 50 16 C54 8 62 2 72 2 C86 2 98 12 98 28 C98 50 80 66 50 88Z"/>
+          <rect class="h-fill" id="hFill" x="0" y="92" width="100" height="92" clip-path="url(#hc)"/>
+        </svg>
+      </button>
+      <p class="hold-txt" id="holdTxt">keep holding…</p>
+      <div class="final" id="final" aria-live="polite">
+        <h2>That was me, <em>hugging you.</em></h2>
+        <p>Right now. Tight. For as long as you need.</p>
+        <p>Now pick up your phone and call me. I've been waiting with mine in my hand all day. 📞💛</p>
+      </div>
+    </section>
+
+    <div class="end"><a href="index.html">← back to your letter</a></div>
+  </main>
+</div>
+
+<!-- open-when notes -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="noteTitle">
+  <div class="note">
+    <button class="x" id="noteX" type="button" aria-label="Close">✕</button>
+    <h3 id="noteTitle"></h3>
+    <div id="noteBody"></div>
+    <p class="sig">— Arman</p>
+  </div>
+</div>
+
+<script>
+(function () {
+  var BDAY = new Date(2026, 10, 15, 0, 0, 0); // 15 Nov 2026, her local midnight
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var peek = /[?&]peek\b/.test(location.search); // for Arman to preview: birthday.html?peek
+  function $(id) { return document.getElementById(id); }
+  function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+
+  function confetti(n) {
+    if (reduce) return;
+    var colors = ['#e5637a', '#d2ae78', '#ffcf6b', '#f6d3dc', '#96ae8a', '#c8304d'];
+    for (var i = 0; i < n; i++) {
+      (function (i) {
+        setTimeout(function () {
+          var c = document.createElement('span');
+          c.className = 'confetti';
+          c.style.left = Math.random() * 100 + 'vw';
+          c.style.background = colors[i % colors.length];
+          c.style.animationDuration = (2.5 + Math.random() * 2.5) + 's';
+          document.body.appendChild(c);
+          setTimeout(function () { c.remove(); }, 5200);
+        }, i * 18);
+      })(i);
+    }
+  }
+  function hearts(n) {
+    if (reduce) return;
+    var e = ['💖', '💗', '💕', '🌸', '✨', '💛'];
+    for (var i = 0; i < n; i++) {
+      (function (i) {
+        setTimeout(function () {
+          var h = document.createElement('span');
+          h.className = 'floaty';
+          h.textContent = e[i % e.length];
+          h.style.left = (10 + Math.random() * 80) + 'vw';
+          h.style.top = (70 + Math.random() * 25) + 'vh';
+          h.style.fontSize = (18 + Math.random() * 26) + 'px';
+          document.body.appendChild(h);
+          setTimeout(function () { h.remove(); }, 3600);
+        }, i * 90);
+      })(i);
+    }
+  }
+
+  // ── locked ──
+  function pad(n) { return String(n).padStart(2, '0'); }
+  var timer = null;
+  function tick() {
+    var ms = BDAY - Date.now();
+    if (ms <= 0) { openUp(); return; }
+    var s = Math.floor(ms / 1000);
+    $('cd-d').textContent = Math.floor(s / 86400);
+    $('cd-h').textContent = pad(Math.floor(s % 86400 / 3600));
+    $('cd-m').textContent = pad(Math.floor(s % 3600 / 60));
+    $('cd-s').textContent = pad(s % 60);
+  }
+  var teases = [
+    'Nope. 😁', 'Still no.', 'Patience, pagal.', 'Did you just roll your eyes? 🙄',
+    'Asking ?????? won\'t help either', 'Okay fine, a hint: it involves cake 🎂',
+    'Another hint: bring tissues. Just in case.', 'That was the last hint. Go to sleep. 🌙'
+  ];
+  var t = 0;
+  $('knock').addEventListener('click', function () { $('tease').textContent = teases[t % teases.length]; t++; });
+  function openUp() {
+    if (timer) clearInterval(timer);
+    $('locked').style.display = 'none';
+    $('opened').classList.add('show');
+    window.scrollTo(0, 0);
+  }
+  if (peek || Date.now() >= BDAY.getTime()) openUp();
+  else { tick(); timer = setInterval(tick, 1000); }
+
+  // stars
+  (function () {
+    var s = $('stars'), html = '';
+    for (var i = 0; i < 70; i++) html += '<i style="left:' + (Math.random() * 100) + '%;top:' + (Math.random() * 100) + '%;animation-delay:' + (Math.random() * 3) + 's"></i>';
+    s.innerHTML = html;
+  })();
+
+  // ── music box (Happy Birthday, synthesized) ──
+  var ctx = null, muted = false, master = null;
+  function musicBox() {
+    try {
+      ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
+      if (ctx.state === 'suspended') ctx.resume();
+    } catch (e) { return; }
+    master = ctx.createGain(); master.gain.value = muted ? 0 : 0.22; master.connect(ctx.destination);
+    var N = { G4: 392, A4: 440, B4: 493.88, C5: 523.25, D5: 587.33, E5: 659.25, F5: 698.46, G5: 783.99 };
+    var song = [
+      ['G4', .75], ['G4', .25], ['A4', 1], ['G4', 1], ['C5', 1], ['B4', 2],
+      ['G4', .75], ['G4', .25], ['A4', 1], ['G4', 1], ['D5', 1], ['C5', 2],
+      ['G4', .75], ['G4', .25], ['G5', 1], ['E5', 1], ['C5', 1], ['B4', 1], ['A4', 2],
+      ['F5', .75], ['F5', .25], ['E5', 1], ['C5', 1], ['D5', 1], ['C5', 3]
+    ];
+    var beat = 0.42, at = ctx.currentTime + 0.3;
+    song.forEach(function (n) {
+      [1, 2, 3.01].forEach(function (mult, k) {
+        var o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = 'sine'; o.frequency.value = N[n[0]] * mult;
+        var peakV = [1, 0.35, 0.12][k];
+        g.gain.setValueAtTime(0, at);
+        g.gain.linearRampToValueAtTime(peakV, at + 0.01);
+        g.gain.exponentialRampToValueAtTime(0.0008, at + Math.max(1.2, n[1] * beat * 2));
+        o.connect(g); g.connect(master);
+        o.start(at); o.stop(at + Math.max(1.3, n[1] * beat * 2 + 0.1));
+      });
+      at += n[1] * beat;
+    });
+    $('sound').classList.add('show');
+  }
+  $('sound').addEventListener('click', function () {
+    muted = !muted;
+    if (master) master.gain.value = muted ? 0 : 0.22;
+    this.textContent = muted ? '🔈' : '🔊';
+    this.setAttribute('aria-label', muted ? 'Unmute music' : 'Mute music');
+  });
+
+  // ── candles ──
+  var candles = document.querySelectorAll('.candle');
+  var left = candles.length;
+  var lines = ['One down…', 'One more. Blow harder 😤'];
+  candles.forEach(function (c) {
+    c.addEventListener('click', function () {
+      if (c.classList.contains('out')) return;
+      c.classList.add('out'); c.setAttribute('aria-label', 'Candle blown out');
+      left--;
+      if (left > 0) { $('instr').textContent = lines[candles.length - left - 1]; return; }
+      $('instr').textContent = 'Your wish is officially submitted. I\'ll personally work on it. 💛';
+      $('stageEyebrow').textContent = '15 november · the best day of the year';
+      $('bigTitle').classList.add('show');
+      $('scrollHint').classList.add('show');
+      confetti(150);
+      musicBox();
+    });
+  });
+
+  // ── fade-ins ──
+  if ('IntersectionObserver' in window) {
+    var fio = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); fio.unobserve(e.target); } });
+    }, { threshold: 0.35 });
+    document.querySelectorAll('.fade').forEach(function (el) { fio.observe(el); });
+  } else document.querySelectorAll('.fade').forEach(function (el) { el.classList.add('in'); });
+
+  // ── memory deck ──
+  var cards = Array.prototype.slice.call(document.querySelectorAll('.mem'));
+  var idx = 0;
+  function layout() {
+    cards.forEach(function (c, i) {
+      var d = i - idx;
+      c.classList.toggle('gone', d < 0);
+      c.setAttribute('aria-hidden', d === 0 ? 'false' : 'true');
+      if (d >= 0) {
+        c.style.zIndex = cards.length - d;
+        c.style.transform = 'translateY(' + Math.min(d, 3) * 10 + 'px) scale(' + (1 - Math.min(d, 3) * 0.04) + ') rotate(' + (d === 0 ? 0 : (d % 2 ? 2 : -2)) + 'deg)';
+        c.style.opacity = d > 3 ? 0 : 1;
+      }
+    });
+    $('count').textContent = (idx + 1) + ' / ' + cards.length;
+    $('prev').disabled = idx === 0;
+    $('next').textContent = idx === cards.length - 1 ? 'again ↺' : 'next →';
+  }
+  $('next').addEventListener('click', function () { idx = idx === cards.length - 1 ? 0 : idx + 1; layout(); });
+  $('prev').addEventListener('click', function () { if (idx > 0) { idx--; layout(); } });
+  layout();
+
+  // ── polaroid stack ──
+  var pols = Array.prototype.slice.call(document.querySelectorAll('.polaroid'));
+  var rots = [-4, 5, -8];
+  function stackPols() {
+    pols.forEach(function (p, i) {
+      p.style.zIndex = pols.length - i;
+      p.style.transform = 'rotate(' + rots[i % rots.length] + 'deg) translateY(' + i * 6 + 'px)';
+      p.tabIndex = i === 0 ? 0 : -1;
+    });
+  }
+  pols.forEach(function (p) {
+    p.addEventListener('click', function () {
+      if (pols[0] !== p) return;
+      p.style.transform = 'translateX(70%) rotate(16deg)';
+      setTimeout(function () { pols.push(pols.shift()); stackPols(); }, 280);
+    });
+  });
+  stackPols();
+
+  // ── jar of reasons ──
+  var reasons = [
+    'Your eyes. Honestly, they are my favourite thing in the whole world.',
+    'You laugh at your own jokes before you even finish telling them.',
+    'You believed me before I had earned it.',
+    'The way you say "pagal" like it\'s a compliment. (It is.)',
+    'You care about people so much more than they ever realise.',
+    'Your patience is steadier than mine. By a lot.',
+    'You send 10 question marks when 1 would do, and I love every single one.',
+    'You make ordinary Tuesdays feel like something worth remembering.',
+    'Your good morning texts. The day doesn\'t start without them.',
+    'You roll your eyes at me and then smile anyway. I see it.',
+    'You came all the way from Assam to be brave in a whole new country.',
+    'You ask "bhul gya na mujhe?" as if that were even possible.',
+    'You put up with my "if I said 15 min it means 15 min" lectures.',
+    'You get angry and still want to fix things. That\'s rare.',
+    'You make me want to be softer, kinder and on time.',
+    'The way your voice changes when you\'re sleepy.',
+    'You never once made talking feel like effort.',
+    'You make the gym feel like a date.',
+    'You make a slow tram feel too fast.',
+    'Your "rehne de" that never actually means rehne de.',
+    'You are the first person I want to tell everything to.',
+    'You notice small things. Nobody notices small things.',
+    'You are home, even 7,000 km from home.',
+    'You chose me. Every day, you keep choosing me.',
+    'You\'re the reason I check my phone 400 times a day.',
+    'You hold onto people. I\'m very glad you held onto me.',
+    'You are beautiful when you\'re trying and when you\'re not.',
+    'You are stubborn in exactly the way I need.',
+    'You make my blood boil and my heart calm. Same person. Same day.',
+    'You made me say "I love you" 53 times in two months and mean it every time.',
+    'You are my favourite notification.',
+    'You. Exactly as you are. Nothing to change.',
+    'Because there\'s no version of my future I like that doesn\'t have you in it.'
+  ];
+  var order = reasons.map(function (_, i) { return i; }).sort(function () { return Math.random() - 0.5; });
+  var ri = 0, pulled = 0;
+  (function fillJar() {
+    var g = $('glass'), html = '', cols = ['#e5637a', '#d2ae78', '#f6d3dc', '#96ae8a', '#ffcf6b'];
+    for (var i = 0; i < 26; i++) html += '<span class="slip" style="left:' + (8 + Math.random() * 110) + 'px;bottom:' + (6 + Math.random() * 120) + 'px;background:' + cols[i % cols.length] + ';transform:rotate(' + (Math.random() * 180) + 'deg)"></span>';
+    g.innerHTML = html;
+  })();
+  $('jar').addEventListener('click', function () {
+    var jar = this; jar.classList.remove('shake'); void jar.offsetWidth; jar.classList.add('shake');
+    pulled++;
+    var r = $('reason');
+    r.innerHTML = '<small>reason ' + pulled + (pulled >= reasons.length ? ' of ∞' : '') + '</small>' + reasons[order[ri % order.length]];
+    ri++;
+    r.classList.remove('pop'); void r.offsetWidth; r.classList.add('pop');
+    if (pulled === reasons.length) hearts(20);
+  });
+
+  // ── open when ──
+  var notes = {
+    home: ['Open when you miss home',
+      ['I know. It\'s a long way to Assam, and some days that distance sits right on your chest.',
+       'Close your eyes and think of your favourite room back home, the smell of the food, the voices of the people who love you. They\'re still there. They\'re thinking of you too, I promise.',
+       'And until you\'re back there, let me be a little piece of home here. Call your family first. Then call me. I\'ll come over, and we\'ll make it feel less far.']],
+    sad: ['Open when it\'s a bad day',
+      ['Hey. Come here.',
+       'You don\'t have to be okay right now. You don\'t have to explain, or be strong, or pretend. Just breathe.',
+       'Bad days end. This one will too. And whatever happened, it doesn\'t change who you are, and it definitely doesn\'t change how much I love you.',
+       'Remember the "sad day rescue" coupon? It never expires. Use it. I\'m already putting my shoes on.']],
+    angry: ['Open when you\'re angry at me',
+      ['Okay. You\'re allowed to be. I probably deserved it. (Probably. 😁)',
+       'Take your time. Roll your eyes. Send me 40 question marks if you need to.',
+       'But please remember, even in the middle of a fight, I\'m on your side. It\'s never you against me. It\'s us against the problem.',
+       'When you\'re ready, call me. I\'ll say sorry first. Ego? What ego.']],
+    doubt: ['Open when you doubt yourself',
+      ['Listen to me. You moved to a whole new country, alone, and built a life here. Do you know how brave that is?',
+       'You are smart. You are capable. You are so much stronger than the voice in your head is telling you right now.',
+       'That voice doesn\'t know you like I do. I\'ve read 1,838 of your messages. I know exactly who you are.',
+       'And she can do this.']],
+    sleep: ['Open when you can\'t sleep',
+      ['Put the phone down after this. (After this.)',
+       'Breathe in for four. Hold for four. Out for four. Again.',
+       'Now imagine my arm around you, and the slow sound of a tram going past outside, stopping at every single station, like the ones we take.',
+       'You are safe. You are loved. Tomorrow will handle itself.',
+       'Good night, Chamak challo. Sweet dreams. Dream about me, obviously. 🌙']],
+    miss: ['Open when you miss me',
+      ['Good. I miss you too. Probably more. Definitely more.',
+       'Here\'s the thing: you never have to wait for me. Not 15 minutes. Not even 5.',
+       'Call me. Right now. Whatever time it is, whatever I\'m doing. You\'re never a disturbance. You\'re the best part of my day.',
+       'I love you tonns. Has it started to lag yet? 💛']]
+  };
+  var opened = {};
+  try { opened = JSON.parse(store('krishna-openwhen') || '{}') || {}; } catch (e) { opened = {}; }
+  var lastBtn = null;
+  document.querySelectorAll('.ow').forEach(function (b) {
+    if (opened[b.dataset.n]) b.classList.add('read');
+    b.addEventListener('click', function () {
+      var n = notes[b.dataset.n];
+      $('noteTitle').textContent = n[0];
+      $('noteBody').innerHTML = n[1].map(function (p) { return '<p>' + p + '</p>'; }).join('');
+      $('modal').classList.add('show');
+      lastBtn = b; $('noteX').focus();
+      opened[b.dataset.n] = 1; b.classList.add('read');
+      store('krishna-openwhen', JSON.stringify(opened));
+    });
+  });
+  function closeNote() { $('modal').classList.remove('show'); if (lastBtn) lastBtn.focus(); }
+  $('noteX').addEventListener('click', closeNote);
+  $('modal').addEventListener('click', function (e) { if (e.target === this) closeNote(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeNote(); });
+
+  // ── bucket list ──
+  var done = {};
+  try { done = JSON.parse(store('krishna-bucket') || '{}') || {}; } catch (e) { done = {}; }
+  var boxes = document.querySelectorAll('#bucket input');
+  function bucketNote() {
+    var n = 0; boxes.forEach(function (b) { if (b.checked) n++; });
+    $('bucketNote').textContent = n === 0 ? 'none yet. we have time. all of it.' :
+      n === boxes.length ? 'all done?! okay, I\'m writing a new list. 💛' : n + ' of ' + boxes.length + ' done. keep going, us. 💛';
+  }
+  boxes.forEach(function (b) {
+    b.checked = !!done[b.dataset.id];
+    b.addEventListener('change', function () {
+      done[b.dataset.id] = b.checked; store('krishna-bucket', JSON.stringify(done));
+      if (b.checked) hearts(8);
+      bucketNote();
+    });
+  });
+  bucketNote();
+
+  // ── wishes ──
+  var lis = document.querySelectorAll('#wishes li');
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        lis.forEach(function (li, i) { setTimeout(function () { li.classList.add('in'); }, i * 160); });
+        io.disconnect();
+      });
+    }, { threshold: 0.2 });
+    io.observe($('wishes'));
+  } else lis.forEach(function (li) { li.classList.add('in'); });
+
+  // ── the letter ──
+  $('bigEnv').addEventListener('click', function () {
+    if (this.classList.contains('opened')) return;
+    this.classList.add('opened'); this.setAttribute('aria-expanded', 'true');
+    $('envHint').textContent = 'take your time ♡';
+    setTimeout(function () {
+      var L = $('letter'); L.classList.add('show');
+      var ps = L.querySelectorAll('p');
+      if ('IntersectionObserver' in window && !reduce) {
+        var lio = new IntersectionObserver(function (es) {
+          es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); lio.unobserve(e.target); } });
+        }, { threshold: 0.6, rootMargin: '0px 0px -10% 0px' });
+        ps.forEach(function (p) { lio.observe(p); });
+      } else ps.forEach(function (p) { p.classList.add('in'); });
+      L.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    }, reduce ? 0 : 1300);
+  });
+
+  // ── birthday pass ──
+  var ticket = $('ticket'), claim = $('claim');
+  function setClaimed(v) {
+    ticket.classList.toggle('claimed', v);
+    claim.textContent = v ? 'claimed. I\'m on my way 🏃‍♂️' : 'claim it 💝';
+  }
+  setClaimed(store('krishna-bday-pass') === '1');
+  claim.addEventListener('click', function () { setClaimed(true); confetti(90); store('krishna-bday-pass', '1'); });
+
+  // ── hold to hug ──
+  var hb = $('holdBtn'), fill = $('hFill'), prog = 0, raf = null, holding = false, finished = false, lastT = 0;
+  var HOLD_MS = 3000;
+  function draw() { fill.setAttribute('y', String(92 - prog * 92)); }
+  function step(ts) {
+    var dt = lastT ? ts - lastT : 16; lastT = ts;
+    prog += (holding ? 1 : -1.6) * dt / HOLD_MS;
+    prog = Math.max(0, Math.min(1, prog));
+    draw();
+    if (prog >= 1 && !finished) {
+      finished = true; holding = false;
+      hb.classList.add('beat');
+      $('holdTxt').textContent = 'hug delivered 💛';
+      $('final').classList.add('show');
+      hearts(40);
+      if (navigator.vibrate) try { navigator.vibrate([60, 80, 60]); } catch (e) {}
+      raf = null; return;
+    }
+    if (finished) { raf = null; return; }
+    if (holding || prog > 0) raf = requestAnimationFrame(step); else { raf = null; lastT = 0; }
+  }
+  function start(e) {
+    if (finished) return;
+    if (e) e.preventDefault();
+    holding = true; $('holdTxt').textContent = 'keep holding…';
+    if (!raf) { lastT = 0; raf = requestAnimationFrame(step); }
+  }
+  function stop() { if (!finished && holding) { holding = false; if (prog < 1) $('holdTxt').textContent = 'don\'t let go so fast 🥺'; } }
+  hb.addEventListener('pointerdown', start);
+  ['pointerup', 'pointerleave', 'pointercancel'].forEach(function (ev) { hb.addEventListener(ev, stop); });
+  hb.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  hb.addEventListener('keydown', function (e) { if ((e.key === ' ' || e.key === 'Enter') && !e.repeat) start(e); });
+  hb.addEventListener('keyup', function (e) { if (e.key === ' ' || e.key === 'Enter') stop(); });
+  $('holdTxt').textContent = 'press and hold for 3 seconds';
+})();
+</script>
+</body>
+</html>
